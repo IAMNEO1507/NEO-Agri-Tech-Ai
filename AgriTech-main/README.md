@@ -316,23 +316,11 @@ Read **[CONTRIBUTING.md](CONTRIBUTING.md)** for SWoC 2026 guidelines.
 
 ---
 
-## 🤝 Contributing & Support
 
-We love contributions! Please read our **[CONTRIBUTING.md](./CONTRIBUTING.md)** to get started with **SWoC 2026** tasks. Whether it's fixing bugs, adding features, or improving documentation, your help is always welcome!
 
 ---
 
-## ✨ Contributors
 
-#### Thanks to all the wonderful people contributing to this project! 💖
-
-![Contributors](https://contrib.rocks/image?repo=omroy07/AgriTech)
-
-[View full contribution graph](https://github.com/omroy07/AgriTech/graphs/contributors)
-
----
-
-For production use, run the backend with a WSGI server like [gunicorn](https://gunicorn.org/):
 
 ```bash
 pip install gunicorn
