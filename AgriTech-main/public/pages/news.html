@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agriculture News - AgriTech</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+<!-- Prevent theme flash on page load -->
+<script>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+  })();
+</script>
+    <link rel="stylesheet" href="/css/news.css">
+</head>
+<body>
+  <section class="agritech-news">
+    <div class="news-container">
+      <!-- Header with Navigation -->
+      <div class="news-header">
+        <div class="header-actions">
+          <a href="/pages/index.html" class="home-btn">
+            <i class="fas fa-arrow-left"></i> Back to Home
+          </a>
+          <!-- Animated Sun/Moon Toggle -->
+          <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+            aria-label="Switch to dark mode">
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <mask id="moon-mask">
+                <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+              </mask>
+              <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+              <g class="sun-rays" stroke="currentColor">
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </g>
+            </svg>
+          </button>
+        </div>
+        <h1 class="news-title">📰 Agriculture News &amp; Updates</h1>
+        <p class="news-subtitle">
+          Stay informed with the latest agricultural news, market trends, and farming innovations worldwide.
+        </p>
+      </div>
+
+      <!-- Search and Filter Section -->
+      <div class="search-filter-section">
+        <div class="search-wrapper">
+          <input
+            type="text"
+            class="search-bar"
+            placeholder="Search news articles..."
+            id="searchInput"
+          >
+          <i class="fas fa-search"></i>
+        </div>
+
+        <div class="category-filters">
+          <button class="filter-btn active" data-category="all" type="button">All News</button>
+          <button class="filter-btn" data-category="market-trends" type="button">Market Trends</button>
+          <button class="filter-btn" data-category="technology" type="button">Technology</button>
+          <button class="filter-btn" data-category="weather" type="button">Weather &amp; Climate</button>
+          <button class="filter-btn" data-category="policy" type="button">Policy &amp; Government</button>
+          <button class="filter-btn" data-category="innovation" type="button">Innovation</button>
+          <button class="filter-btn" data-category="sustainability" type="button">Sustainability</button>
+        </div>
+
+        <!-- Clear Filters Button -->
+        <button id="clearFiltersBtn" class="clear-filters-btn hidden" type="button">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-news-state" class="empty-state" style="display: none;">
+        <div>
+          <h3 class="news-title">📭 No News Found</h3>
+          <p class="news-subtitle">
+            Check back soon for latest agricultural news and updates.
+          </p>
+        </div>
+      </div>
+
+      <!-- News Grid -->
+      <div class="news-grid" id="newsGrid"></div>
+
+      <!-- Load More Button -->
+      <div class="load-more-container">
+        <button class="load-more-btn" id="loadMoreBtn" type="button">Load More News</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- News Detail Modal -->
+  <div id="newsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <button class="close" id="closeNewsModal" aria-label="Close modal" type="button">&times;</button>
+      </div>
+      <div class="modal-meta">
+        <span id="modal-source">
+          <i class="fas fa-globe"></i> Source:
+        </span>
+        <span id="modal-date">
+          <i class="far fa-calendar-alt"></i>
+        </span>
+      </div>
+      <span class="modal-category" id="modalCategory"></span>
+      <div class="modal-body">
+        <img class="modal-image" id="modalImage" alt="News image">
+        <div class="modal-text" id="modalContent"></div>
+        <a
+          id="modalLink"
+          href="#"
+          class="read-more-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Read Full Article <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button (Refresh) -->
+  <button class="fab-btn" id="refreshBtn" title="Refresh News" type="button">
+    <i class="fas fa-redo"></i>
+  </button>
+
+  <!-- Back to Top Button -->
+  <button
+    id="backToTopBtn"
+    class="back-to-top-btn"
+    aria-label="Back to top"
+    type="button"
+  >
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Cursor Trail -->
+  <div class="circle-container" id="cursorTrail"></div>
+
+    <script src="/js/news.js"></script>
+    <script src="/js/theme.js"></script>
+
+    <!-- ===== Universal Back To Top Button (All Pages) ===== -->
+<style>
+  #globalBackToTop {
+    position: fixed;
+    bottom: 90px; /* prevents overlap with chatbot/floating icons */
+    right: 25px;
+    z-index: 9999;
+    display: none;
+    background: #2ecc71;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #globalBackToTop:hover {
+    transform: scale(1.12);
+    background: #27ae60;
+  }
+
+  @media (max-width: 768px) {
+    #globalBackToTop {
+      bottom: 100px; /* better spacing on mobile */
+      right: 18px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+</style>
+
+<button id="globalBackToTop" title="Back to Top">↑</button>
+
+<script>
+  (function () {
+    const btn = document.getElementById("globalBackToTop");
+
+    // Show button after scrolling down
+    window.addEventListener("scroll", function () {
+      if (window.scrollY > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
+
+    // Smooth scroll to top on click
+    btn.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  })();
+</script>
+<!-- ===== End Back To Top Button ===== -->
+
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Control Center | AgriTech</title>
+    <meta name="description"
+        content="Warehouse Control Center dashboard for real-time inventory tracking, stock management, expiry alerts, and automated reconciliation.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #fafafa;
+            --card: #ffffff;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .control-panel {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-box {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .inventory-table th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .inventory-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .stock-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge-healthy {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-low {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .alert-item {
+            padding: 1rem;
+            border-left: 4px solid var(--warning);
+            background: #fffbeb;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 1rem;
+        }
+
+        /* Summary boxes: stack neatly on mobile */
+        .summary-boxes {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Stats grid: stack boxes on mobile */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                /* single column */
+            }
+
+            .stat-box {
+                width: 100%;
+            }
+        }
+
+        /* Content layout: stack inventory + alerts vertically */
+        @media (max-width: 1024px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+                /* single column */
+            }
+
+            .card {
+                width: 100%;
+            }
+        }
+
+        /* Inventory table: scrollable on small screens */
+        @media (max-width: 768px) {
+            .inventory-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .inventory-table th,
+            .inventory-table td {
+                min-width: 120px;
+                /* prevent squish */
+            }
+        }
+
+        /* Header buttons: stack neatly on mobile */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header div button {
+                width: 100%;
+            }
+        }
+
+        .navbar {
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo img {
+            height: 40px;
+            /* adjust size */
+            width: auto;
+            display: block;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            color: var(--accent);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent);
+            
+        }
+
+        .site-footer.final-match {
+            background-color: var(--dark-bg);
+            color: var(--link-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-top-accent {
+            height: 5px;
+            background: linear-gradient(to right, #059669, var(--primary-green), #06b6d4);
+            width: 100%;
+            position: relative;
+            z-index: 3;
+        }
+
+        .footer-wave-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0, transparent 29px, var(--grid-line-color) 30px),
+                repeating-linear-gradient(90deg, transparent 0, transparent 29px, var(--grid-line-color) 30px);
+            background-size: 30px 30px;
+            opacity: 0.8;
+            z-index: 1;
+            mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, #000 70%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, #000 70%, transparent 100%);
+        }
+
+        .footer-inner-content,
+        .footer-bottom {
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-brand {
+            flex: 0 0 40%;
+            min-width: 300px;
+        }
+
+        .brand-logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .site-footer h3 {
+            color: var(--primary-green);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .footer-inner-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .footer-section {
+            padding: 0 15px;
+            margin-bottom: 30px;
+        }
+
+        .footer-group-links {
+            flex: 0 0 50%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-links {
+            flex: 1;
+            margin-right: 40px;
+        }
+
+        .footer-contact {
+            flex: 1;
+        }
+
+        .site-footer h4 {
+            color: var(--link-hover-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 5px;
+            width: fit-content;
+        }
+
+        .site-footer a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .site-footer a:hover {
+            color: var(--primary-green);
+            transform: translateX(4px);
+        }
+
+        .site-footer i {
+            margin-right: 12px;
+            width: 18px;
+            color: var(--primary-green);
+            text-align: center;
+            font-size: 16px;
+        }
+
+
+        .social-icons {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .social-icons a {
+
+            color: var(--link-color);
+            font-size: 18px;
+            transition: color 0.3s, transform 0.3s;
+            padding: 0;
+            width: auto;
+            display: block;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-green);
+            transform: scale(1.1);
+        }
+
+        .social-icons i {
+
+            color: var(--link-color);
+            width: auto;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .social-icons a:hover i {
+            color: var(--primary-green);
+        }
+
+        /* 7. Footer Bottom (Copyright) */
+        .footer-bottom {
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.8;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <a href="/pages/index.html" class="logo">
+            <img src="/images/logo.png" alt="AgriTech Logo">
+            <span class="logo-text">AgriTech</span>
+        </a>
+
+        <ul class="nav-links">
+            <li>
+                <a href="/pages/index.html">Home</a>
+            </li>
+            <li>
+                <a href="/pages/about.html">About</a>
+            </li>
+            <li>
+                <a href="/pages/blog.html">Blog</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="control-panel">
+        <header class="header">
+            <div>
+                <h1>Warehouse Control Center</h1>
+                <p style="opacity: 0.6; margin-top: 0.5rem;">Real-time inventory tracking & automated reconciliation</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-success" onclick="openStockInModal()">+ Stock In</button>
+                <button class="btn btn-danger" onclick="openStockOutModal()">- Stock Out</button>
+                <button class="btn btn-primary" onclick="performReconciliation()">Reconcile</button>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" style="color: var(--primary);" id="total-items">0</div>
+                <div class="stat-label">Total SKUs</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="color: var(--success);" id="healthy-stock">0</div>
+                <div class="stat-label">Healthy Stock</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="color: var(--warning);" id="low-stock">0</div>
+                <div class="stat-label">Low Stock</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="color: var(--danger);" id="expiring-soon">0</div>
+                <div class="stat-label">Expiring Soon</div>
+            </div>
+        </div>
+
+        <div class="content-layout">
+            <div class="card">
+                <h3>Inventory Ledger</h3>
+                <table class="inventory-table" id="inventory-table">
+                    <caption style="text-align:left; font-weight:600; margin-bottom:0.5rem;">
+                        Inventory items with quantity, reorder level, status, and expiry information
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">SKU</th>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Reorder Point</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Expiry</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-body" aria-live="polite">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding: 3rem; opacity: 0.5;">
+                                Loading inventory...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Expiry Alerts</h3>
+                <div id="alerts-container" style="margin-top: 1.5rem;">
+                    <p style="text-align: center; opacity: 0.5;">No alerts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <footer class="site-footer tech-dark-theme final-match">
+        <div class="footer-top-accent"></div>
+
+        <div class="footer-inner-content">
+            <div class="footer-section footer-brand">
+                <div class="brand-header">
+                    <img src="/images/logo.png" alt="AgriTech logo" class="brand-logo" />
+                    <h3>AgriTech</h3>
+                </div>
+
+                <p class="tagline">
+                    Empowering India's Farming Future with innovative technology
+                    connecting every stakeholder.
+                </p>
+
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+
+            <div class="footer-group-links">
+                <div class="footer-section footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li>
+                            <a href="/pages/index.html"><i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li>
+                            <a href="/pages/auth/login.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="/pages/misc/feed-back.html"><i class="fas fa-comment-dots"></i> Feedback</a>
+                        </li>
+                        <li>
+                            <a href="/pages/chat.html"><i class="fas fa-robot"></i> AI Assistant</a>
+                        </li>
+                        <li>
+                            <a href="/pages/legal/terms-and-service.html"><i class="fas fa-file-contract"></i> Terms & Service</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-section footer-contact">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>
+                            <a href="mailto:contact@agritech.com">
+                                <i class="fas fa-envelope"></i> contact@agritech.com
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:+910000000000">
+                                <i class="fas fa-phone"></i> +91 00000 00000
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© <span id="current-year"></span> AgriTech. All rights reserved.</p>
+        </div>
+
+        <div class="footer-wave-overlay"></div>
+    </footer>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script defer src="/js/warehouse_control.js"></script>
+</body>
+
+</html>

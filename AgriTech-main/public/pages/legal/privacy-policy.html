@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AgriTech | Privacy Policy</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- Prevent theme flash on page load -->
+<script>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+  })();
+</script>
+
+<style>
+:root {
+  --bg: linear-gradient(135deg, #020617, #022c22);
+  --card: rgba(15, 23, 42, 0.85);
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #22c55e;
+  --border: #334155;
+
+  --bg-secondary: #e0e4dd;
+  --border-color: #b2cfba;
+  --text-muted: #94a3b8;
+}
+
+[data-theme="dark"] {
+  --bg-secondary: #0d1a34;
+  --border-color: #475569;
+  --text-muted: #94a3b8;
+}
+
+[data-theme="light"] {
+  --bg: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #16a34a;
+  --border: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* HERO HEADER */
+.hero {
+  text-align: center;
+  padding: 72px 20px 28px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--accent);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: clamp(2.3rem, 4vw, 3.3rem);
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: var(--muted);
+  max-width: 700px;
+  margin: auto;
+  font-size: 1.05rem;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--muted);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  font-size: 0.85rem;
+}
+
+[data-theme="dark"] .hero-meta span {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+/* Animated Theme Toggle  */
+        .theme-toggle {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color, #d1d5db);
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        color: var(--text-primary, #111827);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        flex-shrink: 0;
+        align-self: center;
+        box-shadow: none !important;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+        background: #1e293b !important;
+        border: 1px solid #475569 !important;
+        color: #f1f5f9 !important;
+        }
+
+        .theme-toggle:hover {
+        background-color: var(--bg-secondary, #f3f4f6);
+        border-color: var(--primary-green, #16a34a) !important;
+        }
+
+        .theme-icon {
+        width: 22px;
+        height: 22px;
+        overflow: visible;
+        transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        display: block;
+        }
+
+        .sun-core {
+        transform-origin: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sun-rays {
+        transform-origin: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+        }
+
+        .moon-bite {
+        transform-origin: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Light mode → Sun */
+        [data-theme="light"] .theme-icon {
+        transform: rotate(0deg);
+        }
+
+        [data-theme="light"] .sun-core {
+        transform: scale(1);
+        }
+
+        [data-theme="light"] .sun-rays {
+        transform: scale(1.1);
+        opacity: 1;
+        }
+
+        [data-theme="light"] .moon-bite {
+        transform: translate(20px, -20px);
+        }
+
+        /* Dark mode → Moon */
+        [data-theme="dark"] .theme-icon {
+        transform: rotate(-10deg);
+        }
+
+        [data-theme="dark"] .sun-core {
+        transform: scale(1.4);
+        }
+
+        [data-theme="dark"] .sun-rays {
+        transform: scale(0.1);
+        opacity: 0;
+        }
+
+        [data-theme="dark"] .moon-bite {
+        transform: translate(5px, -1.5px) scale(0.6);
+        }
+
+/* MAIN CONTAINER */
+.container {
+  max-width: 950px;
+  margin: auto;
+  padding: 12px 20px 28px;
+}
+
+.policy-intro {
+  margin-bottom: 22px;
+}
+
+.policy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.policy-chip {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.policy-chip h3 {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.policy-chip p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 0;
+}
+
+/* POLICY CARDS (MAJOR REDESIGN) */
+.policy-card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 24px;
+  border-left: 5px solid var(--accent);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+  backdrop-filter: blur(14px);
+  transition: 0.3s ease;
+}
+
+.policy-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+}
+
+/* SECTION HEADINGS WITH ICONS */
+.policy-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.policy-card p {
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.policy-card strong {
+  color: var(--text);
+}
+
+.policy-list {
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.policy-list li {
+  margin-bottom: 6px;
+}
+
+.policy-note {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: var(--muted);
+}
+
+[data-theme="dark"] .policy-note {
+  background: rgba(15, 23, 42, 0.48);
+}
+
+ul {
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+/* CTA BUTTON */
+.back-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 22px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.back-btn.secondary {
+  margin-left: 10px;
+}
+
+.policy-footer-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.policy-footer-links a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.policy-footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+  font-size: 0.9rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Animated Sun/Moon Toggle -->
+<button style="position: fixed; top: 1rem; right: 1rem; z-index: 999;"
+class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+  aria-label="Switch to dark mode">
+  <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <mask id="moon-mask">
+      <rect x="0" y="0" width="100%" height="100%" fill="white" />
+      <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+    </mask>
+    <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+    <g class="sun-rays" stroke="currentColor">
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </g>
+  </svg>
+</button>
+
+<!-- HERO SECTION (NEW) -->
+<section class="hero">
+  <div class="hero-badge"><i class="fas fa-shield-heart"></i> Privacy at a glance</div>
+  <h1><i class="fas fa-shield-alt"></i> Privacy Policy</h1>
+  <p>
+    Your privacy is important to us. This policy explains how AgriTech collects,
+    uses, shares, and protects data across the marketplace, advisory tools, and AI-powered services.
+  </p>
+  <div class="hero-meta">
+    <span><i class="fas fa-calendar-alt"></i> Effective May 2026</span>
+    <span><i class="fas fa-cookie-bite"></i> Cookies and local storage</span>
+    <span><i class="fas fa-lock"></i> No sale of personal data</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <div class="policy-intro">
+    <p>
+      AgriTech is designed to help farmers, buyers, and service providers connect safely. We keep data collection
+      limited to what is needed for account management, marketplace interactions, and agricultural assistance.
+    </p>
+  </div>
+
+  <div class="policy-grid">
+    <div class="policy-chip">
+      <h3>Data minimization</h3>
+      <p>We only collect information needed to operate the platform and improve core services.</p>
+    </div>
+    <div class="policy-chip">
+      <h3>User control</h3>
+      <p>You can manage preferences, request access, and ask us to delete supported data where applicable.</p>
+    </div>
+    <div class="policy-chip">
+      <h3>Responsible sharing</h3>
+      <p>Data is shared only with trusted providers, legal authorities, or with your consent.</p>
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-database"></i> 1. Information We Collect</h2>
+    <p>
+      We collect only the information needed to provide AgriTech services and keep accounts secure.
+    </p>
+    <ul class="policy-list">
+      <li>Account details such as name, email, phone number, and profile preferences.</li>
+      <li>Marketplace content, support requests, feedback, and other information you choose to submit.</li>
+      <li>Crop images, advisory inputs, and similar files uploaded for AI-assisted analysis.</li>
+      <li>Technical data such as device type, browser, IP address, session logs, and language or theme settings.</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-chart-line"></i> 2. How We Use Your Information</h2>
+    <ul class="policy-list">
+      <li>To provide marketplace browsing, recommendations, and communication between users.</li>
+      <li>To process AI-based agricultural insights, including crop and disease-related guidance.</li>
+      <li>To authenticate accounts, remember preferences, and keep sessions secure.</li>
+      <li>To diagnose bugs, measure performance, and improve product reliability.</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-share-alt"></i> 3. Sharing and Disclosure</h2>
+    <p>
+      We do not sell personal data. We may share information only when it is necessary to operate the service,
+      comply with the law, or protect users and the platform.
+    </p>
+    <ul class="policy-list">
+      <li>Trusted providers that help us host, store, secure, or analyze platform data.</li>
+      <li>Authorities or legal representatives when disclosure is required by law or to protect rights and safety.</li>
+      <li>Business transfers if the platform is reorganized, merged, or acquired, subject to the same protections.</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-cookie-bite"></i> 4. Cookies and Local Storage</h2>
+    <p>
+      We use cookies and local storage to remember preferences such as language, theme, and session state,
+      and to make the site easier to use.
+    </p>
+    <div class="policy-note">
+      Our Terms of Service explain broader platform rules, while this page focuses on privacy and data handling.
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-shield-alt"></i> 5. Data Security</h2>
+    <p>
+      We use reasonable administrative, technical, and organizational safeguards to protect the information we
+      process. No system is perfectly secure, but we work to reduce risk and keep credentials protected.
+    </p>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-clock"></i> 6. Data Retention</h2>
+    <p>
+      We keep information only for as long as needed to provide the service, comply with legal obligations,
+      resolve disputes, and support legitimate business needs.
+    </p>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-user-check"></i> 7. Your Rights and Choices</h2>
+    <p>
+      Depending on your location, you may have rights to access, correct, delete, or restrict certain data,
+      as well as object to processing or withdraw consent where applicable.
+    </p>
+    <ul class="policy-list">
+      <li>You can update account preferences and clear browser storage used by the site.</li>
+      <li>You can contact us to request access or deletion of your information where supported.</li>
+      <li>You can limit cookies through browser settings, though some features may stop working.</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-child"></i> 8. Children's Privacy</h2>
+    <p>
+      AgriTech is not intended for children under 13, and we do not knowingly collect personal data from them.
+      If you believe a child has submitted information, contact us so we can review and remove it.
+    </p>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-sync-alt"></i> 9. Policy Updates and Contact</h2>
+    <p>
+      We may update this Privacy Policy from time to time. Material changes will be reflected on this page,
+      and continued use of the platform means you accept the updated policy.
+    </p>
+    <p>
+      For privacy-related questions, contact us at:
+      <br><strong>agritech.opensource@gmail.com</strong>
+    </p>
+    <a href="/pages/legal/terms-and-service.html" class="back-btn">View Terms of Service</a>
+    <a href="/pages/index.html" class="back-btn secondary">Back to Homepage</a>
+    <div class="policy-footer-links">
+      <a href="/pages/legal/terms-and-service.html">Terms of Service</a>
+      <a href="/pages/legal/cookie-policy.html">Cookie Policy</a>
+      <a href="/pages/index.html">Home</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 AgriTech · Secure • Transparent • Trusted 🌱
+</footer>
+
+<script src="/js/theme.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crop Planner AI</title>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+      <!-- Prevent theme flash on page load -->
+      <script>
+        (function () {
+          const saved = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+        })();
+      </script>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../../theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+  <body>
+    <!-- Cursor Trail -->
+<div class="circle-container" id="cursorTrail"></div>
+    <div id="canvas-container">
+      <canvas id="three-canvas"></canvas>
+    </div>
+    
+    <div class="form-progress" id="progress-bar"></div>
+    
+    <nav class="navbar">
+      <a href="javascript:history.back()" class="back-btn" aria-label="Go back">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-chevron-left"
+        >
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </a>
+      <h2 class="navbar-title">Crop Planner AI</h2>
+      <!-- Animated Sun/Moon Toggle -->
+        <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+          aria-label="Switch to dark mode">
+          <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <mask id="moon-mask">
+              <rect x="0" y="0" width="100%" height="100%" fill="white" />
+              <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+            </mask>
+            <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+            <g class="sun-rays" stroke="currentColor">
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </g>
+          </svg>
+        </button>
+    </nav>
+
+    <div class="container">
+      <h1>🌿 Crop Planner AI</h1>
+      <p class="subtitle">Enter your farm's details to get an AI-powered crop planner with comprehensive growing guidelines.</p>
+      
+      <form id="crop-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="ph">Soil pH</label>
+            <input
+              type="number"
+              id="ph"
+              name="pH"
+              step="0.1"
+              min="0"
+              max="14"
+              required
+              placeholder="e.g., 6.8"
+            />
+            <div class="error-message">Please enter a valid pH value (0-14)</div>
+          </div>
+
+          <div class="form-group">
+            <label for="temperature">Temperature (°C)</label>
+            <input
+              type="number"
+              id="temperature"
+              name="Temperature"
+              step="0.1"
+              min="-10"
+              max="50"
+              required
+              placeholder="e.g., 28.5"
+            />
+            <div class="error-message">Please enter a valid temperature</div>
+          </div>
+
+          <div class="form-group">
+            <label for="rainfall">Rainfall (mm)</label>
+            <input
+              type="number"
+              id="rainfall"
+              name="Rainfall"
+              step="1"
+              min="0"
+              required
+              placeholder="e.g., 650"
+            />
+            <div class="error-message">Please enter a valid rainfall amount</div>
+          </div>
+
+          <div class="form-group">
+            <label for="soil-type">Soil Type</label>
+            <select id="soil-type" name="Soil_Type" required>
+              <option value="">Select soil type...</option>
+              <option value="Black">Black Soil</option>
+              <option value="Loamy">Loamy Soil</option>
+              <option value="Clay">Clay Soil</option>
+              <option value="Sandy">Sandy Soil</option>
+            </select>
+            <div class="error-message">Please select a soil type</div>
+          </div>
+
+          <div class="form-group">
+            <label for="season">Season</label>
+            <select id="season" name="Season" required>
+              <option value="">Select season...</option>
+              <option value="Monsoon">Monsoon</option>
+              <option value="Winter">Winter</option>
+              <option value="Summer">Summer</option>
+            </select>
+            <div class="error-message">Please select a season</div>
+          </div>
+
+          <div class="form-group">
+            <label for="market-demand">Market Demand</label>
+            <select id="market-demand" name="Market_Demand" required>
+              <option value="">Select demand level...</option>
+              <option value="High">High Demand</option>
+              <option value="Medium">Medium Demand</option>
+              <option value="Low">Low Demand</option>
+            </select>
+            <div class="error-message">Please select market demand level</div>
+          </div>
+
+          <div class="form-group">
+            <label for="fertilizer">Fertilizer Used</label>
+            <select id="fertilizer" name="Fertilizer_Used" required>
+              <option value="">Select fertilizer...</option>
+              <option value="Urea+DAP">Urea + DAP</option>
+              <option value="NPK 10-26-26">NPK 10-26-26</option>
+              <option value="Single Super Phosphate">Single Super Phosphate</option>
+              <option value="None">No Fertilizer</option>
+            </select>
+            <div class="error-message">Please select a fertilizer option</div>
+          </div>
+
+          <div class="form-group">
+            <label for="pest-issue">Pest Issue</label>
+            <select id="pest-issue" name="Pest_Issue" required>
+              <option value="">Select pest status...</option>
+              <option value="None">No Pest Issues</option>
+              <option value="Bollworm">Bollworm</option>
+              <option value="Stem Borer">Stem Borer</option>
+              <option value="Aphids">Aphids</option>
+            </select>
+            <div class="error-message">Please select pest issue status</div>
+          </div>
+
+          <div class="form-group">
+            <label for="irrigation">Irrigation Method</label>
+            <select id="irrigation" name="Irrigation_Method" required>
+              <option value="">Select irrigation method...</option>
+              <option value="Drip">Drip Irrigation</option>
+              <option value="Canal">Canal Irrigation</option>
+              <option value="Rainfed">Rainfed</option>
+              <option value="Sprinkler">Sprinkler Irrigation</option>
+            </select>
+            <div class="error-message">Please select an irrigation method</div>
+          </div>
+        </div>
+
+        <button type="submit" class="predict-btn" id="submit-btn">
+          Get Full Farming Plan
+        </button>
+      </form>
+
+      <div id="result-container" class="hidden">
+        <h2>🎯 Recommended Crop:</h2>
+        <p id="result-text">...</p>
+        
+        <div id="guide-container">
+          <h3 id="guide-title"></h3>
+          <div class="guide-grid">
+            <div class="guide-item">
+              <h4>🗓️ Timeline (Plant & Harvest)</h4>
+              <p id="guide-timeline">Optimal planting and harvesting schedule for maximum yield</p>
+            </div>
+            
+            <div class="guide-item">
+              <h4>🌱 How to Plant</h4>
+              <p id="guide-how-to-plant">Step-by-step planting guidelines and best practices</p>
+            </div>
+            
+            <div class="guide-item">
+              <h4>💊 Fertilizer Plan</h4>
+              <p id="guide-fertilizer">Customized fertilization schedule and recommendations</p>
+            </div>
+            
+            <div class="guide-item">
+              <h4>🌧️ Ideal Rainfall</h4>
+              <p id="guide-ideal-rainfall">Water requirements and irrigation guidelines</p>
+            </div>
+            
+            <div class="guide-item">
+              <h4>📦 Post-Harvest Plan</h4>
+              <p id="guide-post-harvest">Storage, processing, and marketing strategies</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="../static/feedback.js"></script>
+  <script src="../static/script.js"></script>
+  <script src="../../theme.js"></script>
+    <style>
+      .site-footer {background: linear-gradient(135deg,#2e7d32,#66bb6a); color:#fff; margin-top:auto; padding: 2rem 1.25rem;}
+      .site-footer .footer-inner {max-width:1200px;margin:0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1.5rem; align-items:flex-start;}
+      .footer-brand {display:flex;flex-direction:column;gap:.5rem}
+      .footer-logo {width:48px;height:48px;border-radius:8px;object-fit:cover;background:#fff;padding:4px}
+      .site-footer h3,.site-footer h4{margin:0 0 .5rem 0}
+      .site-footer p {margin:0;opacity:.9}
+      .site-footer ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.4rem}
+      .site-footer a{color:#fff;text-decoration:none;opacity:.9;transition:opacity .2s}
+      .site-footer a:hover{opacity:1;text-decoration:underline}
+      .footer-bottom{max-width:1200px;margin:1rem auto 0; padding-top:1rem; border-top:1px solid rgba(255,255,255,.25); text-align:center; font-size:.9rem; opacity:.9}
+    </style>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="/images/logo.png" alt="AgriTech logo" class="footer-logo">
+          <h3>AgriTech</h3>
+          <p>Empowering India's Farming Future</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/main.html">Dashboard</a></li>
+            <li><a href="/feed-back.html">Feedback</a></li>
+            <li><a href="/chat.html">AI Assistant</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Tools</h4>
+          <ul>
+            <li><a href="/Crop%20Recommendation/templates/index.html">Crop Recommendation</a></li>
+            <li><a href="/Crop%20Yield%20Prediction/crop_yield_app/templates/index.html">Yield Prediction</a></li>
+            <li><a href="/Disease%20prediction/template/index.html">Disease Detector</a></li>
+            <li><a href="/Crop_Planning/templates/cropplan.html">Crop Planner</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 AgriTech • Made for farmers</div>
+    </footer>
+    </div>
+<script>
+// --- Cursor Trailing Effect ---
+const container = document.getElementById('cursorTrail');
+const circleCount = 12;
+const circles = [];
+
+let mouseX = 0;
+let mouseY = 0;
+
+// Create circles
+for (let i = 0; i < circleCount; i++) {
+    const circle = document.createElement('div');
+    circle.classList.add('cursor-circle');
+    container.appendChild(circle);
+    circles.push({ el: circle, x: 0, y: 0 });
+}
+
+// Mouse move
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// Click effects
+document.addEventListener('mousedown', () => {
+    circles.forEach(c => c.el.classList.add('cursor-clicking'));
+});
+document.addEventListener('mouseup', () => {
+    circles.forEach(c => c.el.classList.remove('cursor-clicking'));
+});
+
+// Hover effects on interactive elements
+document.addEventListener('mouseover', (e) => {
+    if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.add('cursor-hovering'));
+    }
+});
+document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.remove('cursor-hovering'));
+    }
+});
+
+// Animate trailing effect
+function animateCursor() {
+    let x = mouseX;
+    let y = mouseY;
+
+    circles.forEach((circle) => {
+        circle.x += (x - circle.x) * 0.25;
+        circle.y += (y - circle.y) * 0.25;
+
+        circle.el.style.left = circle.x + 'px';
+        circle.el.style.top = circle.y + 'px';
+
+        x = circle.x;
+        y = circle.y;
+    });
+
+    requestAnimationFrame(animateCursor);
+}
+animateCursor();
+    </script>
+  </body>
+</html>

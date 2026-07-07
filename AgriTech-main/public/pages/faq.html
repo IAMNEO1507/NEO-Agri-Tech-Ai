@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="description"
+    content="AgriTech FAQ - Frequently Asked Questions about our agricultural technology platform. Get answers about registration, usage, payments, and more." />
+  <title>FAQ - AgriTech | Frequently Asked Questions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Libertinus+Serif:wght@400;600&display=swap"
+    rel="stylesheet" />
+
+    <!-- Prevent theme flash on page load -->
+    <script>
+      (function () {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+      })();
+    </script>
+
+  <link href="/css/style.css" rel="stylesheet" />
+  <link href="/css/faq.css" rel="stylesheet" />
+  <style>
+    /* FAQ Search Enhancements */
+.faq-item.hidden {
+  display: none;
+}
+
+.faq-highlight {
+  background: #ffeb3b;
+  color: #000;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+/* FAQ No Results Message */
+.faq-no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted, #aaa);
+  font-size: 1.1rem;
+}
+
+.faq-no-results i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  display: block;
+  opacity: 0.7;
+}
+
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <!-- Left side: Logo and Brand Name -->
+      <div class="brand-section">
+        <img src="/images/logo.png" alt="AgriTech Logo" class="nav-logo">
+        <a href="/pages/index.html" class="logo">AgriTech</a>
+      </div>
+
+      <!-- Center: Navigation Links -->
+      <div class="nav-links">
+        <a href="/pages/index.html" class="nav-link">Home</a>
+        <a href="/pages/about.html" class="nav-link">About</a>
+        <a href="/pages/blog.html" class="nav-link">Blog</a>
+        <a href="services.html" class="nav-link">Services</a>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+          <input type="text" placeholder="Search..." class="search-input" autocomplete="off"
+            aria-label="Search content" />
+          <button class="search-button" aria-label="Search">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right side: Buttons -->
+      <div class="nav-buttons">
+        <a href="/pages/auth/login.html" class="btn btn-secondary login-btn-desktop">Login</a>
+        <a href="/pages/faq.html" class="btn btn-secondary active">FAQ</a>
+        <a href="#" class="btn btn-secondary logout-button" style="display: none;">Logout</a>
+        <a href="/pages/auth/register.html" class="btn btn-primary register-btn-desktop">Register</a>
+
+      <!-- Animated Sun/Moon Toggle -->
+                <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+                    aria-label="Switch to dark mode">
+                    <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <mask id="moon-mask">
+                            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                            <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+                        </mask>
+                        <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+                        <g class="sun-rays" stroke="currentColor">
+                            <line x1="12" y1="1" x2="12" y2="3" />
+                            <line x1="12" y1="21" x2="12" y2="23" />
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                            <line x1="1" y1="12" x2="3" y2="12" />
+                            <line x1="21" y1="12" x2="23" y2="12" />
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                        </g>
+                    </svg>
+                </button>
+      </div>
+
+      <!-- Mobile Hamburger Menu Button -->
+      <button class="nav-toggle btn" id="navToggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-search">
+      <input type="text" placeholder="Search..." class="mobile-search-input" autocomplete="off"
+        aria-label="Search content" />
+      <button class="mobile-search-btn" aria-label="Search">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+
+    <div class="mobile-nav-links">
+      <a href="/pages/index.html" class="nav-link">Home</a>
+      <a href="/pages/about.html" class="nav-link">About</a>
+      <a href="/pages/blog.html" class="nav-link">Blog</a>
+      <a href="services.html" class="nav-link">Services</a>
+    </div>
+
+    <div class="mobile-nav-buttons">
+      <button class="theme-toggle mobile-theme-toggle-btn" type="button" id="mobileThemeToggle"
+        aria-label="Toggle dark/light mode">
+        <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <mask id="moon-mask-mobile">
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+          </mask>
+          <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask-mobile)" />
+          <g class="sun-rays" stroke="currentColor">
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </g>
+        </svg>
+      </button>
+
+      <a href="/pages/auth/login.html" class="btn btn-secondary login-btn-mobile">Login</a>
+      <a href="/pages/faq.html" class="btn btn-secondary active">FAQ</a>
+      <a href="#" class="btn btn-secondary logout-link-mobile" style="display: none;">Logout</a>
+      <a href="/pages/auth/register.html" class="btn btn-primary register-btn-mobile">Register</a>
+    </div>
+  </div>
+
+  <!-- FAQ Hero Section -->
+  <section class="faq-hero">
+    <div class="faq-hero-content">
+      <h1 class="serif">Frequently Asked Questions</h1>
+      <p>
+        Find quick answers to common questions about AgriTech platform, user registration,
+        transactions, and more. We're here to help you navigate our agricultural ecosystem seamlessly.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ Container -->
+  <div class="faq-container">
+    <div id="faqNoResults" class="faq-no-results" style="display: none;">
+      <i class="fas fa-search"></i>
+      <p>No matching FAQs found. Try different keywords.</p>
+    </div>
+
+    <!-- Getting Started Section -->
+    <div class="faq-section">
+      <h2 class="faq-section-title serif">Getting Started</h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>What is AgriTech and how does it work?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>AgriTech is a comprehensive agricultural technology platform that connects all stakeholders in India's
+              farming ecosystem. Our platform serves as a digital marketplace and resource hub that brings together:</p>
+            <ul>
+              <li><strong>Farmers</strong> - List and sell their produce directly to buyers</li>
+              <li><strong>Buyers</strong> - Source fresh produce with transparent pricing</li>
+              <li><strong>Equipment Suppliers</strong> - Provide modern agricultural equipment and services</li>
+              <li><strong>Grocery Sellers</strong> - Access reliable supply chains for fresh produce</li>
+            </ul>
+            <p>The platform works by creating direct connections between these stakeholders, eliminating middlemen,
+              ensuring fair pricing, and providing smart tools for crop recommendation, yield prediction, and disease
+              detection.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>How do I register as a Farmer, Buyer, or Supplier?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Registration is simple and free:</p>
+            <ul>
+              <li>Click the <strong>"Register"</strong> button in the header</li>
+              <li>Select your role: Farmer, Buyer, Equipment Supplier, or Grocery Seller</li>
+              <li>Fill in your basic information including name, contact details, and location</li>
+              <li>Provide role-specific information (farm details for farmers, business info for buyers, etc.)</li>
+              <li>Verify your email address and phone number</li>
+              <li>Complete your profile with additional details and preferences</li>
+            </ul>
+            <p>Once registered, you'll have access to your personalized dashboard with tools and features specific to
+              your role.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>Is it free to use the AgriTech platform, or are there any fees?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>AgriTech platform registration and basic features are <strong>completely free</strong>:</p>
+            <ul>
+              <li>Free account creation and profile setup</li>
+              <li>Free access to crop recommendation and planning tools</li>
+              <li>Free product listing for farmers and suppliers</li>
+              <li>Free browsing and search capabilities for buyers</li>
+              <li>Free access to market prices and weather information</li>
+            </ul>
+            <p>We may introduce <strong>premium features</strong> in the future for advanced analytics, priority
+              listing, or enhanced support, but our core mission is to keep essential farming tools accessible to all.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Using the Platform Section -->
+    <div class="faq-section">
+      <h2 class="faq-section-title serif">Using the Platform</h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>How can I list my produce or agricultural equipment for sale?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Listing your products is straightforward:</p>
+            <ul>
+              <li>Log into your dashboard after registration</li>
+              <li>Navigate to <strong>"Add Listing"</strong> or <strong>"My Products"</strong></li>
+              <li>Select the type of product (crops, equipment, services)</li>
+              <li>Add detailed information: product name, description, quantity, price</li>
+              <li>Upload high-quality photos of your product</li>
+              <li>Set your location, availability, and preferred contact method</li>
+              <li>Review and publish your listing</li>
+            </ul>
+            <p>Your listings will be visible to relevant buyers in your area and across the platform. You can edit,
+              update, or remove listings at any time from your dashboard.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>What is the process for a buyer to find and purchase products?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Buyers can easily find and purchase products:</p>
+            <ul>
+              <li>Use the <strong>search bar</strong> to find specific products or browse categories</li>
+              <li>Filter results by location, price range, quantity, and quality ratings</li>
+              <li>View detailed product information, photos, and seller profiles</li>
+              <li>Contact sellers directly through the platform's messaging system</li>
+              <li>Negotiate prices, quantities, and delivery terms</li>
+              <li>Arrange payment and delivery methods with the seller</li>
+              <li>Rate and review the transaction after completion</li>
+            </ul>
+            <p>Our platform facilitates the connection but allows you to handle transactions directly with sellers for
+              maximum flexibility.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>How are payments and deliveries handled between users?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Currently, payments and deliveries are handled directly between buyers and sellers:</p>
+            <ul>
+              <li><strong>Payment Methods:</strong> Cash on delivery, bank transfers, UPI payments, or any method agreed
+                upon by both parties</li>
+              <li><strong>Delivery Options:</strong> Self-pickup, local delivery by seller, or third-party logistics
+                arranged by either party</li>
+              <li><strong>Terms & Conditions:</strong> Both parties negotiate and agree on payment terms, delivery
+                timelines, and quality standards</li>
+            </ul>
+            <p>We provide a secure messaging platform for communication and recommend best practices for safe
+              transactions. Future updates may include integrated payment and delivery services for enhanced security
+              and convenience.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Safety & Security Section -->
+    <div class="faq-section">
+      <h2 class="faq-section-title serif">Safety & Security</h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>How is my personal and business information kept secure on the platform?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>We take data security seriously and implement multiple layers of protection:</p>
+            <ul>
+              <li><strong>Data Encryption:</strong> All sensitive data is encrypted using industry-standard SSL/TLS
+                protocols</li>
+              <li><strong>Secure Servers:</strong> Your information is stored on secure, regularly monitored servers
+              </li>
+              <li><strong>Privacy Controls:</strong> You control what information is visible to other users</li>
+              <li><strong>Verification Process:</strong> We verify user accounts to reduce fraudulent activity</li>
+              <li><strong>Regular Updates:</strong> Our security measures are continuously updated to address new
+                threats</li>
+              <li><strong>No Data Selling:</strong> We never sell your personal information to third parties</li>
+            </ul>
+            <p>Contact details are only shared with verified users you choose to communicate with, and you can report
+              any suspicious activity to our support team.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>What should I do if I encounter fraudulent users or suspicious activity?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>If you encounter any suspicious activity, take these steps:</p>
+            <ul>
+              <li><strong>Report Immediately:</strong> Use the "Report User" button on any profile or listing</li>
+              <li><strong>Contact Support:</strong> Reach out to our support team with details of the incident</li>
+              <li><strong>Document Evidence:</strong> Save screenshots, messages, or any relevant information</li>
+              <li><strong>Avoid Direct Payment:</strong> Be cautious about advance payments without proper verification
+              </li>
+              <li><strong>Meet in Safe Locations:</strong> For in-person transactions, meet in public, well-lit areas
+              </li>
+            </ul>
+            <p>Our team investigates all reports promptly and takes appropriate action, including account suspension or
+              removal when necessary.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Smart Tools Section -->
+    <div class="faq-section">
+      <h2 class="faq-section-title serif">Smart Tools & Features</h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>What are the AI-powered smart tools available on AgriTech?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>AgriTech offers several AI-powered tools to help farmers make informed decisions:</p>
+            <ul>
+              <li><strong>Crop Recommendation:</strong> Get suggestions for the best crops to plant based on soil type,
+                climate, and market demand</li>
+              <li><strong>Yield Prediction:</strong> Estimate expected crop yields using historical data and current
+                conditions</li>
+              <li><strong>Disease Detection:</strong> Upload photos of plants to identify diseases and get treatment
+                recommendations</li>
+              <li><strong>Crop Planning:</strong> Create detailed farming schedules and track progress throughout the
+                season</li>
+              <li><strong>Weather Integration:</strong> Access localized weather forecasts and alerts</li>
+              <li><strong>Market Price Tracking:</strong> Monitor real-time market prices for various crops</li>
+            </ul>
+            <p>These tools are designed to help both new and experienced farmers optimize their farming practices and
+              increase productivity.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>How accurate are the crop recommendations and disease detection features?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Our AI tools are trained on extensive agricultural datasets and continuously improved:</p>
+            <ul>
+              <li><strong>Crop Recommendations:</strong> Based on regional agricultural data, soil analysis, and
+                successful farming patterns in similar conditions</li>
+              <li><strong>Disease Detection:</strong> Trained on thousands of plant disease images with accuracy rates
+                continually improving through machine learning</li>
+              <li><strong>Regular Updates:</strong> Our models are updated regularly with new data and feedback from
+                users</li>
+              <li><strong>Local Expertise:</strong> We incorporate knowledge from local agricultural experts and
+                successful farmers</li>
+            </ul>
+            <p><strong>Important:</strong> While our tools provide valuable insights, we always recommend consulting
+              with local agricultural experts and following established best practices for critical farming decisions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Section -->
+    <div class="faq-section">
+      <h2 class="faq-section-title serif">Orders & Transactions</h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>How can I place an order for crops or agricultural products on AgriTech?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+  <p>To place an order for crops or agricultural products on AgriTech:</p>
+  <ul>
+    <li><strong>Browse Products:</strong> Log in to your account and explore available crops or agricultural products listed by sellers</li>
+    <li><strong>Select Item:</strong> Click on the product you want and choose the required quantity</li>
+    <li><strong>Add to Cart:</strong> Add the selected product to your cart or click “Buy Now”</li>
+    <li><strong>Checkout:</strong> Enter delivery details and confirm your shipping information</li>
+    <li><strong>Payment:</strong> Complete the payment process to successfully place your order</li>
+  </ul>
+  <p>Once the order is confirmed, you will receive a confirmation notification with your order details.</p>
+</div>
+
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>Can I track my order status and delivery updates?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+  <p>Yes, you can easily track your order status and delivery updates:</p>
+  <ul>
+    <li><strong>My Orders Section:</strong> Go to your dashboard and open the “My Orders” page</li>
+    <li><strong>Real-Time Status:</strong> View updates such as order confirmation, processing, shipped, and delivered</li>
+    <li><strong>Notifications:</strong> Receive email or in-app notifications for important delivery updates</li>
+    <li><strong>Order Details:</strong> Click on a specific order to see tracking and delivery information</li>
+  </ul>
+  <p>This helps you stay informed about your purchase from placement to final delivery.</p>
+</div>
+
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>What should I do if my order is delayed or incorrect?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+  <p>If your order is delayed or incorrect, follow these steps:</p>
+  <ul>
+    <li><strong>Check Order Status:</strong> Visit the “My Orders” section to review the latest updates</li>
+    <li><strong>Contact Seller:</strong> Reach out to the seller directly through the order details page</li>
+    <li><strong>Report an Issue:</strong> Use the support or feedback option to report delays or incorrect items</li>
+    <li><strong>Support Assistance:</strong> Contact AgriTech support with your order ID and issue description</li>
+  </ul>
+  <p>Our team will review the issue and assist with resolution, including corrections, replacements, or refunds where applicable.</p>
+</div>
+
+
+        </div>
+      </div>
+    </div>
+ 
+    <div class="faq-section">
+      <h2 class="faq-section-title serif">Support & Contact</h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>How can I contact AgriTech support if I need help?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>We offer multiple ways to get support:</p>
+            <ul>
+              <li><strong>AI Assistant:</strong> Use our chatbot available on every page for instant answers</li>
+              <li><strong>Feedback Form:</strong> Submit detailed questions or issues through our feedback page</li>
+              <li><strong>Email Support:</strong> Contact us directly at support@agritech.com</li>
+              <li><strong>Phone Support:</strong> Call our helpline during business hours (details in your dashboard)
+              </li>
+              <li><strong>Community Forum:</strong> Connect with other users and get peer support</li>
+            </ul>
+            <p>Our support team typically responds within 24 hours, and urgent issues are prioritized for faster
+              resolution.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h3>What languages does AgriTech platform support?</h3>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Currently, AgriTech is available in:</p>
+            <ul>
+              <li><strong>English</strong> - Full platform support</li>
+              <li><strong>Hindi</strong> - Core features and navigation</li>
+            </ul>
+            <p>We're working on expanding language support to include regional languages such as Telugu, Tamil, Marathi,
+              Gujarati, and others based on user demand and regional requirements.</p>
+            <p>Language preferences can be set in your account settings, and our AI assistant can communicate in
+              multiple languages to better serve our diverse user base.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Contact CTA Section -->
+  <!-- 🌟 Enhanced Contact CTA Section (Improved Visual Hierarchy) -->
+<section class="contact-cta enhanced-cta">
+  <div class="cta-content">
+    <div class="cta-icon">
+      <i class="fas fa-headset"></i>
+    </div>
+
+    <h2 class="serif cta-title">Still Have Questions?</h2>
+
+    <p class="cta-subtitle">
+      Can't find the answer you're looking for? Our support team is ready to help you
+      get the most out of the AgriTech platform.
+    </p>
+
+    <div class="cta-actions">
+      <a href="/pages/misc/feed-back.html" class="contact-btn primary-cta">
+        <i class="fas fa-life-ring"></i> Contact Support
+      </a>
+
+      <a href="/pages/chat.html" class="contact-btn secondary-cta">
+        <i class="fas fa-robot"></i> Ask AI Assistant
+      </a>
+    </div>
+  </div>
+</section>
+
+  <footer class="site-footer tech-dark-theme final-match">
+    <div class="footer-top-accent"></div>
+
+    <div class="footer-inner-content">
+      <div class="footer-section footer-brand">
+        <div class="brand-header">
+          <img src="/images/logo.png" alt="AgriTech logo" class="brand-logo" />
+          <h3>AgriTech</h3>
+        </div>
+
+        <p class="tagline">
+          Empowering India's Farming Future with innovative technology
+          connecting every stakeholder.
+        </p>
+
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+
+      <div class="footer-group-links">
+        <div class="footer-section footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li>
+              <a href="/pages/index.html"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li>
+              <a href="/pages/auth/login.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            </li>
+            <li>
+              <a href="/pages/misc/feed-back.html"><i class="fas fa-comment-dots"></i> Feedback</a>
+            </li>
+            <li>
+              <a href="/pages/chat.html"><i class="fas fa-robot"></i> AI Assistant</a>
+            </li>
+            <li>
+              <a href="/pages/legal/terms-and-service.html"><i class="fas fa-file-contract"></i> Terms & Service</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-section footer-contact">
+          <h4>Contact</h4>
+          <ul>
+            <li>
+              <a href="mailto:contact@agritech.com">
+                <i class="fas fa-envelope"></i> contact@agritech.com
+              </a>
+            </li>
+            <li>
+              <a href="tel:+910000000000">
+                <i class="fas fa-phone"></i> +91 00000 00000
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span id="current-year"></span> AgriTech. All rights reserved.</p>
+    </div>
+
+    <div class="footer-wave-overlay"></div>
+  </footer>
+
+  <!-- Floating Chatbot Button -->
+  <a href="/pages/chat.html" id="chatbotBtn" title="AI Assistant Support" aria-label="Open AI Assistant Chat">
+    <i class="fas fa-robot"></i>
+  </a>
+
+  <!-- Scroll Button -->
+  <button class="scroll-btn" id="scrollBtn" title="Scroll">
+    <i class="fas fa-arrow-down" id="scrollIcon"></i>
+  </button>
+
+  <script>
+    // FAQ Accordion functionality
+    function toggleFaq(element) {
+      const faqItem = element.parentElement;
+      const isActive = faqItem.classList.contains('active');
+
+      // Close all FAQ items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // Open clicked item if it wasn't active
+      if (!isActive) {
+        faqItem.classList.add('active');
+      }
+    }
+
+    // Desktop Search
+    const searchButton = document.querySelector(".search-button");
+    const searchInput = document.querySelector(".search-input");
+
+    searchButton?.addEventListener("click", () => {
+      handleSearch(searchInput.value);
+    });
+
+    searchInput?.addEventListener("keydown", e => {
+      if (e.key === "Enter") handleSearch(e.target.value);
+    });
+
+    // Add focus effect when button is clicked or focused
+    searchButton?.addEventListener("click", () => {
+      searchInput?.classList.add("input-focused");
+    });
+
+    searchButton?.addEventListener("focus", () => {
+      searchInput?.focus(); //Focus the input to show cursor
+      searchInput?.classList.add("input-focused");
+    });
+
+    searchInput?.addEventListener("blur", () => {
+      searchInput.classList.remove("input-focused");
+    });
+
+    // Mobile Search
+    const mobileSearchBtn = document.querySelector(".mobile-search-btn");
+    const mobileSearchInput = document.querySelector(".mobile-search-input");
+
+    mobileSearchBtn?.addEventListener("click", () => {
+      handleSearch(mobileSearchInput.value);
+    });
+
+    mobileSearchInput?.addEventListener("keydown", e => {
+      if (e.key === "Enter") handleSearch(e.target.value);
+    });
+
+    // Add focus effect when button is clicked or focused
+    mobileSearchBtn?.addEventListener("click", () => {
+      mobileSearchInput?.classList.add("input-focused");
+    });
+
+    mobileSearchBtn?.addEventListener("focus", () => {
+      mobileSearchInput?.focus(); // Focus the input to show cursor
+      mobileSearchInput?.classList.add("input-focused");
+    });
+
+    mobileSearchInput?.addEventListener("blur", () => {
+      mobileSearchInput.classList.remove("input-focused");
+    });
+
+    // Mobile Menu Functionality
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+
+    // Toggle mobile menu
+    navToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navToggle.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+    });
+
+    // Close mobile menu when clicking on a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !navToggle.contains(e.target)) {
+        navToggle.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Sync theme toggle for mobile
+    if (mobileThemeToggle) {
+      mobileThemeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        // Update both theme toggles
+        document.querySelectorAll('.theme-text').forEach(text => {
+          text.textContent = newTheme === 'dark' ? 'Light' : 'Dark';
+        });
+      });
+    }
+
+    // Scroll button functionality
+    const scrollBtn = document.getElementById("scrollBtn");
+    const scrollIcon = document.getElementById("scrollIcon");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY < 300) {
+        scrollBtn.classList.add("visible");
+        scrollIcon.classList.replace("fa-arrow-up", "fa-arrow-down");
+      } else {
+        scrollBtn.classList.add("visible");
+        scrollIcon.classList.replace("fa-arrow-down", "fa-arrow-up");
+      }
+    });
+
+    scrollBtn.addEventListener("click", () => {
+      if (scrollIcon.classList.contains("fa-arrow-down")) {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    });
+
+    // Prevent body scroll when menu is open
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+        navToggle.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+  <script>
+/* =========================
+   FAQ SEARCH FUNCTIONALITY
+========================= */
+
+function clearHighlights(element) {
+  element.innerHTML = element.innerHTML.replace(
+    /<span class="faq-highlight">(.*?)<\/span>/g,
+    "$1"
+  );
+}
+
+function highlightText(element, query) {
+  const regex = new RegExp(`(${query})`, "gi");
+  element.innerHTML = element.textContent.replace(
+    regex,
+    `<span class="faq-highlight">$1</span>`
+  );
+}
+
+function handleSearch(query) {
+  const searchTerm = query.trim().toLowerCase();
+  const faqItems = document.querySelectorAll(".faq-item");
+  const noResultsEl = document.getElementById("faqNoResults");
+
+  let matches = [];
+
+  faqItems.forEach(item => {
+    const questionEl = item.querySelector(".faq-question h3");
+    const answerEl = item.querySelector(".faq-answer-content");
+
+    // Clear old highlights
+    clearHighlights(questionEl);
+    clearHighlights(answerEl);
+
+    const qText = questionEl.textContent.toLowerCase();
+    const aText = answerEl.textContent.toLowerCase();
+
+    if (searchTerm === "") {
+      item.classList.remove("hidden");
+      item.classList.remove("active");
+      if (noResultsEl) noResultsEl.style.display = "none";
+      return;
+    }
+
+    if (qText.includes(searchTerm) || aText.includes(searchTerm)) {
+      item.classList.remove("hidden");
+      item.classList.add("active");
+
+      highlightText(questionEl, searchTerm);
+      highlightText(answerEl, searchTerm);
+
+      matches.push(item);
+    } else {
+      item.classList.add("hidden");
+      item.classList.remove("active");
+    }
+  });
+
+  // Bring matches to top of their section
+  matches.forEach(item => {
+    const section = item.closest(".faq-section");
+    section.appendChild(item);
+  });
+
+  // Show No Results message
+  if (noResultsEl) {
+    noResultsEl.style.display = matches.length === 0 && searchTerm !== ""
+      ? "block"
+      : "none";
+  }
+
+  // Scroll to first match
+  if (matches.length > 0) {
+    matches[0].scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }
+}
+
+</script>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/theme.js"></script>
+  <!-- ===== Universal Back To Top Button (All Pages) ===== -->
+<style>
+  #globalBackToTop {
+    position: fixed;
+    bottom: 90px; /* prevents overlap with chatbot/floating icons */
+    right: 25px;
+    z-index: 9999;
+    display: none;
+    background: #2ecc71;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #globalBackToTop:hover {
+    transform: scale(1.12);
+    background: #27ae60;
+  }
+
+  @media (max-width: 768px) {
+    #globalBackToTop {
+      bottom: 100px; /* better spacing on mobile */
+      right: 18px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+  /* Cursor Trail Effect */
+.cursor-trail {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: rgba(46, 204, 113, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: fadeOut 0.6s linear forwards;
+  z-index: 9999;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3) translate(-50%, -50%);
+  }
+}
+</style>
+
+<script>
+  (function () {
+    const btn = document.getElementById("globalBackToTop");
+
+    // Show button after scrolling down
+    window.addEventListener("scroll", function () {
+      if (window.scrollY > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
+
+    // Smooth scroll to top on click
+    btn.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  })();
+</script>
+<!-- ===== End Back To Top Button ===== -->
+
+<script>
+document.addEventListener("mousemove", function (e) {
+  createTrail(e);
+});
+
+function createTrail(e) {
+  const dot = document.createElement("div");
+  dot.className = "cursor-trail";
+
+  dot.style.left = e.clientX + "px";
+  dot.style.top = e.clientY + "px";
+
+  document.body.appendChild(dot);
+
+  setTimeout(() => {
+    dot.remove();
+  }, 600);
+}
+</script>
+
+</body>
+
+</html>

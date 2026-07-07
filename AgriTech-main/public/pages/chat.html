@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy"
+content="
+default-src 'self';
+script-src 'self' 'unsafe-inline' https://generativelanguage.googleapis.com;
+style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+font-src https://cdnjs.cloudflare.com;
+img-src 'self' data: https:;
+connect-src 'self' http://localhost:3000;
+">
+
+    <title>AgriTech Assistant - Smart Farming Solutions</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <!-- Prevent theme flash on page load -->
+    <script>
+      (function () {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+      })();
+    </script>
+
+    <link rel="stylesheet" href="/css/chat.css" />
+    <link rel="stylesheet" href="/css/theme.css" />
+    <style>
+      /* Added styles for light green color on specified text */
+
+      .chat-header h2 {
+        color: #22c55e !important; /* Force AgriTech Green */
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3); /* Adds depth for better readability */
+      }
+
+      .logo h1 {
+        color: var(--light-green); /* Light green for AgriBot */
+      }
+
+      /* --- NEW STYLES FOR IMAGE UPLOAD --- */
+      #image-preview-container {
+        display: none;
+        padding: 10px;
+        background: rgba(34, 197, 94, 0.1);
+        border-radius: 8px;
+        margin: 0 20px 10px 20px;
+        align-items: center;
+        gap: 15px;
+        border: 1px dashed #22c55e;
+      }
+      .preview-wrapper { position: relative; display: inline-block; }
+      .preview-wrapper img { max-height: 60px; border-radius: 5px; border: 2px solid #22c55e; }
+      .remove-img {
+        position: absolute; top: -8px; right: -8px;
+        background: #ef4444; color: white; border: none;
+        border-radius: 50%; width: 20px; height: 20px;
+        cursor: pointer; font-size: 12px; display: flex;
+        align-items: center; justify-content: center;
+      }
+      .camera-btn {
+        background: none; border: none; color: #22c55e;
+        cursor: pointer; font-size: 1.3rem; margin-right: 10px;
+        transition: transform 0.2s;
+      }
+      .camera-btn:hover { transform: scale(1.1); }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="nav-left" style="display: flex; align-items: center; gap: 1.5rem;">
+          <button class="nav-back" id="backToHomeBtn">
+            <i class="fas fa-arrow-left"></i> Back to Home
+          </button>
+          <div class="logo">
+            <i class="fas fa-seedling"></i>
+            <h1>AgriBot</h1>
+          </div>
+        </div>
+        
+        <div class="nav-right" style="display: flex; align-items: center;">
+          <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <mask id="moon-mask">
+                <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+              </mask>
+              <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+              <g class="sun-rays" stroke="currentColor">
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </g>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="recent-predictions"></div>
+      <div id="chat-container">
+        <div class="chat-header">
+          <i class="fas fa-robot"></i>
+          <h2>Ask me about AgriTech features or agriculture support</h2>
+          <button type="button" id="clear-chat-btn" class="theme-toggle" aria-label="Clear chat history" title="Clear chat history" style="margin-left: auto; width: auto; min-width: 44px; padding: 0 14px; border-radius: 999px;">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+
+        <div id="chat-window">
+          <div class="welcome-message">
+            <h3><i class="fas fa-leaf"></i> Welcome to AgriTech Assistant!</h3>
+            <p>
+              I'm powered by Google Gemini AI to help with all your farming
+              questions and guide you through AgriTech platform features.
+            </p>
+
+            <div class="suggestions">
+              <div class="suggestion">What can I do on AgriTech?</div>
+              <div class="suggestion">How to use crop recommendation?</div>
+              <div class="suggestion">Best crops for this season?</div>
+              <div class="suggestion">Organic pest control methods</div>
+              <div class="suggestion">Water conservation techniques</div>
+              <div class="suggestion">Soil health improvement</div>
+              <div class="suggestion">How to use crop disease detection?</div>
+              <div class="suggestion">How does labour scheduling work?</div>
+              <div class="suggestion">How to access farmer forum?</div>
+              <div class="suggestion">How to check weather updates?</div>
+              <div class="suggestion">Government schemes for farmers</div>
+              <div class="suggestion">Fertilizer recommendations</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="image-preview-container">
+          <div class="preview-wrapper">
+            <img id="image-preview" src="">
+            <button type="button" class="remove-img" onclick="clearImage()">×</button>
+          </div>
+          <span style="font-size: 0.85rem; color: #22c55e;">Image attached for AI analysis</span>
+        </div>
+
+        <form id="chat-form">
+          <div class="input-container" style="display: flex; align-items: center;">
+            <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleImagePreview(event)">
+            <button type="button" class="camera-btn" onclick="document.getElementById('image-input').click()" title="Upload image for diagnosis">
+              <i class="fas fa-camera"></i>
+            </button>
+
+            <textarea
+              id="chat-input"
+              placeholder="Ask about crops or upload a photo..."
+              aria-label="Chat input"
+              rows="1"
+              required
+            ></textarea>
+            
+          </div>
+          <button type="submit" id="send-button">
+            <i class="fas fa-paper-plane"></i> Send
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <script>
+      let selectedImageBase64 = null;
+
+      function handleImagePreview(event) {
+          const file = event.target.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  document.getElementById('image-preview').src = e.target.result;
+                  document.getElementById('image-preview-container').style.display = 'flex';
+                  // Store base64 data for Python backend
+                  window.selectedImageBase64 = e.target.result.split(',')[1];
+              };
+              reader.readAsDataURL(file);
+          }
+      }
+
+      function clearImage() {
+          selectedImageBase64 = null;
+          document.getElementById('image-input').value = '';
+          document.getElementById('image-preview-container').style.display = 'none';
+      }
+    </script>
+
+    <script src="/js/json-chatbot.js"></script>
+    <script src="/js/chat.js"></script>
+    <script src="/js/theme.js"></script>
+
+    <style>
+      .social-media {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+      .social-media a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+      }
+      .social-media a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      } 
+       /* --- Cursor Trail Container --- */
+      .circle-container {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 999999;
+      }
+
+      /* --- Individual Trail Circles --- */
+      .cursor-circle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #ff8c00;
+        box-shadow: 0 0 15px rgba(255, 140, 0, 0.7);
+        transform: translate(-50%, -50%);
+        will-change: transform;
+        mix-blend-mode: screen;
+        transition: transform 0.1s ease-out;
+      }
+
+      /* --- The Leading "Head" Circle --- */
+      .cursor-circle:first-child {
+        width: 14px;
+        height: 14px;
+        background-color: #ffcc00;
+        box-shadow:
+          0 0 20px #ff8c00,
+          0 0 40px rgba(255, 140, 0, 0.5);
+      }
+
+      /* --- Interaction States --- */
+      .cursor-clicking {
+        transform: translate(-50%, -50%) scale(2.5) !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 30px #ffffff !important;
+      }
+
+      .cursor-hovering {
+        transform: translate(-50%, -50%) scale(1.8);
+        background-color: #22c55e; /* AgriTech green */
+        box-shadow: 0 0 20px #22c55e;
+      }
+    </style>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="/images/logo.png" alt="AgriTech logo" class="footer-logo" />
+          <h3>AgriTech</h3>
+          <p>Empowering India's Farming Future</p>
+          <div class="social-media">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a
+              href="https://github.com/omroy07"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View our GitHub repositories"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.linkedin.com/in/om-roy-3b809628a/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Connect with us on LinkedIn"
+              ><i class="fab fa-linkedin"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/pages/index.html">Home</a></li>
+            <li><a href="/pages/main.html">Dashboard</a></li>
+            <li><a href="/pages/misc/feed-back.html">Feedback</a></li>
+            <li><a href="/pages/chat.html">AI Assistant</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Tools</h4>
+          <ul>
+            <li>
+              <a href="Crop Recommendation/templates/index.html"
+                >Crop Recommendation</a
+              >
+            </li>
+            <li>
+              <a href="Crop Yield Prediction/crop_yield_app/templates/index.html"
+                >Yield Prediction</a
+              >
+            </li>
+            <li>
+              <a href="Disease prediction/template/index.html"
+                >Disease Detector</a
+              >
+            </li>
+            <li>
+              <a href="Crop_Planning/templates/cropplan.html">Crop Planner</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">© <span id="current-year">2026</span> AgriTech • Made for farmers</div>
+    </footer>
+     <!-- Cursor Trail -->
+<div class="circle-container" id="cursorTrail"></div>
+    <script>
+  document.getElementById("backToHomeBtn").addEventListener("click", () => {
+    // Preserve theme
+    const currentTheme =
+      document.documentElement.getAttribute("data-theme") || "light";
+    localStorage.setItem("theme", currentTheme);
+
+    // Preserve scroll position of home page
+    localStorage.setItem("homeScrollY", window.scrollY);
+
+    // Navigate back
+    window.location.href = "/pages/index.html";
+  });
+  // --- Cursor Trailing Effect ---
+const container = document.getElementById('cursorTrail');
+const circleCount = 12;
+const circles = [];
+
+let mouseX = 0;
+let mouseY = 0;
+
+// Create circles
+for (let i = 0; i < circleCount; i++) {
+    const circle = document.createElement('div');
+    circle.classList.add('cursor-circle');
+    container.appendChild(circle);
+    circles.push({ el: circle, x: 0, y: 0 });
+}
+
+// Mouse move
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// Click effects
+document.addEventListener('mousedown', () => {
+    circles.forEach(c => c.el.classList.add('cursor-clicking'));
+});
+document.addEventListener('mouseup', () => {
+    circles.forEach(c => c.el.classList.remove('cursor-clicking'));
+});
+
+// Hover effects on interactive elements
+document.addEventListener('mouseover', (e) => {
+    if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.add('cursor-hovering'));
+    }
+});
+document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.remove('cursor-hovering'));
+    }
+});
+
+// Animate trailing effect
+function animateCursor() {
+    let x = mouseX;
+    let y = mouseY;
+
+    circles.forEach((circle) => {
+        circle.x += (x - circle.x) * 0.25;
+        circle.y += (y - circle.y) * 0.25;
+
+        circle.el.style.left = circle.x + 'px';
+        circle.el.style.top = circle.y + 'px';
+
+        x = circle.x;
+        y = circle.y;
+    });
+
+    requestAnimationFrame(animateCursor);
+}
+animateCursor();
+</script>
+<!-- ===== Universal Back To Top Button (All Pages) ===== -->
+<style>
+  #globalBackToTop {
+    position: fixed;
+    bottom: 20px; /* prevents overlap with chatbot/floating icons */
+    right: 25px;
+    z-index: 9999;
+    display: none;
+    background: #2ecc71;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #globalBackToTop:hover {
+    transform: scale(1.12);
+    background: #27ae60;
+  }
+
+  @media (max-width: 768px) {
+    #globalBackToTop {
+      bottom: 50px;
+      right: 18px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+</style>
+
+<button id="globalBackToTop" title="Back to Top">↑</button>
+
+<script>
+  (function () {
+    const btn = document.getElementById("globalBackToTop");
+
+    // Show button after scrolling down
+    window.addEventListener("scroll", function () {
+      if (window.scrollY > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
+
+    // Smooth scroll to top on click
+    btn.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  })();
+</script>
+<!-- ===== End Back To Top Button ===== -->
+
+  </body>
+</html>

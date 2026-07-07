@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Crop Monitoring - AgriTech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Libertinus+Serif:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/logo.png">
+
+    <!-- Prevent theme flash on page load -->
+    <script>
+        (function () {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+        })();
+    </script>
+
+    <style>
+        :root {
+            /* Dark Theme Variables */
+            --bg-primary: #01133c;
+            --bg-secondary: #142a4f;
+            --bg-tertiary: #1e3d68;
+            --text-primary: #ffffff;
+            --text-secondary: #d2deed;
+            --text-muted: #d1d4d8;
+            --border-color: #334155;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.4);
+            --shadow-heavy: rgba(0, 0, 0, 0.6);
+            --accent-green-light: #03d445;
+            --accent-green-dark: #01af2a;
+            --accent-success: #18b451;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-info: #3b82f6;
+            --primary-blue: #2196F3;
+            --text-secondary: #c1c0c0;
+        }
+
+        [data-theme="light"] {
+            /* Light Theme Variables */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-heavy: rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #065f46 100%);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] body {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        [data-theme="light"] .top-nav {
+            background: rgba(255, 255, 255, 0.9) !important;
+            /* No longer black! */
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        [data-theme="light"] .nav-back,
+        [data-theme="light"] .nav-left span {
+            color: #1e293b !important;
+            /* High-contrast charcoal text */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav-back:hover {
+            background: var(--accent-green-light);
+            color: white;
+        }
+
+        /* Animated Theme Toggle  */
+        .theme-toggle {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color, #d1d5db);
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        color: var(--text-primary, #111827);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        flex-shrink: 0;
+        align-self: center;
+        box-shadow: none !important;
+        }
+
+        .theme-toggle:hover {
+        background-color: var(--bg-secondary, #f3f4f6);
+        border-color: #16a34a;
+        }
+
+        [data-theme="light"] .theme-toggle:hover {
+        background: rgba(0, 0, 0, 0.06) !important;
+        border-color: #16a34a !important;
+        }
+
+        .theme-icon {
+        width: 22px;
+        height: 22px;
+        overflow: visible;
+        transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        display: block;
+        }
+
+        .sun-core {
+        transform-origin: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sun-rays {
+        transform-origin: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+        }
+
+        .moon-bite {
+        transform-origin: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Light mode → Sun */
+        [data-theme="light"] .theme-icon {
+        transform: rotate(0deg);
+        }
+
+        [data-theme="light"] .sun-core {
+        transform: scale(1);
+        }
+
+        [data-theme="light"] .sun-rays {
+        transform: scale(1.1);
+        opacity: 1;
+        }
+
+        [data-theme="light"] .moon-bite {
+        transform: translate(20px, -20px);
+        }
+
+        /* Dark mode → Moon */
+        [data-theme="dark"] .theme-icon {
+        transform: rotate(-10deg);
+        }
+
+        [data-theme="dark"] .sun-core {
+        transform: scale(1.4);
+        }
+
+        [data-theme="dark"] .sun-rays {
+        transform: scale(0.1);
+        opacity: 0;
+        }
+
+        [data-theme="dark"] .moon-bite {
+        transform: translate(5px, -1.5px) scale(0.6);
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 25px var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-family: 'Libertinus Serif', serif;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .dashboard-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .control-btn {
+            background: var(--accent-green-light);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-green-dark);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: var(--accent-success);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px var(--shadow-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px var(--shadow-medium);
+            border-color: var(--accent-green-light);
+        }
+
+        /* BOUNCY ANIMATION FOR LIGHT MODE FEATURE CARDS */
+        [data-theme="light"] .feature-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            /* Premium elastic bounce feel */
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        [data-theme="light"] .feature-card:hover {
+            /* Lift 12px and Scale 1.05 as per requirements */
+            transform: translateY(-12px) scale(1.05);
+            /* Subtle depth on light background */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: #10b981;
+            /* Matches accent green */
+            cursor: pointer;
+        }
+
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--accent-green-light);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-family: 'Libertinus Serif', serif;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: var(--accent-success);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .monitoring-dashboard {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px var(--shadow-light);
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h2 {
+            font-family: 'Libertinus Serif', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+            color: var(--text-secondary);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--accent-green-light), var(--accent-green-dark));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-card:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 12px 30px var(--shadow-medium);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .metric-trend {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+
+        .trend-up {
+            color: #22c55e;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        .trend-stable {
+            color: #f59e0b;
+        }
+
+        .chart-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chart-tab {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chart-tab.active {
+            background: var(--accent-green-light);
+            color: white;
+        }
+
+        .chart-content {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 120px;
+            background: linear-gradient(to right,
+                    var(--accent-green-light) 0%,
+                    var(--accent-success) 25%,
+                    var(--accent-warning) 50%,
+                    var(--accent-success) 75%,
+                    var(--accent-green-light) 100%);
+            clip-path: polygon(0 80%, 10% 60%, 20% 70%, 30% 40%, 40% 50%, 50% 30%, 60% 45%, 70% 20%, 80% 35%, 90% 15%, 100% 25%, 100% 100%, 0 100%);
+            opacity: 0.7;
+        }
+
+        .weather-widget {
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .weather-item {
+            text-align: center;
+            padding: 15px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .weather-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--shadow-light);
+        }
+
+        .weather-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--accent-green-light);
+        }
+
+        .alerts-panel {
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Light Mode Styling for Alerts Panel (Issue #1530 Fix) */
+        [data-theme="light"] .alerts-panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--accent-warning);
+        }
+
+        .alert-item.danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .alert-item.success {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid var(--accent-success);
+        }
+
+        /* Light mode alert card refinement */
+        [data-theme="light"] .alert-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left-width: 5px;
+            transition: all 0.25s ease;
+        }
+
+        [data-theme="light"] .alert-item.warning {
+            background: #fffbeb;
+            /* warm soft amber */
+            border-left-color: var(--accent-warning);
+        }
+
+        [data-theme="light"] .alert-item.danger {
+            background: #fef2f2;
+            /* soft red tint */
+            border-left-color: var(--accent-danger);
+        }
+
+        [data-theme="light"] .alert-item.success {
+            background: #f0fdf4;
+            /* soft green tint */
+            border-left-color: var(--accent-success);
+        }
+
+        /* Subtle hover polish for alerts (both themes) */
+        .alert-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px var(--shadow-light);
+        }
+
+
+        .alert-icon {
+            font-size: 1.5rem;
+        }
+
+        /* --- FIXED: CONTRAST AND VISIBILITY FOR ALERTS --- */
+        /* --- THEME-AWARE ALERT TEXT (Fix for Issue #1530) --- */
+        .alert-content h4 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .alert-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            opacity: 1;
+        }
+
+        .alert-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+
+        .sensor-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        /* Enhanced Sensor Card Animation (Subtle & Lightweight) */
+        .sensor-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-success);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+
+            /* NEW: smooth entrance + hover feel */
+            opacity: 0;
+            transform: translateY(15px) scale(0.98);
+            animation: sensorFadeIn 0.6s ease forwards;
+
+            transition: transform 0.32s cubic-bezier(0.2, 1.6, 0.3, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+            will-change: transform, box-shadow;
+
+
+        }
+
+
+        .sensor-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, var(--accent-success) 0%, transparent 70%);
+            opacity: 0.05;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.05;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.1;
+            }
+        }
+
+        /* Subtle fade-in animation for sensor cards */
+        @keyframes sensorFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Spring jump effect for hover (visible but still professional) */
+        @keyframes sensorJump {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+
+            40% {
+                transform: translateY(-14px) scale(1.04);
+            }
+
+            70% {
+                transform: translateY(-8px) scale(1.02);
+            }
+
+            100% {
+                transform: translateY(-10px) scale(1.03);
+            }
+        }
+
+
+
+        .sensor-item.warning {
+            border-left-color: var(--accent-warning);
+        }
+
+        .sensor-item.warning::before {
+            background: radial-gradient(circle, var(--accent-warning) 0%, transparent 70%);
+        }
+
+        .sensor-item.critical {
+            border-left-color: var(--accent-danger);
+        }
+
+        .sensor-item.critical::before {
+            background: radial-gradient(circle, var(--accent-danger) 0%, transparent 70%);
+        }
+
+        /* Stronger hover lift for sensor cards */
+        .sensor-item:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 18px 35px rgba(15, 23, 42, 0.18);
+
+            transition: transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1),
+                box-shadow 0.25s ease;
+        }
+
+
+        /* Status-colored border on hover (matches left accent color) */
+        .sensor-item:hover {
+            border-color: var(--accent-success);
+        }
+
+        /* Warning card → orange border on hover */
+        .sensor-item.warning:hover {
+            border-color: var(--accent-warning);
+        }
+
+        /* Critical card → red border on hover */
+        .sensor-item.critical:hover {
+            border-color: var(--accent-danger);
+        }
+
+        .sensor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .sensor-header strong {
+            color: var(--text-primary);
+        }
+
+        .sensor-item p {
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-success);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .status-indicator.warning {
+            background: var(--accent-warning);
+        }
+
+        .status-indicator.critical {
+            background: var(--accent-danger);
+        }
+
+        /* Gentle status glow based on sensor state */
+        .sensor-item:not(.warning):not(.critical) {
+            box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+        }
+
+        .sensor-item:not(.warning):not(.critical):hover {
+            box-shadow: 0 18px 35px rgba(34, 197, 94, 0.18);
+        }
+
+        .sensor-item.warning:hover {
+            box-shadow: 0 18px 35px rgba(245, 158, 11, 0.22);
+        }
+
+        .sensor-item.critical:hover {
+            box-shadow: 0 18px 35px rgba(239, 68, 68, 0.22);
+        }
+
+
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.98);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-color);
+            padding: 20px;
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        [data-theme="light"] .settings-panel {
+            background: rgba(248, 250, 252, 0.98);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .settings-panel h3,
+        [data-theme="light"] .settings-panel h4 {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .settings-panel .setting-item span {
+            color: var(--text-secondary);
+        }
+
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-header button {
+            cursor: pointer;
+        }
+
+
+        .settings-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-group h4 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-toggle {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: var(--bg-tertiary);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .setting-toggle.active {
+            background: var(--accent-green-light);
+        }
+
+        .setting-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .setting-toggle.active::before {
+            transform: translateX(25px);
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .export-btn {
+            background: var(--accent-info);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* LIGHT MODE FIXES */
+        [data-theme="light"] .settings-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-color);
+        }
+
+        [data-theme="light"] .settings-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="light"] .settings-group h4 {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .setting-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Toggle switch */
+        [data-theme="light"] .setting-toggle {
+            background: #e2e8f0;
+            /* soft gray */
+        }
+
+        [data-theme="light"] .setting-toggle.active {
+            background: var(--accent-green-light);
+        }
+
+        [data-theme="light"] .setting-toggle::before {
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Export buttons */
+        [data-theme="light"] .export-btn {
+            background: var(--accent-info);
+            color: #ffffff;
+        }
+
+        [data-theme="light"] .export-btn:hover {
+            background: #2563eb;
+        }
+
+        .scroll-btn {
+            position: fixed;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #16a34a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .scroll-btn:hover {
+            transform: scale(1.1);
+            background: #15803d;
+        }
+
+        .scroll-btn {
+            bottom: 20px;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-btn.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg,
+                    var(--bg-secondary),
+                    var(--bg-tertiary));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px var(--shadow-heavy);
+            max-width: 900px;
+            margin: 3rem auto;
+            /* Interactive Bounce for the whole section */
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease !important;
+        }
+
+        .cta-section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Heading */
+        .cta-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        /* Subtitle */
+        .cta-section p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        /* Light Mode visibility fixes for CTA (Bug Fix Persistence) */
+        [data-theme="light"] .cta-section h2 {
+            color: #1e293b !important;
+        }
+
+        [data-theme="light"] .cta-section p {
+            color: #475569 !important;
+        }
+
+        /* Buttons container (optional wrapper) */
+        .cta-section .cta-button {
+            appearance: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 0.85rem 1.75rem;
+            margin: 0.4rem;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg,
+                    var(--accent-green-light),
+                    var(--accent-green-dark));
+            box-shadow: 0 10px 20px var(--shadow-medium);
+            /* Bouncy timing logic */
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.3s ease,
+                background 0.3s ease !important;
+        }
+
+        /* Unique Hover Glows */
+        .cta-section .cta-button:nth-child(3):hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px rgba(34, 197, 94, 0.4);
+            /* Green Glow */
+        }
+
+        /* Demo Button Unique Identity */
+        .cta-section .cta-button:nth-child(4) {
+            background: linear-gradient(135deg,
+                    var(--accent-info),
+                    var(--primary-blue));
+        }
+
+        .cta-section .cta-button:nth-child(4):hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+            /* Blue Glow */
+        }
+
+        /* Sales Button Unique Identity */
+        .cta-section .cta-button:nth-child(5) {
+            background: linear-gradient(135deg,
+                    var(--accent-success),
+                    var(--accent-green-dark));
+        }
+
+        .cta-section .cta-button:nth-child(5):hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+            /* Success Glow */
+        }
+
+        /* Active / click */
+        .cta-section .cta-button:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .cta-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.6rem;
+            }
+
+            .cta-section .cta-button {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+
+        .cta-section h2 {
+            color: #ffffff !important;
+        }
+
+        .cta-section p {
+            color: #e5e7eb !important;
+        }
+
+
+
+        .cta-button {
+            background: var(--accent-green-light);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--shadow-medium);
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--accent-success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            margin-left: 10px;
+            line-height: 1;
+            opacity: 0.9;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.warning {
+            background: var(--accent-warning);
+        }
+
+        .notification.danger {
+            background: var(--accent-danger);
+        }
+
+        .notification.info {
+            background: var(--accent-info);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .top-nav {
+                position: static;
+                margin-bottom: 1rem;
+            }
+
+            .settings-panel {
+                width: 100vw;
+                right: -100vw;
+            }
+
+            .dashboard-controls {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .control-btn {
+                flex-shrink: 0;
+            }
+
+            .chart-tabs {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+            }
+
+            .chart-tab {
+                padding: 6px 10px;
+                white-space: nowrap;
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--accent-green-dark);
+            border-top: 4px solid var(--accent-green-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        [data-theme="dark"] .header::before {
+            opacity: 0.3;
+        }
+
+        /* --- ADDED BOUNCY HOVER WITH INDIVIDUAL COLORS --- */
+        /* Targets all feature cards for the core bounce logic */
+        .features-grid .feature-card {
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease !important;
+        }
+
+        /* Card 1: Environmental Monitoring - Blue Theme */
+        .features-grid .feature-card:nth-child(1):hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: #3b82f6 !important;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.35) !important;
+        }
+
+        .features-grid .feature-card:nth-child(1):hover .feature-icon i {
+            color: #3b82f6 !important;
+        }
+
+        /* Card 2: IoT Sensor Network - Purple Theme */
+        .features-grid .feature-card:nth-child(2):hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: #a855f7 !important;
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.35) !important;
+        }
+
+        .features-grid .feature-card:nth-child(2):hover .feature-icon i {
+            color: #a855f7 !important;
+        }
+
+        /* Card 3: Data Analytics - Teal/Green Theme */
+        .features-grid .feature-card:nth-child(3):hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: #03d445 !important;
+            box-shadow: 0 20px 40px rgba(3, 212, 69, 0.35) !important;
+        }
+
+        .features-grid .feature-card:nth-child(3):hover .feature-icon i {
+            color: #03d445 !important;
+        }
+
+
+        /* --- START OF CTA INTERACTIVE ENHANCEMENTS --- */
+
+        /* 1. High-Contrast Emerald Gradient Heading for Light Mode */
+        body[data-theme="light"] .cta-section h2 {
+            background: linear-gradient(135deg, #064e3b 0%, #10b981 100%) !important;
+
+            /* Standard property (fixes VS Code warning) */
+            background-clip: text !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            font-weight: 800 !important;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+        }
+
+
+        /* 2. Enhanced Subtitle Visibility */
+        [data-theme="light"] .cta-section p {
+            color: #334155 !important;
+            /* Deep charcoal for perfect readability */
+            font-weight: 600;
+        }
+
+        /* 3. Glassmorphism & Bouncy Lift for the CTA Box */
+        [data-theme="light"] .cta-section {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.4s ease !important;
+        }
+
+        /* 4. Deep Shadow on Hover for Interest */
+        [data-theme="light"] .cta-section:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+        }
+
+        /* 5. Button Interaction Polish */
+        [data-theme="light"] .cta-section .cta-button:hover {
+            transform: scale(1.1) translateY(-3px) !important;
+            box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4) !important;
+        }
+
+        /* --- END OF CTA INTERACTIVE ENHANCEMENTS --- */
+        /* --- Cursor Trail Container --- */
+        .circle-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 999999;
+        }
+
+        /* --- Individual Trail Circles --- */
+        .cursor-circle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ff8c00;
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.7);
+            transform: translate(-50%, -50%);
+            will-change: transform;
+            mix-blend-mode: screen;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* --- The Leading "Head" Circle --- */
+        .cursor-circle:first-child {
+            width: 14px;
+            height: 14px;
+            background-color: #ffcc00;
+            box-shadow:
+                0 0 20px #ff8c00,
+                0 0 40px rgba(255, 140, 0, 0.5);
+        }
+
+        /* --- Interaction States --- */
+        .cursor-clicking {
+            transform: translate(-50%, -50%) scale(2.5) !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 30px #ffffff !important;
+        }
+
+        .cursor-hovering {
+            transform: translate(-50%, -50%) scale(1.8);
+            background-color: #22c55e;
+            /* AgriTech green */
+            box-shadow: 0 0 20px #22c55e;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+        background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="container">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="/pages/index.html" class="nav-back">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="control-btn" onclick="toggleSettings()">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+                <!-- Animated Sun/Moon Toggle -->
+                <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+                    aria-label="Switch to dark mode">
+                    <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <mask id="moon-mask">
+                            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                            <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+                        </mask>
+                        <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+                        <g class="sun-rays" stroke="currentColor">
+                            <line x1="12" y1="1" x2="12" y2="3" />
+                            <line x1="12" y1="21" x2="12" y2="23" />
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                            <line x1="1" y1="12" x2="3" y2="12" />
+                            <line x1="21" y1="12" x2="23" y2="12" />
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                        </g>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-seedling"></i> Smart Crop Monitoring</h1>
+                <p>Advanced IoT-powered crop monitoring system for precision agriculture and maximum yield optimization
+                </p>
+            </div>
+        </div>
+
+        <!-- Why This Crop Explanation Cards -->
+        <section class="why-crop-section" style="margin-top:2rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <h2 style="color:var(--text-primary);margin:0;">Why This Crop?</h2>
+                <div style="margin-left:auto;">
+                    <select id="whyCropFilter" aria-label="Filter crop explanations" style="padding:8px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);">
+                        <option value="all">Show all crops</option>
+                        <option value="wheat">Wheat</option>
+                        <option value="rice">Rice</option>
+                        <option value="maize">Maize</option>
+                        <option value="soybean">Soybean</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="features-grid" id="whyCropCards" style="margin-top:1rem;">
+                <div class="feature-card" data-crop="wheat">
+                    <div class="feature-icon"><i class="fas fa-seedling"></i></div>
+                    <h3>Wheat</h3>
+                    <p>Wheat performs well in well-drained loamy soils; requires moderate rainfall. Recommended for cooler seasons and rotational cropping with legumes to improve soil nitrogen.</p>
+                </div>
+
+                <div class="feature-card" data-crop="rice">
+                    <div class="feature-icon"><i class="fas fa-water"></i></div>
+                    <h3>Rice</h3>
+                    <p>Rice thrives in flooded or saturated conditions; needs high water availability and warm temperatures. Suitable for paddy fields and irrigated plains.</p>
+                </div>
+
+                <div class="feature-card" data-crop="maize">
+                    <div class="feature-icon"><i class="fas fa-fire-alt"></i></div>
+                    <h3>Maize</h3>
+                    <p>Maize prefers fertile, well-drained soils and a warm growing season. It is water-responsive and benefits from balanced N-P-K fertilization.</p>
+                </div>
+
+                <div class="feature-card" data-crop="soybean">
+                    <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Soybean</h3>
+                    <p>Soybean fixes atmospheric nitrogen and is an excellent rotational crop. Prefers warm conditions and moderately fertile soils.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="dashboard-controls">
+            <button class="control-btn active" data-view="overview" onclick="switchView('overview')">
+                <i class="fas fa-tachometer-alt"></i> Overview
+            </button>
+            <button class="control-btn" data-view="sensors" onclick="switchView('sensors')">
+                <i class="fas fa-satellite-dish"></i> Sensors
+            </button>
+            <button class="control-btn" data-view="weather" onclick="switchView('weather')">
+                <i class="fas fa-cloud-sun"></i> Weather
+            </button>
+            <button class="control-btn" data-view="alerts" onclick="switchView('alerts')">
+                <i class="fas fa-bell"></i> Alerts <span id="alertCount" class="alert-badge">3</span>
+            </button>
+            <button class="control-btn" onclick="exportData()">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <button class="control-btn" onclick="refreshData()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+
+        <div class="weather-widget" id="weatherWidget">
+            <div class="weather-item">
+                <div class="weather-icon"><i class="fas fa-sun"></i></div>
+                <h4 style="color: var(--text-primary);">Sunny</h4>
+                <p style="color: var(--text-muted);">28°C</p>
+            </div>
+            <div class="weather-item">
+                <div class="weather-icon"><i class="fas fa-tint"></i></div>
+                <h4 style="color: var(--text-primary);">Humidity</h4>
+                <p style="color: var(--text-muted);">65%</p>
+            </div>
+            <div class="weather-item">
+                <div class="weather-icon"><i class="fas fa-wind"></i></div>
+                <h4 style="color: var(--text-primary);">Wind</h4>
+                <p style="color: var(--text-muted);">12 km/h</p>
+            </div>
+            <div class="weather-item">
+                <div class="weather-icon"><i class="fas fa-eye"></i></div>
+                <h4 style="color: var(--text-primary);">Visibility</h4>
+                <p style="color: var(--text-muted);">10 km</p>
+            </div>
+        </div>
+
+        <div class="view-content" id="overviewView">
+            <div class="monitoring-dashboard">
+                <div class="dashboard-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Live Monitoring Dashboard</h2>
+                    <p>Real-time data from your field sensors - Last updated: <span id="lastUpdate">Just now</span></p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-trend trend-up" id="soilTrend">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="metric-value" id="soilMoisture">72</div>
+                        <div class="metric-label">Soil Moisture (%)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-trend trend-stable" id="tempTrend">
+                            <i class="fas fa-minus"></i>
+                        </div>
+                        <div class="metric-value" id="temperature">24</div>
+                        <div class="metric-label">Temperature (°C)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-trend trend-down" id="humidityTrend">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="metric-value" id="humidity">68</div>
+                        <div class="metric-label">Humidity (%)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-trend trend-up" id="lightTrend">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="metric-value" id="lightIntensity">850</div>
+                        <div class="metric-label">Light (lux)</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-tabs">
+                        <button class="chart-tab active" onclick="switchChart('temperature')">Temperature</button>
+                        <button class="chart-tab" onclick="switchChart('moisture')">Soil Moisture</button>
+                        <button class="chart-tab" onclick="switchChart('light')">Light Intensity</button>
+                        <button class="chart-tab" onclick="switchChart('humidity')">Humidity</button>
+                    </div>
+                    <div class="chart-content">
+                        <div class="chart-line" id="chartLine"></div>
+                        <div style="color: var(--text-muted); text-align: center;">
+                            <i class="fas fa-chart-area"
+                                style="font-size: 3rem; color: var(--accent-green-light); margin-bottom: 20px;"></i>
+                            <p>Real-time <span id="currentChart">temperature</span> data visualization</p>
+                            <p style="font-size: 0.9rem; opacity: 0.8;">Interactive charts showing trends and patterns
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-thermometer-half"></i>
+                    </div>
+                    <h3>Environmental Monitoring</h3>
+                    <p>Real-time tracking of environmental conditions affecting your crops</p>
+                    <ul class="feature-list">
+                        <li>Soil temperature and moisture</li>
+                        <li>Air temperature and humidity</li>
+                        <li>Light intensity measurement</li>
+                        <li>Wind speed and direction</li>
+                        <li>Rainfall and irrigation tracking</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-satellite-dish"></i>
+                    </div>
+                    <h3>IoT Sensor Network</h3>
+                    <p>Comprehensive sensor deployment across your farmland</p>
+                    <ul class="feature-list">
+                        <li>Wireless sensor nodes</li>
+                        <li>Solar-powered stations</li>
+                        <li>Long-range communication</li>
+                        <li>Weather-resistant design</li>
+                        <li>Easy installation and maintenance</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Data Analytics</h3>
+                    <p>Advanced analytics and predictive insights for better decisions</p>
+                    <ul class="feature-list">
+                        <li>Crop growth prediction models</li>
+                        <li>Disease and pest alerts</li>
+                        <li>Irrigation optimization</li>
+                        <li>Harvest timing recommendations</li>
+                        <li>Historical data analysis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-content" id="sensorsView" style="display: none;">
+            <div class="sensor-status">
+                <div class="sensor-item">
+                    <div class="sensor-header">
+                        <strong>Field Sensor #1</strong>
+                        <div class="status-indicator"></div>
+                    </div>
+                    <p>Location: North Field (12.3°N, 77.6°E)</p>
+                    <p>Last Update: <span id="sensor1Time">2 minutes ago</span></p>
+                    <p>Status: <span style="color: var(--accent-success);">Operational</span></p>
+                    <p>Battery: <span id="sensor1Battery">89%</span></p>
+                    <p>Signal Strength: <span id="sensor1Signal">Strong</span></p>
+                </div>
+
+                <div class="sensor-item warning">
+                    <div class="sensor-header">
+                        <strong>Field Sensor #2</strong>
+                        <div class="status-indicator warning"></div>
+                    </div>
+                    <p>Location: South Field (12.2°N, 77.5°E)</p>
+                    <p>Last Update: <span id="sensor2Time">5 minutes ago</span></p>
+                    <p>Status: <span style="color: var(--accent-warning);">Low soil moisture detected</span></p>
+                    <p>Battery: <span id="sensor2Battery">76%</span></p>
+                    <p>Signal Strength: <span id="sensor2Signal">Moderate</span></p>
+                </div>
+
+                <div class="sensor-item">
+                    <div class="sensor-header">
+                        <strong>Weather Station</strong>
+                        <div class="status-indicator"></div>
+                    </div>
+                    <p>Location: Central Hub (12.25°N, 77.55°E)</p>
+                    <p>Last Update: <span id="weatherTime">1 minute ago</span></p>
+                    <p>Status: <span style="color: var(--accent-success);">All systems active</span></p>
+                    <p>Battery: <span id="weatherBattery">95%</span></p>
+                    <p>Signal Strength: <span id="weatherSignal">Excellent</span></p>
+                </div>
+
+                <div class="sensor-item critical">
+                    <div class="sensor-header">
+                        <strong>Field Sensor #3</strong>
+                        <div class="status-indicator critical"></div>
+                    </div>
+                    <p>Location: East Field (12.35°N, 77.65°E)</p>
+                    <p>Last Update: <span id="sensor3Time">25 minutes ago</span></p>
+                    <p>Status: <span style="color: var(--accent-danger);">Connection timeout</span></p>
+                    <p>Battery: <span id="sensor3Battery">Unknown</span></p>
+                    <p>Signal Strength: <span id="sensor3Signal">No signal</span></p>
+                </div>
+
+                <div class="sensor-item">
+                    <div class="sensor-header">
+                        <strong>Irrigation Controller</strong>
+                        <div class="status-indicator"></div>
+                    </div>
+                    <p>Location: Main Valve (12.28°N, 77.58°E)</p>
+                    <p>Last Update: <span id="irrigationTime">30 seconds ago</span></p>
+                    <p>Status: <span style="color: var(--accent-success);">Standby mode</span></p>
+                    <p>Battery: <span id="irrigationBattery">N/A (Wired)</span></p>
+                    <p>Signal Strength: <span id="irrigationSignal">Excellent</span></p>
+                </div>
+
+                <div class="sensor-item">
+                    <div class="sensor-header">
+                        <strong>Soil pH Sensor</strong>
+                        <div class="status-indicator"></div>
+                    </div>
+                    <p>Location: West Field (12.27°N, 77.52°E)</p>
+                    <p>Last Update: <span id="phTime">10 minutes ago</span></p>
+                    <p>Status: <span style="color: var(--accent-success);">pH levels normal</span></p>
+                    <p>Battery: <span id="phBattery">82%</span></p>
+                    <p>Signal Strength: <span id="phSignal">Good</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-content" id="weatherView" style="display: none;">
+            <div class="monitoring-dashboard">
+                <div class="dashboard-header">
+                    <h2><i class="fas fa-cloud-sun"></i> Weather Forecast</h2>
+                    <p>7-day weather forecast for optimal crop planning</p>
+                </div>
+
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                    <div class="weather-item" style="padding: 20px;">
+                        <div class="weather-icon"><i class="fas fa-sun" style="color: #f59e0b;"></i></div>
+                        <h4 style="color: var(--text-primary);">Today</h4>
+                        <p style="color: var(--text-muted);">28°C / 18°C</p>
+                        <small style="color: var(--text-muted);">Sunny, 0% rain</small>
+                    </div>
+                    <div class="weather-item" style="padding: 20px;">
+                        <div class="weather-icon"><i class="fas fa-cloud-sun" style="color: #94a3b8;"></i></div>
+                        <h4 style="color: var(--text-primary);">Tomorrow</h4>
+                        <p style="color: var(--text-muted);">26°C / 16°C</p>
+                        <small style="color: var(--text-muted);">Partly cloudy, 10% rain</small>
+                    </div>
+                    <div class="weather-item" style="padding: 20px;">
+                        <div class="weather-icon"><i class="fas fa-cloud-rain" style="color: #3b82f6;"></i></div>
+                        <h4 style="color: var(--text-primary);">Friday</h4>
+                        <p style="color: var(--text-muted);">22°C / 14°C</p>
+                        <small style="color: var(--text-muted);">Light rain, 60% chance</small>
+                    </div>
+                    <div class="weather-item" style="padding: 20px;">
+                        <div class="weather-icon"><i class="fas fa-cloud-sun" style="color: #94a3b8;"></i></div>
+                        <h4 style="color: var(--text-primary);">Saturday</h4>
+                        <p style="color: var(--text-muted);">25°C / 15°C</p>
+                        <small style="color: var(--text-muted);">Partly cloudy, 20% rain</small>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                        <div class="metric-value" id="windSpeed">12</div>
+                        <div class="metric-label">Wind Speed (km/h)</div>
+                    </div>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <div class="metric-value" id="uvIndex">7</div>
+                        <div class="metric-label">UV Index</div>
+                    </div>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                        <div class="metric-value" id="rainfall">2.3</div>
+                        <div class="metric-label">Rainfall (mm)</div>
+                    </div>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <div class="metric-value" id="pressure">1013</div>
+                        <div class="metric-label">Pressure (hPa)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-content" id="alertsView" style="display: none;">
+            <div class="alerts-panel">
+                <h3 style="color: var(--text-primary); margin-bottom: 20px;">
+                    <i class="fas fa-bell"></i> System Alerts & Notifications
+                </h3>
+
+                <div class="alert-item warning">
+                    <i class="fas fa-exclamation-triangle alert-icon" style="color: var(--accent-warning);"></i>
+                    <div class="alert-content">
+                        <h4>Low Soil Moisture Detected</h4>
+                        <p>South Field sensor reports moisture levels below optimal range. Consider irrigation.</p>
+                    </div>
+                    <div class="alert-time">5 min ago</div>
+                </div>
+
+                <div class="alert-item danger">
+                    <i class="fas fa-wifi alert-icon" style="color: var(--accent-danger);"></i>
+                    <div class="alert-content">
+                        <h4>Sensor Connection Lost</h4>
+                        <p>Field Sensor #3 in East Field has lost connection. Check power and network.</p>
+                    </div>
+                    <div class="alert-time">25 min ago</div>
+                </div>
+
+                <div class="alert-item success">
+                    <i class="fas fa-check-circle alert-icon" style="color: var(--accent-success);"></i>
+                    <div class="alert-content">
+                        <h4>Irrigation Cycle Completed</h4>
+                        <p>Automatic irrigation in North Field completed successfully. Duration: 45 minutes.</p>
+                    </div>
+                    <div class="alert-time">2 hours ago</div>
+                </div>
+
+                <div class="alert-item warning">
+                    <i class="fas fa-cloud-rain alert-icon" style="color: var(--accent-warning);"></i>
+                    <div class="alert-content">
+                        <h4>Weather Alert</h4>
+                        <p>Heavy rainfall expected tomorrow. Adjust irrigation schedules accordingly.</p>
+                    </div>
+                    <div class="alert-time">4 hours ago</div>
+                </div>
+
+                <div class="alert-item success">
+                    <i class="fas fa-leaf alert-icon" style="color: var(--accent-success);"></i>
+                    <div class="alert-content">
+                        <h4>Optimal Growing Conditions</h4>
+                        <p>All environmental parameters are within optimal range for crop growth.</p>
+                    </div>
+                    <div class="alert-time">Yesterday</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2 style="margin-bottom: 20px;">Get Started with Smart Crop Monitoring</h2>
+            <p style="margin-bottom: 30px;">Transform your farming with intelligent
+                monitoring systems</p>
+            <button class="cta-button" onclick="showNotification('Free trial started!', 'success')">Start Free
+                Trial</button>
+            <button class="cta-button" onclick="showNotification('Demo scheduled!', 'info')">Request Demo</button>
+            <button class="cta-button" onclick="showNotification('Sales team contacted!', 'success')">Contact
+                Sales</button>
+        </div>
+    </div>
+
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3 style="color: var(--text-primary);">Dashboard Settings</h3>
+            <button onclick="toggleSettings()"
+                style="background: none; border: none; color: var(--text-primary); font-size: 1.2rem;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="settings-group">
+            <h4>Monitoring</h4>
+            <div class="setting-item">
+                <span style="color: var(--text-secondary);">Auto-refresh data</span>
+                <div class="setting-toggle active" onclick="toggleSetting(this)"></div>
+            </div>
+            <div class="setting-item">
+                <span style="color: var(--text-secondary);">Real-time alerts</span>
+                <div class="setting-toggle active" onclick="toggleSetting(this)"></div>
+            </div>
+            <div class="setting-item">
+                <span style="color: var(--text-secondary);">Sound notifications</span>
+                <div class="setting-toggle" onclick="toggleSetting(this)"></div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h4>Display</h4>
+            <div class="setting-item">
+                <span style="color: var(--text-secondary);">Show weather widget</span>
+                <div class="setting-toggle active" onclick="toggleSetting(this)"></div>
+            </div>
+            <div class="setting-item">
+                <span style="color: var(--text-secondary);">Compact view</span>
+                <div class="setting-toggle" onclick="toggleSetting(this)"></div>
+            </div>
+            <div class="setting-item">
+                <span style="color: var(--text-secondary);">Animations</span>
+                <div class="setting-toggle active" onclick="toggleSetting(this)"></div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h4>Data Export</h4>
+            <div class="export-options">
+                <button class="export-btn" onclick="exportData('csv')">Export CSV</button>
+                <button class="export-btn" onclick="exportData('pdf')">Export PDF</button>
+                <button class="export-btn" onclick="exportData('excel')">Export Excel</button>
+                <button class="export-btn" onclick="exportData('json')">Export JSON</button>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h4>Thresholds</h4>
+            <div class="setting-item">
+                <label style="color: var(--text-secondary);">Soil Moisture Alert (%)</label>
+                <input type="range" min="20" max="80" value="40" style="margin-left: auto;"
+                    onchange="updateThreshold('moisture', this.value)">
+            </div>
+            <div class="setting-item">
+                <label style="color: var(--text-secondary);">Temperature Alert (°C)</label>
+                <input type="range" min="15" max="40" value="35" style="margin-left: auto;"
+                    onchange="updateThreshold('temperature', this.value)">
+            </div>
+        </div>
+    </div>
+    <button class="scroll-btn" id="scrollBtn" title="Scroll">
+        <i class="fas fa-arrow-down" id="scrollIcon"></i>
+    </button>
+    <!-- Cursor Trail -->
+    <div class="circle-container" id="cursorTrail"></div>
+    <script>
+        const scrollBtn = document.getElementById("scrollBtn");
+        const scrollIcon = document.getElementById("scrollIcon");
+
+        if (scrollBtn && scrollIcon) {
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 300) {
+                    scrollBtn.classList.add('visible');
+                    scrollIcon.classList.remove("fa-arrow-down");
+                    scrollIcon.classList.add("fa-arrow-up");
+                } else {
+                    scrollBtn.classList.remove('visible');
+                    scrollIcon.classList.remove("fa-arrow-up");
+                    scrollIcon.classList.add("fa-arrow-down");
+                }
+            });
+
+            scrollBtn.addEventListener("click", () => {
+                if (scrollIcon.classList.contains("fa-arrow-up")) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+            });
+        }
+
+        // Data Variables
+        let sensorData = {
+            soilMoisture: 72,
+            temperature: 24,
+            humidity: 68,
+            lightIntensity: 850,
+            trends: {
+                soil: 'up',
+                temp: 'stable',
+                humidity: 'down',
+                light: 'up'
+            }
+        };
+
+        let weatherData = {
+            windSpeed: 12,
+            uvIndex: 7,
+            rainfall: 2.3,
+            pressure: 1013
+        };
+
+        // Settings and State
+        let currentView = 'overview';
+        let autoRefresh = true;
+        let settingsOpen = false;
+
+        // Simulate real-time data updates
+        function updateMetrics() {
+            // Update sensor readings with realistic variations
+            sensorData.soilMoisture += (Math.random() - 0.5) * 4;
+            sensorData.temperature += (Math.random() - 0.5) * 2;
+            sensorData.humidity += (Math.random() - 0.5) * 6;
+            sensorData.lightIntensity += (Math.random() - 0.5) * 100;
+
+            // Keep values within realistic ranges
+            sensorData.soilMoisture = Math.max(30, Math.min(90, sensorData.soilMoisture));
+            sensorData.temperature = Math.max(15, Math.min(40, sensorData.temperature));
+            sensorData.humidity = Math.max(30, Math.min(95, sensorData.humidity));
+            sensorData.lightIntensity = Math.max(200, Math.min(1200, sensorData.lightIntensity));
+
+            // Update display
+            document.getElementById('soilMoisture').textContent = Math.round(sensorData.soilMoisture);
+            document.getElementById('temperature').textContent = Math.round(sensorData.temperature);
+            document.getElementById('humidity').textContent = Math.round(sensorData.humidity);
+            document.getElementById('lightIntensity').textContent = Math.round(sensorData.lightIntensity);
+
+            // Update trends
+            updateTrends();
+
+            // Update last update time
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+
+            // Check for alerts
+            checkAlerts();
+        }
+
+        function updateTrends() {
+            const trends = ['up', 'down', 'stable'];
+            const trendClasses = ['trend-up', 'trend-down', 'trend-stable'];
+            const trendIcons = ['fa-arrow-up', 'fa-arrow-down', 'fa-minus'];
+
+            ['soilTrend', 'tempTrend', 'humidityTrend', 'lightTrend'].forEach((id, index) => {
+                const trendIndex = Math.floor(Math.random() * 3);
+                const element = document.getElementById(id);
+
+                element.className = 'metric-trend ' + trendClasses[trendIndex];
+                element.innerHTML = `<i class="fas ${trendIcons[trendIndex]}"></i>`;
+            });
+        }
+
+        function checkAlerts() {
+            if (sensorData.soilMoisture < 40) {
+                showNotification('Warning: Low soil moisture detected!', 'warning');
+            }
+            if (sensorData.temperature > 35) {
+                showNotification('Alert: High temperature detected!', 'danger');
+            }
+        }
+
+        // View Switching
+        function switchView(view) {
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${view}"]`).classList.add('active');
+
+            // Hide all views
+            document.querySelectorAll('.view-content').forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Show selected view
+            document.getElementById(view + 'View').style.display = 'block';
+
+            currentView = view;
+            showNotification(`Switched to ${view} view`, 'info');
+        }
+
+        // Chart Switching
+        function switchChart(type) {
+            document.querySelectorAll('.chart-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.getElementById('currentChart').textContent = type;
+            showNotification(`Showing ${type} chart`, 'info');
+        }
+
+        // Settings Panel
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            settingsOpen = !settingsOpen;
+
+            if (settingsOpen) {
+                panel.classList.add('open');
+            } else {
+                panel.classList.remove('open');
+            }
+        }
+
+        function toggleSetting(toggle) {
+            toggle.classList.toggle('active');
+            showNotification('Setting updated', 'success');
+        }
+
+        function updateThreshold(type, value) {
+            showNotification(`${type} threshold set to ${value}`, 'info');
+        }
+
+        // Data Export
+        function exportData(format = 'csv') {
+            showLoading();
+
+            setTimeout(() => {
+                hideLoading();
+                showNotification(`Data exported as ${format.toUpperCase()}`, 'success');
+            }, 2000);
+        }
+
+        // Refresh Data
+        function refreshData() {
+            showLoading();
+
+            setTimeout(() => {
+                updateMetrics();
+                hideLoading();
+                showNotification('Data refreshed successfully', 'success');
+            }, 1500);
+        }
+
+        // Loading Overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // Notification System
+        // Notification System (UPDATED with Close Button + Better Dismiss)
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+
+            const icons = {
+                success: 'fa-check-circle',
+                warning: 'fa-exclamation-triangle',
+                danger: 'fa-exclamation-circle',
+                info: 'fa-info-circle'
+            };
+
+            // Create content wrapper
+            notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${icons[type]}"></i>
+            <span class="notification-text">${message}</span>
+            <button class="notification-close" aria-label="Close">&times;</button>
+        </div>
+    `;
+
+            document.body.appendChild(notification);
+
+            // Show animation
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            // Close button logic (NEW)
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            });
+
+            // Auto dismiss (still keeps UX smooth)
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 4000);
+        }
+
+
+        // Sensor Time Updates
+        function updateSensorTimes() {
+            const sensors = ['sensor1Time', 'sensor2Time', 'weatherTime', 'sensor3Time', 'irrigationTime', 'phTime'];
+            const times = ['2 minutes ago', '5 minutes ago', '1 minute ago', '26 minutes ago', '31 seconds ago', '11 minutes ago'];
+
+            sensors.forEach((id, index) => {
+                if (document.getElementById(id)) {
+                    document.getElementById(id).textContent = times[index];
+                }
+            });
+        }
+
+        // Weather Updates
+        function updateWeatherData() {
+            weatherData.windSpeed += (Math.random() - 0.5) * 2;
+            weatherData.uvIndex += (Math.random() - 0.5) * 1;
+            weatherData.rainfall += (Math.random() - 0.5) * 0.5;
+            weatherData.pressure += (Math.random() - 0.5) * 5;
+
+            // Keep within realistic ranges
+            weatherData.windSpeed = Math.max(0, Math.min(25, weatherData.windSpeed));
+            weatherData.uvIndex = Math.max(0, Math.min(12, weatherData.uvIndex));
+            weatherData.rainfall = Math.max(0, weatherData.rainfall);
+            weatherData.pressure = Math.max(980, Math.min(1040, weatherData.pressure));
+
+            document.getElementById('windSpeed').textContent = Math.round(weatherData.windSpeed);
+            document.getElementById('uvIndex').textContent = Math.round(weatherData.uvIndex);
+            document.getElementById('rainfall').textContent = weatherData.rainfall.toFixed(1);
+            document.getElementById('pressure').textContent = Math.round(weatherData.pressure);
+        }
+
+        // Auto-refresh functionality
+        function startAutoRefresh() {
+            if (autoRefresh) {
+                setInterval(() => {
+                    if (autoRefresh) {
+                        updateMetrics();
+                        updateSensorTimes();
+                        updateWeatherData();
+                    }
+                }, 5000); // Update every 5 seconds
+            }
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function () {
+            showNotification('Smart Crop Monitoring System Initialized', 'success');
+            updateMetrics();
+            updateWeatherData();
+            startAutoRefresh();
+
+            // Smooth scroll animations for elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe all cards for animation
+            // Observe cards for animation (EXCLUDE sensor-item to preserve CSS animation)
+            document.querySelectorAll('.feature-card, .metric-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+
+
+            // Simulate some initial alerts
+            setTimeout(() => {
+                showNotification('Soil moisture low in South Field', 'warning');
+            }, 8000);
+
+            setTimeout(() => {
+                showNotification('Irrigation scheduled for tomorrow morning', 'info');
+            }, 12000);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case '1':
+                        e.preventDefault();
+                        switchView('overview');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        switchView('sensors');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        switchView('weather');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        switchView('alerts');
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        refreshData();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        toggleSettings();
+                        break;
+                }
+            }
+        });
+
+        function initTooltips() {
+            const sliders = document.querySelectorAll('.setting-item input[type="range"]');
+
+            sliders.forEach(slider => {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'range-tooltip';
+                slider.parentNode.appendChild(tooltip);
+
+                const updatePosition = () => {
+                    const val = slider.value;
+                    const min = slider.min ? slider.min : 0;
+                    const max = slider.max ? slider.max : 100;
+                    const percent = (val - min) / (max - min);
+                    const labelText = slider.previousElementSibling.innerText;
+                    const unit = labelText.includes('%') ? '%' : '°C';
+                    tooltip.innerHTML = val + unit;
+                    const sliderWidth = slider.offsetWidth;
+                    const sliderLeft = slider.offsetLeft;
+                    const thumbPosition = sliderLeft + (sliderWidth * percent);
+
+                    tooltip.style.left = thumbPosition + 'px';
+                };
+
+                slider.addEventListener('input', updatePosition);
+                setTimeout(updatePosition, 10);
+            });
+        }
+
+        window.onload = initTooltips;
+        // --- Cursor Trailing Effect ---
+        const container = document.getElementById('cursorTrail');
+        const circleCount = 12;
+        const circles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // Create circles
+        for (let i = 0; i < circleCount; i++) {
+            const circle = document.createElement('div');
+            circle.classList.add('cursor-circle');
+            container.appendChild(circle);
+            circles.push({ el: circle, x: 0, y: 0 });
+        }
+
+        // Mouse move
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Click effects
+        document.addEventListener('mousedown', () => {
+            circles.forEach(c => c.el.classList.add('cursor-clicking'));
+        });
+        document.addEventListener('mouseup', () => {
+            circles.forEach(c => c.el.classList.remove('cursor-clicking'));
+        });
+
+        // Hover effects on interactive elements
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+                circles.forEach(c => c.el.classList.add('cursor-hovering'));
+            }
+        });
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+                circles.forEach(c => c.el.classList.remove('cursor-hovering'));
+            }
+        });
+
+        // Animate trailing effect
+        function animateCursor() {
+            let x = mouseX;
+            let y = mouseY;
+
+            circles.forEach((circle) => {
+                circle.x += (x - circle.x) * 0.25;
+                circle.y += (y - circle.y) * 0.25;
+
+                circle.el.style.left = circle.x + 'px';
+                circle.el.style.top = circle.y + 'px';
+
+                x = circle.x;
+                y = circle.y;
+            });
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+    </script>
+    <script src="/static/js/why-crop.js"></script>
+    <script src="/js/theme.js"></script>
+    <script src="/js/auth.js"></script>
+
+</body>
+
+</html>

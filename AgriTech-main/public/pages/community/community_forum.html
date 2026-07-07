@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Join the AgriTech Community Hub to discuss farming, crop protection, soil health, equipment advice, and connect with experts through real-time discussions and AI-powered insights." />
+  <title>Community Hub | AgriTech Forum</title>
+
+  <!-- Icons & Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+
+  <!-- Prevent theme flash on page load -->
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+    })();
+  </script>
+
+  <!-- Custom Theme -->
+  <link rel="stylesheet" href="/css/forum.css">
+</head>
+<style>
+  /* Improved Dark Mode using Variables */
+body.dark-mode {
+    --bg-main: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --glass: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Force Navbar and Cards to use the variables */
+body.dark-mode .navbar {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+}
+
+body.dark-mode .nav-links a {
+    color: var(--text-main);
+}
+
+body.dark-mode .nav-search {
+    border-color: var(--border);
+}
+
+body.dark-mode .nav-search input {
+    background: transparent;
+    color: var(--text-main);
+}
+
+/* Fix for the Modal in Dark Mode */
+body.dark-mode .modal-content {
+    background: var(--card-bg);
+    color: var(--text-main);
+}
+  /* Demo Thread Card Styling */
+.thread-card {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem !important;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+}
+
+.thread-card:hover {
+  transform: translateY(-3px);
+  border-left-color: #2ecc71;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.thread-main {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.thread-votes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-weight: bold;
+}
+
+.thread-votes i {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.thread-votes i:hover {
+  color: #2ecc71;
+}
+
+.thread-info {
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.category-tag {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-right: 10px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.tag-protection { background: #ffeaa7; color: #d63031; }
+.tag-soil { background: #dff9fb; color: #130f40; }
+.tag-tech { background: #fab1a0; color: #e17055; }
+
+.thread-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.thread-excerpt {
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.thread-footer {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.share-btn {
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.share-btn:hover {
+  color: #2ecc71;
+}
+</style>
+
+<body>
+
+  <!-- AgriTech Navbar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-left">
+        <a href="/pages/index.html" class="navbar-brand">
+          <img src="/images/logo.png" alt="AgriTech">
+          AgriTech
+        </a>
+
+        <div class="nav-links">
+          <a href="/pages/index.html">Home</a>
+          <a href="/pages/about.html">About</a>
+          <a href="/pages/blog.html">Blog</a>
+          <a href="/pages/finance/scheme.html">Schemes</a>
+          <a href="/pages/community/community_forum.html">Community Forum</a>
+        </div>
+      </div>
+
+      <div class="navbar-right">
+        <div class="nav-search">
+          <input type="text" placeholder="Search...">
+          <button><i class="fas fa-search" aria-hidden="true"></i></button>
+        </div>
+        <a href="/pages/auth/login.html" class="nav-btn">Login</a>
+        <a href="/pages/auth/register.html" class="nav-btn primary">Register</a>
+
+        <!-- Animated Sun/Moon Toggle -->
+        <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+          aria-label="Switch to dark mode">
+          <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <mask id="moon-mask">
+              <rect x="0" y="0" width="100%" height="100%" fill="white" />
+              <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+            </mask>
+            <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+            <g class="sun-rays" stroke="currentColor">
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </g>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="forum-layout">
+
+    <!-- Left Sidebar: Navigation & Filters -->
+    <aside class="sidebar">
+      <div class="card">
+        <h3><i class="fas fa-compass" aria-hidden="true"></i> Discover</h3>
+        <div id="categories-list">
+          <div class="loader">Fetching categories...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-trophy" aria-hidden="true"></i> My Reputation</h3>
+        <div class="user-rep-panel">
+          <div class="score-display">
+            <span id="user-score">--</span>
+            <small>Total Points</small>
+          </div>
+          <div id="user-badge" class="badge-status">
+            Loading...
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Feed: Discussions -->
+      <main class="feed">
+  <header class="feed-header">
+    <div class="search-container">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="forum-search" class="search-input"
+        placeholder="Search for experts, topics, or solutions...">
+    </div>
+
+    <button class="btn-ask" id="btn-new-thread">
+      <i class="fas fa-plus" aria-hidden="true"></i> New Topic
+    </button>
+  </header>
+
+  <div id="threads-feed">
+    
+    <div class="thread-card card">
+      <div class="thread-main">
+        <div class="thread-votes">
+          <i class="fas fa-caret-up"></i>
+          <span>42</span>
+          <i class="fas fa-caret-down"></i>
+        </div>
+        <div class="thread-content">
+          <div class="thread-info">
+            <span class="category-tag tag-protection">Crop Protection</span>
+            <span class="thread-author">Posted by <b>@EcoFarmer</b> • 2 hours ago</span>
+          </div>
+          <h3 class="thread-title">Identifying early signs of Wheat Rust in 2026?</h3>
+          <p class="thread-excerpt">I've noticed some orange-brown pustules on my lower leaves. Is this the start of a major outbreak or just seasonal stress? Looking for organic treatment options...</p>
+          <div class="thread-footer">
+            <span><i class="far fa-comment"></i> 15 Comments</span>
+            <span><i class="far fa-eye"></i> 1.2k Views</span>
+            <span class="share-btn"><i class="fas fa-share"></i> Share</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="thread-card card">
+      <div class="thread-main">
+        <div class="thread-votes">
+          <i class="fas fa-caret-up"></i>
+          <span>128</span>
+          <i class="fas fa-caret-down"></i>
+        </div>
+        <div class="thread-content">
+          <div class="thread-info">
+            <span class="category-tag tag-soil">Soil Health</span>
+            <span class="thread-author">Posted by <b>@SoilMaster_Guru</b> • 5 hours ago</span>
+          </div>
+          <h3 class="thread-title">Regenerative Farming: 3 Years of No-Till Data</h3>
+          <p class="thread-excerpt">I've been tracking my soil carbon levels since switching to no-till. The results are in, and the microbial activity is off the charts. Full report attached!</p>
+          <div class="thread-footer">
+            <span><i class="far fa-comment"></i> 84 Comments</span>
+            <span><i class="far fa-eye"></i> 3.4k Views</span>
+            <span class="share-btn"><i class="fas fa-share"></i> Share</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="thread-card card">
+      <div class="thread-main">
+        <div class="thread-votes">
+          <i class="fas fa-caret-up"></i>
+          <span>12</span>
+          <i class="fas fa-caret-down"></i>
+        </div>
+        <div class="thread-content">
+          <div class="thread-info">
+            <span class="category-tag tag-tech">Equipment Advice</span>
+            <span class="thread-author">Posted by <b>@TechTractor</b> • 1 day ago</span>
+          </div>
+          <h3 class="thread-title">Best budget-friendly Drone for multi-spectral imaging?</h3>
+          <p class="thread-excerpt">Are there any reliable options under $1,500 that can accurately map nitrogen deficiency? Or should I just rent a service for the season?</p>
+          <div class="thread-footer">
+            <span><i class="far fa-comment"></i> 22 Comments</span>
+            <span><i class="far fa-eye"></i> 850 Views</span>
+            <span class="share-btn"><i class="fas fa-share"></i> Share</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+    </main>
+
+    <!-- Right Widgets: Trends & AI -->
+    <aside class="widgets">
+      <div class="card">
+        <h3><i class="fas fa-robot" aria-hidden="true"></i> AgriAI Insights</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+          AI is currently monitoring the forum for spam and helpful opportunities.
+        </p>
+        <div class="ai-status">
+          <span class="ai-badge">Active</span>
+          <small>Moderating Content</small>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-fire" aria-hidden="true"></i> Trending Topics</h3>
+        <div id="trending-list">
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Real-time trends appearing soon...
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Accessible Create Thread Modal -->
+  <div class="modal-overlay" id="create-thread-modal"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="create-thread-title"
+       aria-hidden="true">
+
+    <div class="card modal-content" tabindex="-1">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+        <h2 id="create-thread-title" style="font-size:1.5rem;">
+          Start a Conversation
+        </h2>
+
+        <button id="modal-close-btn"
+          style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted);"
+          aria-label="Close dialog">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="form-group" style="margin-bottom:1.25rem;">
+        <label for="thread-category-select"
+          style="display:block; margin-bottom:0.5rem; font-weight:500;">
+          Discussion Category
+        </label>
+        <select id="thread-category-select" class="search-input"
+          style="padding-left:1rem; width:100%;">
+          <option value="1">General Farming</option>
+          <option value="2">Crop Protection</option>
+          <option value="3">Soil Health</option>
+          <option value="4">Equipment Advice</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom:1.25rem;">
+        <label for="thread-title-input"
+          style="display:block; margin-bottom:0.5rem; font-weight:500;">
+          Topic Title
+        </label>
+        <input type="text" id="thread-title-input" class="search-input"
+          style="padding-left:1rem;"
+          placeholder="e.g. Best organic fertilizer for Wheat?">
+      </div>
+
+      <div class="form-group" style="margin-bottom:1.5rem;">
+        <label for="thread-content-input"
+          style="display:block; margin-bottom:0.5rem; font-weight:500;">
+          Content Details
+        </label>
+        <textarea id="thread-content-input" class="search-input"
+          style="padding-left:1rem; min-height:150px; resize:vertical;"
+          placeholder="Describe your question or share your knowledge here..."></textarea>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:1rem;">
+        <button id="modal-cancel-btn"
+          class="btn-ask"
+          style="background:var(--bg-main); color:var(--text-main);">
+          Cancel
+        </button>
+
+        <button onclick="forum.createThread()" class="btn-ask">
+          Post Discussion
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const modal = document.getElementById("create-thread-modal");
+  const modalContent = modal.querySelector(".modal-content");
+  const openBtn = document.getElementById("btn-new-thread");
+  const closeBtn = document.getElementById("modal-close-btn");
+  const cancelBtn = document.getElementById("modal-cancel-btn");
+
+  let lastFocusedElement = null;
+
+  function openModal() {
+    lastFocusedElement = document.activeElement;
+    modal.setAttribute("aria-hidden", "false");
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    trapFocus();
+    setTimeout(() => modalContent.focus(), 0);
+  }
+
+  function closeModal() {
+    modal.setAttribute("aria-hidden", "true");
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+    if (lastFocusedElement) lastFocusedElement.focus();
+  }
+
+  function trapFocus() {
+    const focusable = modal.querySelectorAll(
+      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    );
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    modal.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeModal();
+
+      if (e.key === "Tab") {
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  }
+
+  openBtn.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+  cancelBtn.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+</script>
+
+  <!-- Scripts -->
+  <script src="/js/forum.js"></script>
+
+  <!-- ===== Universal Back To Top Button (All Pages) ===== -->
+<style>
+  #globalBackToTop {
+    position: fixed;
+    bottom: 90px; /* prevents overlap with chatbot/floating icons */
+    right: 25px;
+    z-index: 9999;
+    display: none;
+    background: #2ecc71;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #globalBackToTop:hover {
+    transform: scale(1.12);
+    background: #27ae60;
+  }
+
+  @media (max-width: 768px) {
+    #globalBackToTop {
+      bottom: 100px; /* better spacing on mobile */
+      right: 18px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+</style>
+
+<button id="globalBackToTop" title="Back to Top">↑</button>
+
+<script src="/js/theme.js"></script>
+<script>
+  /* Bridge: sync body.dark-mode with data-theme for forum.css variables */
+  function syncDarkClass() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.body.classList.toggle('dark-mode', isDark);
+  }
+  syncDarkClass();
+  new MutationObserver(syncDarkClass).observe(document.documentElement, {
+    attributes: true, attributeFilter: ['data-theme']
+  });
+
+  (function () {
+    const btn = document.getElementById("globalBackToTop");
+
+    // Show button after scrolling down
+    window.addEventListener("scroll", function () {
+      if (window.scrollY > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
+
+    // Smooth scroll to top on click
+    btn.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Water Management Advisor | AgriTech</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="/css/irrigation.css" />
+</head>
+<body>
+    <div class="advisor-shell">
+        <aside class="main-sidebar">
+            <div class="logo-area">
+                <div class="mini-logo" aria-hidden="true"><i class="fas fa-droplet"></i></div>
+                <div>
+                    <h2>Agri<span>Tech</span></h2>
+                    <p>Water Intelligence</p>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="/pages/index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="/pages/farming/irrigation.html" class="nav-link active"><i class="fas fa-wave-square"></i> Water Advisor</a>
+                <a href="/pages/farming/disease.html" class="nav-link"><i class="fas fa-microscope"></i> Disease Insights</a>
+                <a href="/pages/marketplace/supply-chain.html" class="nav-link"><i class="fas fa-truck"></i> Supply Chain</a>
+            </nav>
+            <div class="sidebar-note">
+                <span class="sidebar-pill"><i class="fas fa-satellite-dish"></i> Offline-ready</span>
+                <p>Rule-based irrigation guidance with weather-aware alerts and SMS-friendly summaries.</p>
+            </div>
+        </aside>
+
+        <main class="content-body">
+            <section class="hero-panel">
+                <div class="hero-copy">
+                    <div class="eyebrow">AI-powered water management advisor</div>
+                    <h1>Personalized irrigation schedules for every field</h1>
+                    <p>
+                        Enter your crop, soil, farm size, irrigation method, and local weather to generate a daily and weekly
+                        watering plan that saves water and protects yield.
+                    </p>
+                    <div class="hero-actions">
+                        <button type="button" class="btn-primary" id="generate-plan-btn"><i class="fas fa-magic"></i> Generate Plan</button>
+                        <button type="button" class="btn-secondary" id="use-weather-btn"><i class="fas fa-cloud-sun"></i> Pull Live Weather</button>
+                    </div>
+                </div>
+                <div class="hero-metrics">
+                    <article class="metric-card highlight">
+                        <span class="metric-label">Water saved</span>
+                        <strong id="water-saved">0 L</strong>
+                        <small id="water-saved-note">Compared with flood irrigation</small>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-label">Next action</span>
+                        <strong id="next-action">Awaiting input</strong>
+                        <small id="next-action-note">Plan will appear here</small>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-label">Weather risk</span>
+                        <strong id="weather-risk">Low</strong>
+                        <small id="weather-risk-note">No live forecast loaded yet</small>
+                    </article>
+                </div>
+            </section>
+
+            <section class="top-grid">
+                <article class="weather-panel card" id="weather-panel">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Live forecast</span>
+                            <h2><i class="fas fa-cloud-sun"></i> Weather Outlook</h2>
+                        </div>
+                        <span class="status-chip" id="connection-status">Offline fallback ready</span>
+                    </div>
+                    <div class="weather-summary" id="weather-summary">
+                        <div class="weather-icon-shell"><i class="fas fa-cloud-sun" id="weather-icon"></i></div>
+                        <div>
+                            <h3 id="current-temp">--°C</h3>
+                            <p id="weather-status">Enter a location to fetch weather.</p>
+                        </div>
+                    </div>
+                    <div class="weather-metrics">
+                        <div class="metric">
+                            <span>Rain chance</span>
+                            <strong id="rain-chance">--%</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Rain next 24h</span>
+                            <strong id="rain-total">-- mm</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Temperature max</span>
+                            <strong id="temp-max">--°C</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Humidity hint</span>
+                            <strong id="humidity-hint">--</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="insight-panel card">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Why this matters</span>
+                            <h2><i class="fas fa-seedling"></i> Water-saving logic</h2>
+                        </div>
+                    </div>
+                    <ul class="insight-list">
+                        <li><i class="fas fa-check"></i> Uses crop water needs by growth stage.</li>
+                        <li><i class="fas fa-check"></i> Adjusts for soil, moisture, and irrigation method.</li>
+                        <li><i class="fas fa-check"></i> Suppresses watering when rain is likely.</li>
+                        <li><i class="fas fa-check"></i> Produces SMS-ready alerts for low connectivity.</li>
+                    </ul>
+                </article>
+            </section>
+
+            <section class="advisor-grid">
+                <form id="advisor-form" class="card form-card">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Farmer inputs</span>
+                            <h2><i class="fas fa-sliders"></i> Build your irrigation plan</h2>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <label class="input-field">
+                            <span>Crop type</span>
+                            <select id="crop-type" required>
+                                <option value="rice">Rice</option>
+                                <option value="wheat">Wheat</option>
+                                <option value="maize">Maize</option>
+                                <option value="cotton">Cotton</option>
+                                <option value="tomato">Tomato</option>
+                                <option value="potato">Potato</option>
+                            </select>
+                        </label>
+
+                        <label class="input-field">
+                            <span>Growth stage</span>
+                            <select id="growth-stage" required>
+                                <option value="germination">Germination</option>
+                                <option value="vegetative">Vegetative</option>
+                                <option value="flowering">Flowering</option>
+                                <option value="fruiting">Fruiting / Grain fill</option>
+                                <option value="harvest">Harvest</option>
+                            </select>
+                        </label>
+
+                        <label class="input-field">
+                            <span>Farm size (hectares)</span>
+                            <input id="farm-size" type="number" min="0.1" step="0.1" value="2" required />
+                        </label>
+
+                        <label class="input-field">
+                            <span>Irrigation method</span>
+                            <select id="irrigation-method" required>
+                                <option value="drip">Drip</option>
+                                <option value="sprinkler">Sprinkler</option>
+                                <option value="flood">Flood</option>
+                            </select>
+                        </label>
+
+                        <label class="input-field">
+                            <span>Soil type (optional)</span>
+                            <select id="soil-type">
+                                <option value="loamy">Loamy</option>
+                                <option value="sandy">Sandy</option>
+                                <option value="clay">Clay</option>
+                                <option value="silt">Silt</option>
+                            </select>
+                        </label>
+
+                        <label class="input-field range-field">
+                            <span>Soil moisture level (<strong id="moisture-val">35%</strong>)</span>
+                            <input type="range" id="soil-moisture" min="0" max="100" value="35" />
+                        </label>
+
+                        <label class="input-field location-field">
+                            <span>Farm location for weather</span>
+                            <input id="location" type="text" placeholder="e.g. Indore, Madhya Pradesh" value="Indore" required />
+                        </label>
+                    </div>
+
+                    <div class="form-footer">
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="offline-alerts" checked />
+                            <span>Enable offline SMS-ready alerts</span>
+                        </label>
+                        <div class="footer-actions">
+                            <button type="submit" class="btn-primary wide"><i class="fas fa-wand-magic-sparkles"></i> Generate advisor</button>
+                            <button type="button" class="btn-secondary" id="download-report"><i class="fas fa-file-pdf"></i> Download report</button>
+                        </div>
+                    </div>
+                </form>
+
+                <section class="card summary-card" id="summary-card">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Recommendation</span>
+                            <h2><i class="fas fa-bullhorn"></i> Advisor summary</h2>
+                        </div>
+                        <button type="button" class="ghost-btn" id="copy-sms"><i class="fas fa-sms"></i> Copy SMS</button>
+                    </div>
+                    <div id="summary-copy" class="summary-copy">
+                        Complete the form and generate a plan to see recommendations.
+                    </div>
+                    <div class="summary-grid">
+                        <article>
+                            <span>Weekly requirement</span>
+                            <strong id="weekly-water">0 L</strong>
+                        </article>
+                        <article>
+                            <span>Recommended cycles</span>
+                            <strong id="cycle-count">0</strong>
+                        </article>
+                        <article>
+                            <span>Estimated savings</span>
+                            <strong id="savings-percent">0%</strong>
+                        </article>
+                        <article>
+                            <span>Offline alerts</span>
+                            <strong id="alerts-enabled">On</strong>
+                        </article>
+                    </div>
+                </section>
+            </section>
+
+            <section class="results-panel hidden" id="results-panel">
+                <article class="card calendar-card" id="report-anchor">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Calendar view</span>
+                            <h2><i class="fas fa-calendar-days"></i> 7-day irrigation plan</h2>
+                        </div>
+                    </div>
+                    <div id="schedule-grid" class="schedule-grid"></div>
+                </article>
+
+                <article class="card tracker-card">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Water tracker</span>
+                            <h2><i class="fas fa-chart-simple"></i> Water usage and savings</h2>
+                        </div>
+                    </div>
+                    <div class="tracker-list">
+                        <div class="tracker-row">
+                            <div class="tracker-labels">
+                                <strong>Baseline flood irrigation</strong>
+                                <span id="baseline-label">0 L</span>
+                            </div>
+                            <div class="tracker-bar"><div id="baseline-bar" class="tracker-fill baseline"></div></div>
+                        </div>
+                        <div class="tracker-row">
+                            <div class="tracker-labels">
+                                <strong>Advisor recommendation</strong>
+                                <span id="advisor-label">0 L</span>
+                            </div>
+                            <div class="tracker-bar"><div id="advisor-bar" class="tracker-fill advisor"></div></div>
+                        </div>
+                    </div>
+                    <div class="tracker-note" id="tracker-note">Water savings improve as weather risk and soil moisture are considered.</div>
+                </article>
+
+                <article class="card alerts-card">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Alerts</span>
+                            <h2><i class="fas fa-triangle-exclamation"></i> Advisory alerts</h2>
+                        </div>
+                    </div>
+                    <div id="alert-list" class="alert-list"></div>
+                </article>
+
+                <article class="card sms-card">
+                    <div class="card-header compact">
+                        <div>
+                            <span class="card-kicker">Offline + SMS</span>
+                            <h2><i class="fas fa-comment-sms"></i> Farmer-ready message</h2>
+                        </div>
+                    </div>
+                    <pre id="sms-preview" class="sms-preview">SMS preview will appear here.</pre>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/irrigation.js"></script>
+</body>
+</html>

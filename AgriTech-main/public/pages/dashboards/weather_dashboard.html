@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Advisory | AgriTech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #22c55e;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .weather-hero {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 3rem;
+            border-radius: 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .weather-info h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .weather-info p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .weather-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-box label {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-box span {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .advisories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .advisory-card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .advisory-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .advisory-card.high-priority {
+            border-left: 6px solid #ef4444;
+        }
+
+        .priority-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .high-priority .priority-badge {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .normal-priority .priority-badge {
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        .crop-label {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .advisory-text {
+            margin-top: 1rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .footer-info {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            .weather-hero {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .navbar {
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo img {
+            height: 40px;
+            /* adjust size */
+            width: auto;
+            display: block;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            color: var(--accent);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                background: var(--primary);
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 200px;
+                padding: 1rem;
+                display: none;
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+        }
+
+        .site-footer.final-match {
+            background-color: var(--dark-bg);
+            color: var(--link-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-top-accent {
+            height: 5px;
+            background: linear-gradient(to right, #059669, var(--primary-green), #06b6d4);
+            width: 100%;
+            position: relative;
+            z-index: 3;
+        }
+
+        .footer-wave-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0, transparent 29px, var(--grid-line-color) 30px),
+                repeating-linear-gradient(90deg, transparent 0, transparent 29px, var(--grid-line-color) 30px);
+            background-size: 30px 30px;
+            opacity: 0.8;
+            z-index: 1;
+            mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, #000 70%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, #000 70%, transparent 100%);
+        }
+
+        .footer-inner-content,
+        .footer-bottom {
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-brand {
+            flex: 0 0 40%;
+            min-width: 300px;
+        }
+
+        .brand-logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .site-footer h3 {
+            color: var(--primary-green);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .footer-inner-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .footer-section {
+            padding: 0 15px;
+            margin-bottom: 30px;
+        }
+
+        .footer-group-links {
+            flex: 0 0 50%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-links {
+            flex: 1;
+            margin-right: 40px;
+        }
+
+        .footer-contact {
+            flex: 1;
+        }
+
+        .site-footer h4 {
+            color: var(--link-hover-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 5px;
+            width: fit-content;
+        }
+
+        .site-footer a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .site-footer a:hover {
+            color: var(--primary-green);
+            transform: translateX(4px);
+        }
+
+        .site-footer i {
+            margin-right: 12px;
+            width: 18px;
+            color: var(--primary-green);
+            text-align: center;
+            font-size: 16px;
+        }
+
+
+        .social-icons {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .social-icons a {
+
+            color: var(--link-color);
+            font-size: 18px;
+            transition: color 0.3s, transform 0.3s;
+            padding: 0;
+            width: auto;
+            display: block;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-green);
+            transform: scale(1.1);
+        }
+
+        .social-icons i {
+
+            color: var(--link-color);
+            width: auto;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .social-icons a:hover i {
+            color: var(--primary-green);
+        }
+
+        /* 7. Footer Bottom (Copyright) */
+        .footer-bottom {
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.8;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/pages/index.html" class="logo">
+            <img src="/images/logo.png" alt="AgriTech Logo">
+            <span class="logo-text">AgriTech</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/pages/index.html">Home</a></li>
+            <li><a href="/pages/about.html">About</a></li>
+            <li><a href="/pages/blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+
+
+    <div class="dashboard-container" role="main">
+
+        <div class="weather-hero" id="weather-banner" role="region" aria-labelledby="current-temp">
+            <div class="weather-info">
+                <p id="current-loc">Synchronizing...</p>
+                <h1 id="current-temp">--°C</h1>
+                <p id="current-cond">Connecting to satellite...</p>
+
+                <div class="weather-stats">
+                    <div class="stat-box">
+                        <label>Humidity</label>
+                        <span id="humidity-val">--%</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Wind</label>
+                        <span id="wind-val">-- km/h</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center; font-size: 5rem;"
+                aria-hidden="true">
+                <i class="fas fa-cloud-sun-rain"></i>
+            </div>
+        </div>
+
+        <h2 class="section-title" id="advisories-heading">
+            <i class="fas fa-robot" aria-hidden="true"></i>
+            AI Crop Advisories
+        </h2>
+
+        <div class="advisories-grid" id="advisory-list" aria-labelledby="advisories-heading">
+
+            <div class="loading-state" role="status" aria-live="polite" aria-label="Loading crop advisories">
+                <i class="fas fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
+                <p>Consulting Intelligence Engine...</p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="site-footer tech-dark-theme final-match">
+        <div class="footer-top-accent"></div>
+
+        <div class="footer-inner-content">
+            <div class="footer-section footer-brand">
+                <div class="brand-header">
+                    <img src="/images/logo.png" alt="AgriTech logo" class="brand-logo" />
+                    <h3>AgriTech</h3>
+                </div>
+
+                <p class="tagline">
+                    Empowering India's Farming Future with innovative technology
+                    connecting every stakeholder.
+                </p>
+
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+
+            <div class="footer-group-links">
+                <div class="footer-section footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li>
+                            <a href="/pages/index.html"><i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li>
+                            <a href="/pages/auth/login.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="/pages/misc/feed-back.html"><i class="fas fa-comment-dots"></i> Feedback</a>
+                        </li>
+                        <li>
+                            <a href="/pages/chat.html"><i class="fas fa-robot"></i> AI Assistant</a>
+                        </li>
+                        <li>
+                            <a href="/pages/legal/terms-and-service.html"><i class="fas fa-file-contract"></i> Terms & Service</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-section footer-contact">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>
+                            <a href="mailto:contact@agritech.com">
+                                <i class="fas fa-envelope"></i> contact@agritech.com
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:+910000000000">
+                                <i class="fas fa-phone"></i> +91 00000 00000
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© <span id="current-year"></span> AgriTech. All rights reserved.</p>
+        </div>
+
+        <div class="footer-wave-overlay"></div>
+    </footer>
+
+    <script src="/js/weather_dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>

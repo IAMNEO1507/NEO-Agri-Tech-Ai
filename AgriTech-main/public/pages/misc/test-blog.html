@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriTech Blog</title>
+    <link rel="stylesheet" href="/css/blog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Add favorite styles directly */
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .favorites-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .favorite-count {
+            background: white;
+            color: #e74c3c;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #ccc;
+            transition: all 0.3s ease;
+        }
+
+        .favorite-btn.active {
+            color: #e74c3c;
+        }
+
+        .modal-favorite-btn {
+            position: absolute;
+            top: 20px;
+            right: 60px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #ccc;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .modal-favorite-btn.active {
+            color: #e74c3c;
+        }
+
+        .back-home {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .back-home {
+            margin-right: auto;
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--accent);
+            color: #ffffff !important;
+            font-weight: 600;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            line-height: 1;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-home:hover {
+            background: #16a34a;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+
+        .back-home a.btn-home {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #22c55e;
+            color: #ffffff !important;
+            font-weight: 600;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            line-height: 1;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-home a.btn-home:hover {
+            background: #16a34a;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+
+         /* FOOTER */
+    .site-footer {
+      background: var(--surface-color);
+      color: var(--text-color);
+      position: relative;
+      font-size: 0.95rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-top-accent {
+      height: 4px;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+    }
+
+    .footer-inner-content {
+      max-width: 1200px;
+      margin: auto;
+      padding: 3rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      flex: 1 1 280px;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .brand-logo {
+      width: 42px;
+    }
+
+    .footer-brand h3 {
+      color: var(--accent-color);
+      font-size: 1.3rem;
+    }
+
+   .serif{
+  font-size: 3.5rem;
+  font-weight: 700;
+  font-family: "Noto Sans", sans-serif;
+  margin-bottom: 1rem;
+
+  background-image: url("/assets/bg.png");
+  background-size: 200% auto;
+  background-position: 0% 50;
+  background-repeat: no-repeat;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  animation: animate 20s linear infinite;
+}
+@keyframes animate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+    .social-icons {
+      display: flex;
+      gap: 0.7rem;
+    }
+
+    .social-icons a {
+      width: 36px;
+      height: 36px;
+      background: #e6f4ea;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #15803d;
+      transition: all 0.25s ease;
+    }
+
+    .social-icons a:hover {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    .footer-group-links {
+      display: flex;
+      gap: 3rem;
+      flex: 1 1 320px;
+    }
+
+    .footer-section h4 {
+      color: var(--accent-color);
+      margin-bottom: 0.9rem;
+      font-size: 1rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.6rem;
+    }
+
+    .footer-section ul a {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.25s ease;
+    }
+
+    .footer-section ul a:hover {
+      color: var(--accent-color);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding: 1rem;
+      background: var(--section-bg);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .sparkle {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #22c55e 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fadeSparkle 0.6s forwards;
+  z-index: 9999;
+}
+
+@keyframes fadeSparkle {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.5); }
+}
+
+    </style>
+</head>
+
+<body>
+    <section class="agritech-blog">
+        <div class="blog-container">
+            <!-- Blog Header with Favorites -->
+            <div class="blog-header">
+                <div class="header-actions">
+                    <div class="back-home">
+                        <a href="/pages/index.html" class="btn-home">⬅ Back to Home</a>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle">
+                        <span id="themeIcon">🌙</span>
+                        <span id="themeText">Dark Mode</span>
+                    </button>
+                    <a href="/pages/community/favorites.html" class="favorites-link">
+                        <i class="fas fa-heart"></i>
+                        <span>My Favorites</span>
+                        <span class="favorite-count">0</span>
+                    </a>
+
+                </div>
+                <h1 class="blog-title">🌱 AgriTech Blog — Farming Tips & Insights</h1>
+                <p class="blog-subtitle">Stay updated with the latest in agriculture, technology, and sustainability.
+                </p>
+            </div>
+
+            <!-- Rest of your content... -->
+            <div class="search-filter-section">
+                <input type="text" class="search-bar" placeholder="Search blog posts..." id="searchInput">
+
+                <div class="category-filters">
+                    <button class="filter-btn active" data-category="all">All Posts</button>
+                    <button class="filter-btn" data-category="farming-tips">Farming Tips</button>
+                    <button class="filter-btn" data-category="technology">Technology</button>
+                    <button class="filter-btn" data-category="market-trends">Market Trends</button>
+                    <button class="filter-btn" data-category="sustainability">Sustainability</button>
+                    <button class="filter-btn" data-category="business">Business</button>
+                </div>
+            </div>
+
+            <div class="blog-grid" id="blogGrid">
+                <!-- Blog cards will be populated by JavaScript -->
+            </div>
+
+            <div class="load-more-container">
+                <button class="load-more-btn" id="loadMoreBtn">Load More Posts</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal with Favorite Button -->
+    <div id="blogModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <button class="modal-favorite-btn" id="modalFavoriteBtn">
+                    <i class="far fa-heart"></i>
+                </button>
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <span class="modal-category" id="modalCategory"></span>
+            </div>
+            <div class="modal-body">
+                <img class="modal-image" id="modalImage" alt="Blog post image">
+                <div class="modal-text" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+     <footer class="site-footer tech-dark-theme final-match">
+    <div class="footer-top-accent"></div>
+
+    <div class="footer-inner-content">
+      <div class="footer-section footer-brand">
+        <div class="brand-header">
+          <img src="/images/logo.png" alt="AgriTech logo" class="brand-logo" />
+          <h3>AgriTech</h3>
+        </div>
+
+        <p class="tagline">
+          Empowering India's Farming Future with innovative technology
+          connecting every stakeholder.
+        </p>
+
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+
+      <div class="footer-group-links">
+        <div class="footer-section footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li>
+              <a href="/pages/index.html"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li>
+              <a href="/pages/auth/login.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            </li>
+            <li>
+              <a href="/pages/misc/feed-back.html"><i class="fas fa-comment-dots"></i> Feedback</a>
+            </li>
+            <li>
+              <a href="/pages/chat.html"><i class="fas fa-robot"></i> AI Assistant</a>
+            </li>
+            <li>
+              <a href="/pages/legal/terms-and-service.html"><i class="fas fa-file-contract"></i> Terms & Service</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-section footer-contact">
+          <h4>Contact</h4>
+          <ul>
+            <li>
+              <a href="mailto:contact@agritech.com">
+                <i class="fas fa-envelope"></i> contact@agritech.com
+              </a>
+            </li>
+            <li>
+              <a href="tel:+910000000000">
+                <i class="fas fa-phone"></i> +91 00000 00000
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span id="current-year"></span> AgriTech. All rights reserved.</p>
+    </div>
+
+    <div class="footer-wave-overlay"></div>
+  </footer>
+
+
+    <!-- Include favorites.js directly -->
+    <script>
+        // Simple Favorites Manager
+        class FavoritesManager {
+            constructor() {
+                this.storageKey = 'agritech_favorite_blogs';
+                this.favorites = JSON.parse(localStorage.getItem(this.storageKey)) || [];
+                window.favoritesManager = this;
+                console.log('FavoritesManager ready!');
+            }
+
+            isFavorite(blogId) {
+                return this.favorites.some(blog => blog.id === blogId);
+            }
+
+            addToFavorites(blogData) {
+                if (this.isFavorite(blogData.id)) return false;
+                blogData.addedAt = new Date().toISOString();
+                this.favorites.push(blogData);
+                localStorage.setItem(this.storageKey, JSON.stringify(this.favorites));
+
+                // Show notification
+                const notification = document.createElement('div');
+                notification.textContent = `Added to favorites: ${blogData.title}`;
+                notification.style.cssText = 'position:fixed;top:20px;right:20px;background:#2c5f2d;color:white;padding:10px;border-radius:5px;z-index:10000;';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 2000);
+
+                return true;
+            }
+
+            removeFromFavorites(blogId) {
+                this.favorites = this.favorites.filter(blog => blog.id !== blogId);
+                localStorage.setItem(this.storageKey, JSON.stringify(this.favorites));
+                return true;
+            }
+
+            getFavorites() {
+                return this.favorites;
+            }
+        }
+
+        // Initialize immediately
+        new FavoritesManager();
+    </script>
+
+    <!-- Your blog.js content -->
+    <script>
+        // Your existing blog.js code here...
+        const blogPosts = [
+            {
+                id: 'sustainable-farming-2025',
+                title: "Sustainable Farming Practices for 2025",
+                category: "sustainability",
+                description: "Discover innovative sustainable farming techniques.",
+                image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=250&fit=crop",
+                content: `<p>Sustainable farming content...</p>`,
+                author: "Dr. Sarah Green",
+                date: "2025-01-10"
+            },
+            {
+                id: 'ai-agriculture-revolution',
+                title: "AI in Agriculture: The Next Revolution",
+                category: "technology",
+                description: "How AI is transforming farming.",
+                image: "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400&h=250&fit=crop",
+                content: `<p>AI farming content...</p>`,
+                author: "Tech Farm Review",
+                date: "2025-01-08"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Blog loaded!');
+            displayPosts();
+            setupEventListeners();
+            updateFavoriteCounter();
+        });
+
+        function displayPosts() {
+            const blogGrid = document.getElementById('blogGrid');
+            blogGrid.innerHTML = '';
+
+            blogPosts.forEach(post => {
+                const isFavorite = window.favoritesManager.isFavorite(post.id);
+                const postElement = document.createElement('div');
+                postElement.className = 'blog-card';
+                postElement.innerHTML = `
+                    <img src="${post.image}" alt="${post.title}">
+                    <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-blog-id="${post.id}">
+                        <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                    </button>
+                    <div class="card-content">
+                        <span class="card-category">${post.category}</span>
+                        <h3 class="card-title">${post.title}</h3>
+                        <p class="card-description">${post.description}</p>
+                        <button class="read-more-btn"style="margin-top:16px" onclick="openModal('${post.id}')">Read More</button>
+                    </div>
+                `;
+                blogGrid.appendChild(postElement);
+            });
+        }
+
+        function setupEventListeners() {
+            // Favorite buttons
+            document.addEventListener('click', function (e) {
+                if (e.target.closest('.favorite-btn')) {
+                    const button = e.target.closest('.favorite-btn');
+                    const blogId = button.getAttribute('data-blog-id');
+                    console.log('Favorite clicked:', blogId);
+                    toggleFavorite(blogId);
+                }
+            });
+
+            // Your other event listeners...
+        }
+
+        function toggleFavorite(blogId) {
+            const post = blogPosts.find(p => p.id === blogId);
+            if (!post) return;
+
+            const isFavorite = window.favoritesManager.isFavorite(blogId);
+
+            if (isFavorite) {
+                window.favoritesManager.removeFromFavorites(blogId);
+            } else {
+                window.favoritesManager.addToFavorites({
+                    id: blogId,
+                    title: post.title,
+                    description: post.description,
+                    category: post.category,
+                    image: post.image,
+                    author: post.author,
+                    date: post.date,
+                    content: post.content
+                });
+            }
+
+            // Update button appearance
+            const buttons = document.querySelectorAll(`.favorite-btn[data-blog-id="${blogId}"]`);
+            buttons.forEach(button => {
+                const icon = button.querySelector('i');
+                const isNowFavorite = window.favoritesManager.isFavorite(blogId);
+                button.classList.toggle('active', isNowFavorite);
+                icon.className = isNowFavorite ? 'fas fa-heart' : 'far fa-heart';
+            });
+
+            updateFavoriteCounter();
+        }
+
+        function updateFavoriteCounter() {
+            const count = window.favoritesManager.getFavorites().length;
+            document.querySelector('.favorite-count').textContent = count;
+        }
+
+        function openModal(postId) {
+            const post = blogPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            document.getElementById('modalTitle').textContent = post.title;
+            document.getElementById('modalImage').src = post.image;
+            document.getElementById('modalContent').innerHTML = post.content;
+            document.getElementById('blogModal').style.display = 'block';
+        }
+
+        // Close modal
+        document.querySelector('.close').addEventListener('click', function () {
+            document.getElementById('blogModal').style.display = 'none';
+        });
+
+        document.addEventListener("mousemove", (e) => {
+  const sparkle = document.createElement("div");
+  sparkle.className = "sparkle";
+  sparkle.style.left = `${e.pageX - 6}px`;
+  sparkle.style.top = `${e.pageY - 6}px`;
+
+  document.body.appendChild(sparkle);
+
+  setTimeout(() => {
+    sparkle.remove();
+  }, 600);
+});
+
+    </script>
+    <script src="/js/theme.js"></script>
+    <!-- ===== Universal Back To Top Button (All Pages) ===== -->
+    <style>
+        #globalBackToTop {
+            position: fixed;
+            bottom: 90px;
+            /* prevents overlap with chatbot/floating icons */
+            right: 25px;
+            z-index: 9999;
+            display: none;
+            background: #2ecc71;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+
+        #globalBackToTop:hover {
+            transform: scale(1.12);
+            background: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            #globalBackToTop {
+                bottom: 100px;
+                /* better spacing on mobile */
+                right: 18px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
+    </style>
+
+    <button id="globalBackToTop" title="Back to Top">↑</button>
+
+    <script>
+        (function () {
+            const btn = document.getElementById("globalBackToTop");
+
+            // Show button after scrolling down
+            window.addEventListener("scroll", function () {
+                if (window.scrollY > 300) {
+                    btn.style.display = "block";
+                } else {
+                    btn.style.display = "none";
+                }
+            });
+
+            // Smooth scroll to top on click
+            btn.addEventListener("click", function () {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        })();
+    </script>
+    <!-- ===== End Back To Top Button ===== -->
+
+</body>
+
+</html>

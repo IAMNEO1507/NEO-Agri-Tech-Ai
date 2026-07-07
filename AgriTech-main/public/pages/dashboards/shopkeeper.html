@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriTech - Punjab Dealers Directory</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+    <script>
+      (function () {
+        const saved = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        document.documentElement.setAttribute(
+          "data-theme",
+          saved || (prefersDark ? "dark" : "light"),
+        );
+      })();
+    </script>
+  <link rel="stylesheet" href="/css/shopkeeper.css">
+  <link rel="stylesheet" href="/css/theme.css">
+</head>
+
+<body>
+  <!-- Sticky Navbar -->
+  <header class="sticky-header">
+    <div class="navbar">
+      <!-- Left: Logo -->
+      <a href="/pages/index.html" class="logo">
+        <img src="/images/logo.png" alt="AgriTech Logo">
+        <span class="logo-text">AgriTech</span>
+      </a>
+
+      <!-- Center: Navigation Links -->
+      <!-- Center: Navigation Links -->
+    <nav class="nav-links">
+      <a href="/pages/index.html">
+        Home
+      </a>
+      <a href="/pages/about.html">
+        About
+      </a>
+      <a href="/pages/blog.html">
+        Blog
+      </a>
+    </nav>
+
+
+      <button class="theme-toggle" type="button" id="themeToggle" title="Switch theme" aria-label="Switch theme">
+        <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <mask id="moon-mask">
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+          </mask>
+          <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+          <g class="sun-rays" stroke="currentColor">
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </g>
+        </svg>
+      </button>
+
+      <!-- Mobile Hamburger Menu -->
+      <button class="hamburger" aria-label="Toggle menu" id="hamburger-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Punjab Agricultural Dealers Directory</h1>
+      <p class="hero-subtitle">Your comprehensive guide to agricultural solutions across Punjab</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="search-container">
+      <div class="search-bar">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" placeholder="Search dealers, locations, or services..."
+            id="searchInput" />
+          <button class="clear-search" id="clearSearch" style="display: none;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="categoryFilter">CATEGORY:</label>
+          <select id="categoryFilter" class="filter-select">
+            <option value="all">All Categories</option>
+            <option value="pesticide">Pesticide & Insecticide</option>
+            <option value="tractor">Tractor Leasing</option>
+            <option value="harvester">Harvester Leasing</option>
+            <option value="equipment">Other Equipment</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="locationFilter">LOCATION:</label>
+          <select id="locationFilter" class="filter-select">
+            <option value="all">All Locations</option>
+            <option value="ludhiana">Ludhiana</option>
+            <option value="amritsar">Amritsar</option>
+            <option value="fazilka">Fazilka</option>
+            <option value="sangrur">Sangrur</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="sortBy">SORT BY:</label>
+          <select id="sortBy" class="filter-select">
+            <option value="name">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="location">Location</option>
+          </select>
+        </div>
+
+        <button class="reset-filters" id="resetFilters">
+          <i class="fas fa-undo"></i>
+          Reset
+        </button>
+      </div>
+
+     <!-- Results Summary -->
+<div class="results-summary" id="resultsSummary">
+  <span class="dealer-badge">
+    <i class="fa-solid fa-store">
+    </i>
+     10 dealers found
+  </span>
+</div>
+
+
+      <!-- Results Summary -->
+      <div class="results-summary" id="resultsSummary">
+        <span id="resultsCount">10</span> dealers found
+      </div>
+
+      <!-- Shop Directory Sync Status -->
+      <div class="directory-status is-loading" id="directoryStatus" role="status" aria-live="polite">
+        <div class="directory-status-icon" id="directoryStatusIcon">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <div class="directory-status-copy">
+          <strong id="directoryStatusTitle">Refreshing shop directory</strong>
+          <p id="directoryStatusMessage">Checking the latest dealer listings...</p>
+        </div>
+        <button class="directory-status-retry" id="directoryStatusRetry" type="button" hidden>
+          <i class="fas fa-rotate-right"></i>
+          Retry
+        </button>
+      </div>
+    </div>
+
+    <!-- Pesticide & Insecticide Sellers -->
+    <section class="section" id="pesticide-sellers" data-category="pesticide">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="section-icon">🐛</span>
+          Pesticide & Insecticide Sellers
+        </h2>
+      </div>
+      <div class="dealer-grid">
+        <div class="dealer-card" data-name="M/S Gurukirpa Agro Centre" data-location="ludhiana"
+          data-category="pesticide">
+          <h3 class="dealer-name">M/S Gurukirpa Agro Centre</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">Kohara, Sahnewal Road, Village Jandiale, Ludhiana</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-leaf service-icon"></i>
+              <span>Pesticides, Insecticides, Fertilizers</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="tel:+919XXXXXXX45" class="contact-btn primary">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('gurukirpa')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+        <div class="dealer-card" data-name="M/S Hicon Pest Control" data-location="ludhiana" data-category="pesticide">
+          <h3 class="dealer-name">M/S Hicon Pest Control</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">SCO 4, 2nd Floor, New Shopping Centre, Ghumar Mandi, Ludhiana</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-shield-alt service-icon"></i>
+              <span>Pest Control Solutions, Spraying Equipment</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="tel:+919XXXXXXX00" class="contact-btn primary">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('hicon')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tractor Leasing & Dealers -->
+    <section class="section" id="tractor-dealers" data-category="tractor">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="section-icon">🚜</span>
+          Tractor Leasing & Dealers
+        </h2>
+      </div>
+      <div class="dealer-grid">
+        <div class="dealer-card" data-name="Singla Tractors" data-location="fazilka" data-category="tractor">
+          <h3 class="dealer-name">Singla Tractors</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">Malout Road, Near 132 KVA Sub Station, Abohar, Fazilka</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-tractor service-icon"></i>
+              <span>Tractor Sales, Leasing, Maintenance</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="https://maps.google.com/?q=Malout+Road+Abohar+Fazilka" target="_blank" class="contact-btn primary">
+              <i class="fas fa-map-marker-alt"></i>
+              Get Directions
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('singla')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+        <div class="dealer-card" data-name="GURKIRPA AUTOS" data-location="sangrur" data-category="tractor">
+          <h3 class="dealer-name">GURKIRPA AUTOS</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">M.K. Bypass Road, Dhuri, Sangrur</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-tools service-icon"></i>
+              <span>Auto Parts, Tractor Accessories</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="https://maps.google.com/?q=M.K.+Bypass+Road+Dhuri+Sangrur" target="_blank"
+              class="contact-btn primary">
+              <i class="fas fa-map-marker-alt"></i>
+              Get Directions
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('gurkirpa')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+        <div class="dealer-card" data-name="Majha Agro Traders" data-location="amritsar" data-category="tractor">
+          <h3 class="dealer-name">Majha Agro Traders</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">Ground Floor, Ajnala, Amritsar Road, Bhakha Hari Singh, Amritsar - 143102</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-handshake service-icon"></i>
+              <span>Agricultural Trading, Equipment Supply</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="tel:+919855562888" class="contact-btn primary">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('majha')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Harvester Leasing & Dealers -->
+    <section class="section" id="harvester-dealers" data-category="harvester">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="section-icon">🌾</span>
+          Harvester Leasing & Dealers
+        </h2>
+      </div>
+      <div class="dealer-grid">
+        <div class="dealer-card" data-name="Sonalika Samrat Combine Harvester" data-location="ludhiana"
+          data-category="harvester">
+          <h3 class="dealer-name">Sonalika Samrat Combine Harvester</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">Available through Sonalika dealers across Punjab</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-cut service-icon"></i>
+              <span>Combine Harvesters, Seasonal Leasing</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="tel:+919587886664" class="contact-btn primary">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('sonalika')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+        <div class="dealer-card" data-name="Kartar Agro Industries Pvt. Ltd." data-location="ludhiana"
+          data-category="harvester">
+          <h3 class="dealer-name">Kartar Agro Industries Pvt. Ltd.</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">Industrial Area, Ludhiana</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-industry service-icon"></i>
+              <span>Professional Harvesting Equipment & Services</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="https://maps.google.com/?q=Kartar+Agro+Industries+Ludhiana" target="_blank"
+              class="contact-btn primary">
+              <i class="fas fa-map-marker-alt"></i>
+              Get Directions
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('kartar')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Agricultural Equipment Dealers -->
+    <section class="section" id="equipment-dealers" data-category="equipment">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="section-icon">⚙️</span>
+          Other Agricultural Equipment Dealers
+        </h2>
+      </div>
+      <div class="dealer-grid">
+        <div class="dealer-card" data-name="Bhajan Singh & Bros" data-location="ludhiana" data-category="equipment">
+          <h3 class="dealer-name">Bhajan Singh & Bros</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">1913/36, Bhagwan Chowk, Janta Nagar, Gill Road, Ludhiana - 141003</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-wrench service-icon"></i>
+              <span>Agricultural Tools, Spare Parts</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="tel:+919884395093" class="contact-btn primary">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('bhajan')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+        <div class="dealer-card" data-name="GPN Machine Tools" data-location="ludhiana" data-category="equipment">
+          <h3 class="dealer-name">GPN Machine Tools</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">2436/2, Gali No-16, Dashmesh Nagar, Gill Road, Ludhiana - 141003</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-cogs service-icon"></i>
+              <span>Machine Tools, Equipment Repair</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="https://maps.google.com/?q=GPN+Machine+Tools+Ludhiana" target="_blank" class="contact-btn primary">
+              <i class="fas fa-map-marker-alt"></i>
+              Get Directions
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('gpn')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+        <div class="dealer-card" data-name="JRS Farmparts" data-location="ludhiana" data-category="equipment">
+          <h3 class="dealer-name">JRS Farmparts</h3>
+          <div class="dealer-details">
+            <div class="dealer-info">
+              <i class="fas fa-map-marker-alt location-icon"></i>
+              <span class="address">C-87, Phase 5, Focal Point, Ludhiana - 141010</span>
+            </div>
+            <div class="dealer-services">
+              <i class="fas fa-puzzle-piece service-icon"></i>
+              <span>Farm Parts, Replacement Components</span>
+            </div>
+          </div>
+          <div class="dealer-actions">
+            <a href="tel:+919779701222" class="contact-btn primary">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </a>
+            <button class="contact-btn secondary" onclick="showDealerDetails('jrs')">
+              <i class="fas fa-info-circle"></i>
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="no-results" id="noResults" style="display: none;">
+      <div class="no-results-content">
+        <i class="fas fa-search"></i>
+        <h3>No dealers found</h3>
+        <p>Try adjusting your search criteria or filters</p>
+        <button class="reset-filters-btn" onclick="resetAllFilters()">
+          <i class="fas fa-undo"></i>
+          Reset Filters
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Dealer Details Modal -->
+  <div class="modal" id="dealerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalDealerName">Dealer Details</h3>
+        <button class="modal-close" onclick="closeDealerModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Content will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="/images/logo.png" alt="AgriTech logo" class="footer-logo">
+        <h3>AgriTech</h3>
+        <p>Empowering India's Farming Future</p>
+        <div class="social-media">
+          <a href="https://instagram.com" target="_blank" aria-label="Follow us on Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://github.com/omroy07" target="_blank" aria-label="View our GitHub repositories">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/om-roy-3b809628a/" target="_blank"
+            aria-label="Connect with us on LinkedIn">
+            <i class="fab fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/pages/index.html">Home</a></li>
+          <li><a href="/pages/main.html">Dashboard</a></li>
+          <li><a href="/pages/misc/feed-back.html">Feedback</a></li>
+          <li><a href="/pages/chat.html">AI Assistant</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="Crop Recommendation/templates/index.html">Crop Recommendation</a></li>
+          <li><a href="Crop Yield Prediction/crop_yield_app/templates/index.html">Yield Prediction</a></li>
+          <li><a href="Disease prediction/template/index.html">Disease Detector</a></li>
+          <li><a href="Crop_Planning/templates/cropplan.html">Crop Planner</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 AgriTech • Made for farmers</div>
+  </footer>
+
+  <!-- Floating Chatbot Button -->
+  <a href="/pages/chat.html" id="chatbotBtn" title="Chat with us" aria-label="AI Assistant">
+    <i class="fas fa-robot"></i>
+  </a>
+  <!-- Cursor Trail -->
+  <div class="circle-container" id="cursorTrail"></div>
+  <script src="/js/shopkeeper.js"></script>
+  <script src="/js/theme.js"></script>
+  <script>
+    // Mobile Menu Toggle
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (hamburgerBtn) {
+      hamburgerBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        const icon = hamburgerBtn.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.navbar')) {
+          navLinks.classList.remove('active');
+          const icon = hamburgerBtn.querySelector('i');
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        }
+      });
+    }
+    // --- Cursor Trailing Effect ---
+    const container = document.getElementById('cursorTrail');
+    const circleCount = 12;
+    const circles = [];
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Create circles
+    for (let i = 0; i < circleCount; i++) {
+      const circle = document.createElement('div');
+      circle.classList.add('cursor-circle');
+      container.appendChild(circle);
+      circles.push({ el: circle, x: 0, y: 0 });
+    }
+
+    // Mouse move
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // Click effects
+    document.addEventListener('mousedown', () => {
+      circles.forEach(c => c.el.classList.add('cursor-clicking'));
+    });
+    document.addEventListener('mouseup', () => {
+      circles.forEach(c => c.el.classList.remove('cursor-clicking'));
+    });
+
+    // Hover effects on interactive elements
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.add('cursor-hovering'));
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.remove('cursor-hovering'));
+      }
+    });
+
+    // Animate trailing effect
+    function animateCursor() {
+      let x = mouseX;
+      let y = mouseY;
+
+      circles.forEach((circle) => {
+        circle.x += (x - circle.x) * 0.25;
+        circle.y += (y - circle.y) * 0.25;
+
+        circle.el.style.left = circle.x + 'px';
+        circle.el.style.top = circle.y + 'px';
+
+        x = circle.x;
+        y = circle.y;
+      });
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+  </script>
+
+  <!-- ===== Universal Back To Top Button (All Pages) ===== -->
+  <style>
+    #globalBackToTop {
+      position: fixed;
+      bottom: 90px;
+      /* prevents overlap with chatbot/floating icons */
+      right: 25px;
+      z-index: 9999;
+      display: none;
+      background: #2ecc71;
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      transition: opacity 0.3s ease, transform 0.2s ease;
+    }
+
+    #globalBackToTop:hover {
+      transform: scale(1.12);
+      background: #27ae60;
+    }
+
+    @media (max-width: 768px) {
+      #globalBackToTop {
+        bottom: 100px;
+        /* better spacing on mobile */
+        right: 18px;
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+      }
+    }
+  </style>
+
+  <button id="globalBackToTop" title="Back to Top">↑</button>
+
+  <script>
+    (function () {
+      const btn = document.getElementById("globalBackToTop");
+
+      // Show button after scrolling down
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 300) {
+          btn.style.display = "block";
+        } else {
+          btn.style.display = "none";
+        }
+      });
+
+      // Smooth scroll to top on click
+      btn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      });
+    })();
+  </script>
+  <!-- ===== End Back To Top Button ===== -->
+
+</body>
+
+</html>

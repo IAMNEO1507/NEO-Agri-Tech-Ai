@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/png" href="../../images/logo.png" />
+
+   <link rel="icon" type="image/png" href="/images/logo.png">
+    <meta charset="UTF-8" />
+    <title>Crop Recommendation Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../../static/script.js"></script>
+
+  <!-- Prevent theme flash on page load -->
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+    })();
+  </script>
+
+    <style>
+/* ================= THEME VARIABLES ================= */
+
+/* Light Theme */
+:root {
+  --color-brand: #0cb642;
+  --color-highlight: #4caf50;
+  --color-gradient: linear-gradient(135deg, #0cb642, #1e6f67);
+
+  --bg-page: #f5f9ff;
+  --bg-card: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.9);
+
+  --text-primary: #1e2f1e;
+  --text-secondary: #64748b;
+
+  --border-color: #e2e8f0;
+  --shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  --transition: 0.3s ease;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg-page: #0f172a;
+  --bg-card: #1e293b;
+  --bg-header: rgba(15, 23, 42, 0.9);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+
+  --border-color: #334155;
+  --shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BASE ================= */
+body {
+  font-family: "Inter", "Poppins", sans-serif;
+  font-size: 16px;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+/* ================= TYPOGRAPHY ================= */
+h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+/* ================= NAVBAR ================= */
+.sticky-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: var(--bg-header);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+    /* ================= BASE ================= */
+    body {
+      font-family: "Inter", "Poppins", sans-serif;
+      font-size: 16px;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo img {
+  width: 38px;
+  height: 38px;
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-brand);
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.nav-links a {
+  font-size: 0.95rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.nav-links a:hover {
+  color: var(--color-brand);
+}
+
+/* ================= LAYOUT ================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  padding: 40px 0;
+}
+
+/* ================= RESULT CARD ================= */
+.result-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  margin-top: 30px;
+}
+
+.success-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 20px;
+  background: var(--color-highlight);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+
+.result-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-highlight);
+  margin: 15px 0;
+}
+
+.result-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.stat {
+  font-size: 0.9rem;
+}
+
+.stat-icon {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-brand);
+}
+
+/* ================= BUTTONS ================= */
+.action-buttons-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.action-buttons-group form,
+.action-buttons-group a {
+  flex: 1;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  text-decoration: none;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-gradient);
+  color: white;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid var(--color-brand);
+  color: var(--color-brand);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ================= SIDEBAR ================= */
+.yield-insights {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.yield-insights h3 {
+  margin-bottom: 20px;
+  color: var(--color-brand);
+}
+
+.yield-insights ul {
+  list-style: none;
+}
+
+.yield-insights li {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: var(--radius);
+  background: rgba(76, 175, 80, 0.05);
+  font-size: 0.9rem;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+  margin-top: 60px;
+  padding: 30px 0;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .result-value {
+    font-size: 1.8rem;
+  }
+
+  .action-buttons-group {
+    flex-direction: column;
+  }
+
+  .nav-links {
+    display: none;
+  }
+}
+    </style>
+</head>
+
+<body
+  data-crop="{{ crop|default('') }}"
+  data-n="{{ params.N|default('') }}"
+  data-p="{{ params.P|default('') }}"
+  data-k="{{ params.K|default('') }}"
+  data-temperature="{{ params.temperature|default('') }}"
+  data-rainfall="{{ params.rainfall|default('') }}"
+  data-humidity="{{ params.humidity|default('') }}"
+  data-ph="{{ params.ph|default('') }}"
+>
+  <header class="sticky-header">
+    <div class="container header-content navbar">
+
+      <!-- Left: Logo -->
+      <a href="/" class="logo">
+        <img src="/images/logo.png" alt="AgriTech Logo">
+        <span class="logo-text">AgriTech</span>
+      </a>
+
+      <!-- Center: Navigation -->
+      <nav class="nav-links">
+        <a href="/index.html">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/blog.html">Blog</a>
+        <a href="/community_forum.html">Community Forum</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/news.html">News</a>
+      </nav>
+
+      <!-- Animated Sun/Moon Toggle -->
+      <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+        aria-label="Switch to dark mode">
+        <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <mask id="moon-mask">
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+          </mask>
+          <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+          <g class="sun-rays" stroke="currentColor">
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </g>
+        </svg>
+      </button>
+
+    </div>
+  </header>
+
+
+  <main class="main-layout container">
+    <div class="content-left">
+
+      <div class="header">
+        <h1>Optimal Crop yield prediction 🎯</h1>
+        <p>
+          Based on your provided soil and climate data, the following crop is
+          highly recommended for maximum yield and sustainability.
+        </p>
+      </div>
+
+      <div class="result-card">
+        <div class="success-icon">✓</div>
+        <div class="result-value">
+          <i class="fas fa-seedling"></i>
+          <span class="recommended-crop">
+            <h2 id="predictedCrop">Crop Result</h2>
+          </span>
+        </div>
+        <p class="insight-note">
+          This is the most suitable crop for your current soil nutrient profile.
+        </p>
+
+        <div class="result-stats">
+          <div class="stat">
+            <i class="fas fa-vial stat-icon"></i>
+            <span class="stat-label">Nitrogen (N): <span id="nValue">--</span></span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-flask stat-icon"></i>
+            <span class="stat-label">Phosphorus (P): <span id="pValue">--</span></span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-microscope stat-icon"></i>
+            <span class="stat-label">Potassium (K): <span id="kValue">--</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons-group">
+        <form method="post" action="/download_report" id="downloadReportForm">
+
+          <button type="submit" class="btn btn-primary"
+            onclick="this.classList.add('loading'); this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Generating PDF...';">
+            <i class="fas fa-file-pdf"></i> Download Full Report
+          </button>
+        </form>
+
+        <a href="/" class="btn btn-secondary">
+          <i class="fas fa-redo-alt"></i> New Analysis
+        </a>
+      </div>
+    </div>
+
+    <div class="content-right">
+      <div class="yield-insights">
+        <h3><i class="fas fa-chart-line"></i> Input Details</h3>
+        <ul>
+          <li>
+            <i class="fas fa-thermometer-half"></i>
+            <div>
+              <strong>Temperature</strong>
+              <p class="insight-note"><span id="temperatureValue">--</span>°C
+              </p>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-cloud-showers-heavy"></i>
+            <div>
+              <strong>Climate Data</strong>
+              <p class="insight-note">Rainfall: <span id="rainfallValue">--</span> mm
+                | Humidity: <span id="humidityValue">--</span>%
+              </p>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-tint"></i>
+            <div>
+              <strong>Soil pH Level</strong>
+              <p class="insight-note">pH: <span id="phValue">--</span>
+              </p>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Location Context</strong>
+              <p class="insight-note">Analyzed for local conditions.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="../../../images/logo.png" alt="AgriTech logo" style="height: 40px; border-radius: 6px;">
+          <h3>AgriTech</h3>
+        </div>
+        <p style="color: var(--text-primary); margin-top: 10px; font-size: 0.9rem;">Empowering India's Farming Future.</p>
+        <div class="social-media">
+          <a href="https://instagram.com" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+          <a href="https://github.com" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="main.html">Dashboard</a></li>
+          <li><a href="feed-back.html">Feedback</a></li>
+          <li><a href="chat.html">AI Assistant</a></li>
+        </ul>
+      </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">© 2026 AgriTech. Empowering farmers with intelligent agriculture solutions.</p>
+        </div>
+    </footer>
+    <!-- Cursor Trail -->
+<div class="circle-container" id="cursorTrail"></div>
+
+<script src="../../theme.js"></script>
+<script>
+  // Self-contained theme toggle - no external dependencies
+    (function () {
+      const btn = document.getElementById('themeToggle');
+      if (!btn) { console.error('themeToggle button not found!'); return; }
+
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        // sync .dark-mode class for this page's CSS variables
+        document.documentElement.classList.toggle('dark-mode', theme === 'dark');
+        console.log('Theme applied:', theme);
+      }
+
+      // Apply saved theme on load
+      const saved = localStorage.getItem('theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      applyTheme(saved);
+
+      // Toggle on click
+      btn.addEventListener('click', function () {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        applyTheme(current === 'light' ? 'dark' : 'light');
+      });
+    })();
+
+      function createConfetti() {
+        const colors = ["#4caf50", "#2d8f85", "#66bb6a", "#81c784"];
+        const style = document.createElement("style");
+        style.textContent = `@keyframes fall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }`;
+        document.head.appendChild(style);
+
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement("div");
+          confetti.style.cssText = `
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            left: ${Math.random() * 100}vw;
+            animation: fall ${Math.random() * 3 + 2}s linear forwards;
+            z-index: 1000;
+            border-radius: 50%;
+          `;
+        document.body.appendChild(confetti);
+        setTimeout(() => { confetti.remove(); }, 5000);
+      }
+      setTimeout(createConfetti, 1000);
+      
+                  // --- Cursor Trailing Effect ---
+const container = document.getElementById('cursorTrail');
+const circleCount = 12;
+const circles = [];
+
+let mouseX = 0;
+let mouseY = 0;
+
+// Create circles
+for (let i = 0; i < circleCount; i++) {
+    const circle = document.createElement('div');
+    circle.classList.add('cursor-circle');
+    container.appendChild(circle);
+    circles.push({ el: circle, x: 0, y: 0 });
+}
+
+    // Mouse move
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // Click effects
+    document.addEventListener('mousedown', () => {
+      circles.forEach(c => c.el.classList.add('cursor-clicking'));
+    });
+    document.addEventListener('mouseup', () => {
+      circles.forEach(c => c.el.classList.remove('cursor-clicking'));
+    });
+
+    // Hover effects on interactive elements
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.add('cursor-hovering'));
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.remove('cursor-hovering'));
+      }
+    });
+
+    // Animate trailing effect
+    function animateCursor() {
+      let x = mouseX;
+      let y = mouseY;
+
+      circles.forEach((circle) => {
+        circle.x += (x - circle.x) * 0.25;
+        circle.y += (y - circle.y) * 0.25;
+
+        circle.el.style.left = circle.x + 'px';
+        circle.el.style.top = circle.y + 'px';
+
+        x = circle.x;
+        y = circle.y;
+      });
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+  </script>
+  <script>
+    (function () {
+      function isTemplateToken(value) {
+        return typeof value === "string" && value.includes("{{") && value.includes("}}");
+      }
+
+      function cleanValue(value) {
+        if (value === null || value === undefined) return "";
+        const text = String(value).trim();
+        return isTemplateToken(text) ? "" : text;
+      }
+
+      function getParamInsensitive(name) {
+        const params = new URLSearchParams(window.location.search);
+        const target = String(name).toLowerCase();
+        for (const [key, value] of params.entries()) {
+          if (String(key).toLowerCase() === target) {
+            return cleanValue(value);
+          }
+        }
+        return "";
+      }
+
+      function getBodyData(name) {
+        const value = document.body && document.body.dataset ? document.body.dataset[name] : "";
+        return cleanValue(value);
+      }
+
+      function resolveValue(options) {
+        const keys = options.queryKeys || [];
+        for (const key of keys) {
+          const queryValue = getParamInsensitive(key);
+          if (queryValue) return queryValue;
+        }
+
+        if (options.bodyKey) {
+          const bodyValue = getBodyData(options.bodyKey);
+          if (bodyValue) return bodyValue;
+        }
+
+        return options.fallback || "--";
+      }
+
+      function toTitleCase(text) {
+        return String(text || "")
+          .toLowerCase()
+          .replace(/\b\w/g, function (match) { return match.toUpperCase(); });
+      }
+
+      const resolved = {
+        crop: resolveValue({ queryKeys: ["crop", "Crop"], bodyKey: "crop", fallback: "Recommended Crop" }),
+        temperature: resolveValue({ queryKeys: ["temperature", "temp"], bodyKey: "temperature" }),
+        humidity: resolveValue({ queryKeys: ["humidity"], bodyKey: "humidity" }),
+        rainfall: resolveValue({ queryKeys: ["rainfall"], bodyKey: "rainfall" }),
+        ph: resolveValue({ queryKeys: ["ph", "pH"], bodyKey: "ph" }),
+        N: resolveValue({ queryKeys: ["N", "n"], bodyKey: "n" }),
+        P: resolveValue({ queryKeys: ["P", "p"], bodyKey: "p" }),
+        K: resolveValue({ queryKeys: ["K", "k"], bodyKey: "k" })
+      };
+
+      document.getElementById("predictedCrop").textContent = toTitleCase(resolved.crop);
+      document.getElementById("temperatureValue").textContent = resolved.temperature;
+      document.getElementById("humidityValue").textContent = resolved.humidity;
+      document.getElementById("rainfallValue").textContent = resolved.rainfall;
+      document.getElementById("phValue").textContent = resolved.ph;
+      document.getElementById("nValue").textContent = resolved.N;
+      document.getElementById("pValue").textContent = resolved.P;
+      document.getElementById("kValue").textContent = resolved.K;
+
+      const placeholderValueMap = {
+        Crop: toTitleCase(resolved.crop),
+        "params.N": resolved.N,
+        "params.P": resolved.P,
+        "params.K": resolved.K,
+        "params.temperature": resolved.temperature,
+        "params.rainfall": resolved.rainfall,
+        "params.humidity": resolved.humidity,
+        "params.ph": resolved.ph
+      };
+
+      function replaceTemplateTokens(text) {
+        if (!text || text.indexOf("{{") === -1) return text;
+
+        return text
+          .replace(/\{\{\s*Crop\s*\|\s*capitalize\s*\}\}/gi, placeholderValueMap.Crop)
+          .replace(/\{\{\s*params\.(N|P|K|temperature|rainfall|humidity|ph)\s*\}\}/g, function (_, key) {
+            return placeholderValueMap["params." + key] || "--";
+          });
+      }
+
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+      let textNode = walker.nextNode();
+      while (textNode) {
+        textNode.nodeValue = replaceTemplateTokens(textNode.nodeValue);
+        textNode = walker.nextNode();
+      }
+
+      document.querySelectorAll("[value], [title], [placeholder]").forEach(function (element) {
+        ["value", "title", "placeholder"].forEach(function (attr) {
+          const existing = element.getAttribute(attr);
+          if (existing && existing.indexOf("{{") !== -1) {
+            element.setAttribute(attr, replaceTemplateTokens(existing));
+          }
+        });
+      });
+
+      const downloadForm = document.getElementById("downloadReportForm");
+      if (downloadForm) {
+        ["crop", "temperature", "humidity", "rainfall", "ph", "N", "P", "K"].forEach(function (key) {
+          const value = resolved[key];
+          if (!value || value === "--") return;
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = value;
+          downloadForm.appendChild(input);
+        });
+      }
+    })();
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,408 @@
+/* Import theme system */
+@import url('/css/theme.css');
+
+/* =========================================
+   Base Styles
+   ========================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:root {
+  --primary-green: #2a7a2a;
+  --secondary-green: #4caf50;
+  --accent-green: #6bbf59;
+  --text-dark: #1e2f1e;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f4f7;
+  --text-primary: #333;
+}
+
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  margin: 0;
+  padding-top: 7rem;
+}
+
+.navbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.logo img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-brand);
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  border: none;
+}
+
+.nav-links a {
+  position: relative;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 5px 0;
+  transition: var(--transition);
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 3px;
+  background: var(--color-highlight);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--color-brand);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .navbar {
+    grid-template-columns: auto auto;
+  }
+
+  .nav-links {
+    display: none; /* You can later add a hamburger menu */
+  }
+}
+
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+}
+
+/* Header */
+.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--bg-header);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 15px var(--shadow-header);
+  z-index: 100;
+
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+}
+
+
+/* =========================================
+   Main Layout & Content
+   ========================================= */
+.main-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.page-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 1rem;
+}
+
+.page-hero h1 {
+  font-size: 2.5rem;
+  color: var(--primary-green);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.page-hero p {
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* =========================================
+   Section Styling
+   ========================================= */
+section {
+  background: var(--bg-primary);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+section h2 {
+  color: var(--primary-green);
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+
+/* List Items */
+section ul {
+  list-style: none;
+}
+
+section ul li {
+  padding: 0.8rem 1rem 0.8rem 2rem;
+  position: relative;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  background: rgba(76, 175, 80, 0.05);
+}
+
+section ul li::before {
+  content: "✓";
+  position: absolute;
+  left: 0.8rem;
+  color: var(--secondary-green);
+  font-weight: bold;
+}
+
+/* Grid Layouts */
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.crop-item {
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--secondary-green);
+  transition: transform 0.2s;
+}
+
+.crop-item:hover {
+  transform: translateY(-5px);
+  background: var(--bg-primary);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.crop-item h3 {
+  color: var(--primary-green);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.crop-item p,
+.crop-item li {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  opacity: 0.8;
+}
+
+/* =========================================
+   Footer Styling
+   ========================================= */
+.site-footer {
+  background: linear-gradient(135deg, #2e7d32, #66bb6a);
+  color: white;
+  padding: 3rem 1.5rem;
+  margin-top: auto;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.footer-links h4 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.social-media {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-media a {
+  width: 35px;
+  height: 35px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+}
+
+/* Floating Button */
+#chatbotBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--secondary-green);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+#chatbotBtn:hover {
+  transform: scale(1.1);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] body {
+  --bg-primary: #1e293b;
+  --bg-secondary: #0f172a;
+  --text-primary: #f8fafc;
+}
+
+[data-theme="dark"] .compact-header {
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .crop-item {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 1rem;
+  }
+
+  .brand-name {
+    display: none; /* Hide text on small screens if needed */
+  }
+}
+
+/* Individual styles for Crop Recommendation page */
+/* --- Cursor Trail Container --- */
+.circle-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999999;
+}
+
+/* --- Individual Trail Circles --- */
+.cursor-circle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ff8c00;
+  box-shadow: 0 0 15px rgba(255, 140, 0, 0.7);
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  mix-blend-mode: screen;
+  transition: transform 0.1s ease-out;
+}
+
+/* --- The Leading "Head" Circle --- */
+.cursor-circle:first-child {
+  width: 14px;
+  height: 14px;
+  background-color: #ffcc00;
+  box-shadow:
+    0 0 20px #ff8c00,
+    0 0 40px rgba(255, 140, 0, 0.5);
+}
+
+/* --- Interaction States --- */
+.cursor-clicking {
+  transform: translate(-50%, -50%) scale(2.5) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 30px #ffffff !important;
+}
+
+.cursor-hovering {
+  transform: translate(-50%, -50%) scale(1.8);
+  background-color: #22c55e; /* AgriTech green */
+  box-shadow: 0 0 20px #22c55e;
+}

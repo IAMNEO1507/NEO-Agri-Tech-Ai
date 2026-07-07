@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <title>AgriTech | Terms & Conditions</title>
+
+  <style>
+    :root {
+      --bg-color: #030712;
+      --text-color: #ffffff;
+      --text-muted: #cbd5e1;
+      --surface-color: rgba(15, 23, 42, 0.9);
+      --section-bg: rgba(30, 41, 59, 0.7);
+      --border-color: #334155;
+      --accent-color: #22c55e;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f8fafc;
+      --text-color: #0f172a;
+      --text-muted: #475569;
+      --surface-color: #ffffff;
+      --section-bg: #f1f5f9;
+      --border-color: #cbd5e1;
+      --accent-color: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.7;
+    }
+
+    header {
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: var(--accent-color);
+      font-size: 1.6rem;
+    }
+
+    button {
+      background: var(--surface-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    section {
+      background: var(--section-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      color: var(--accent-color);
+      margin-bottom: 0.6rem;
+    }
+
+    p {
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent-color);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  pointer-events: none;
+
+  background: radial-gradient(circle, #22c55e 0%, #16a34a 70%, transparent 100%);
+  box-shadow: 0 0 8px #22c55e, 0 0 16px #16a34a;
+
+  animation: sparkleFade 0.6s ease-out forwards;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes sparkleFade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+}
+
+  </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="nav-title">AgriTech</span>
+  </div>
+  <div class="nav-links">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../dashboard.html" class="nav-link">Dashboard</a>
+    <a href="../blog.html" class="nav-link">Blog</a>
+    <a href="../contact.html" class="nav-link">Contact</a>
+    <button onclick="toggleTheme()" class="theme-btn">Toggle Theme</button>
+  </div>
+</nav>
+
+
+<main>
+
+  <section>
+    <p>
+      These Terms and Conditions govern the use of the <strong>AgriTech</strong>
+      website and services. By accessing or using this platform, you agree to
+      comply with these terms.
+    </p>
+  </section>
+
+  <section>
+    <h2>1. Use of the Platform</h2>
+    <p>
+      AgriTech is intended for educational and informational purposes related
+      to agriculture and smart farming technologies.
+    </p>
+    <ul>
+      <li>You agree not to misuse the platform or its services</li>
+      <li>You must not attempt to disrupt or harm the system</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>2. User Responsibilities</h2>
+    <ul>
+      <li>Users are responsible for the accuracy of the information they provide</li>
+      <li>Uploaded images or data should not violate any laws or rights</li>
+      <li>Users must respect community guidelines and other contributors</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Intellectual Property</h2>
+    <p>
+      All content, code, and materials available on AgriTech are protected by
+      applicable intellectual property laws unless stated otherwise.
+    </p>
+  </section>
+
+  <section>
+    <h2>4. Limitation of Liability</h2>
+    <p>
+      AgriTech is provided "as is" without warranties of any kind.
+      We are not responsible for any losses or damages resulting from the use
+      of the platform.
+    </p>
+  </section>
+
+  <section>
+    <h2>5. Third-Party Services</h2>
+    <p>
+      The platform may use third-party services such as APIs or cloud providers.
+      AgriTech is not responsible for the content or policies of these services.
+    </p>
+  </section>
+
+  <section>
+    <h2>6. Changes to Terms</h2>
+    <p>
+      These Terms and Conditions may be updated from time to time.
+      Continued use of the platform implies acceptance of the updated terms.
+    </p>
+  </section>
+
+  <section>
+    <h2>7. Contact Information</h2>
+    <p>
+      If you have any questions regarding these Terms and Conditions, please
+      contact us at:<br>
+      <strong>agritech.opensource@gmail.com</strong>
+    </p>
+  </section>
+
+  <!-- Back to Home -->
+  <section style="text-align: center;">
+    <a href="../index.html" class="back-btn">← Back to Homepage</a>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <img src="../images/logo.png" alt="AgriTech logo" class="footer-logo">
+      <p>Empowering India’s Farming Future 🌱</p>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <a href="../index.html">Home</a>
+      <a href="../dashboard.html">Dashboard</a>
+      <a href="../feedback.html">Feedback</a>
+      <a href="../assistant.html">AI Assistant</a>
+    </div>
+    <div class="footer-tools">
+      <h4>Tools</h4>
+      <a href="../crop-recommendation.html">Crop Recommendation</a>
+      <a href="../yield-prediction.html">Yield Prediction</a>
+      <a href="../disease-detector.html">Disease Detector</a>
+      <a href="../crop-planner.html">Crop Planner</a>
+    </div>
+    <div class="footer-social">
+      <h4>Follow Us</h4>
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 AgriTech • Made for farmers
+  </div>
+</footer>
+
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.setAttribute(
+      "data-theme",
+      html.getAttribute("data-theme") === "dark" ? "light" : "dark"
+    );
+  }
+</script>
+<!-- ===== Universal Back To Top Button (All Pages) ===== -->
+<style>
+  #globalBackToTop {
+    position: fixed;
+    bottom: 90px; /* prevents overlap with chatbot/floating icons */
+    right: 25px;
+    z-index: 9999;
+    display: none;
+    background: #2ecc71;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #globalBackToTop:hover {
+    transform: scale(1.12);
+    background: #27ae60;
+  }
+
+  @media (max-width: 768px) {
+    #globalBackToTop {
+      bottom: 100px; /* better spacing on mobile */
+      right: 18px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+
+  /* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+.nav-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--accent-color);
+}
+
+.theme-btn {
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Footer */
+.footer {
+  background: var(--surface-color);
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.footer-logo {
+  width: 40px;
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a,
+.footer-tools a,
+.footer-social a {
+  display: block;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 0.4rem;
+}
+
+.footer-links a:hover,
+.footer-tools a:hover,
+.footer-social a:hover {
+  color: var(--accent-color);
+}
+
+.footer-bottom {
+  text-align: center;
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+</style>
+
+<button id="globalBackToTop" title="Back to Top">↑</button>
+
+<script>
+  (function () {
+    const btn = document.getElementById("globalBackToTop");
+
+    // Show button after scrolling down
+    window.addEventListener("scroll", function () {
+      if (window.scrollY > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
+
+    // Smooth scroll to top on click
+    btn.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  })();
+</script>
+
+<!-- Sparkle Cursor Script -->
+<script>
+  let sparkleEnabled = true; // toggle state
+
+  document.addEventListener("mousemove", function(e) {
+    if (!sparkleEnabled) return;
+
+    const sparkle = document.createElement("span");
+    sparkle.className = "sparkle";
+    sparkle.style.left = e.pageX + "px";
+    sparkle.style.top = e.pageY + "px";
+    document.body.appendChild(sparkle);
+
+    setTimeout(() => {
+      sparkle.remove();
+    }, 600);
+  });
+
+  // Toggle button
+  function toggleSparkle() {
+    sparkleEnabled = !sparkleEnabled;
+    document.getElementById("sparkleToggle").innerText =
+      sparkleEnabled ? "✨ Sparkle ON" : "✨ Sparkle OFF";
+  }
+</script>
+
+<!-- Toggle Button -->
+<button id="sparkleToggle" onclick="toggleSparkle()" 
+        style="position:fixed;bottom:20px;right:20px;
+               background:#22c55e;color:#fff;border:none;
+               padding:8px 16px;border-radius:999px;
+               font-weight:600;cursor:pointer;">
+  ✨ Sparkle ON
+</button>
+
+<!-- ===== End Back To Top Button ===== -->
+
+</body>
+</html>

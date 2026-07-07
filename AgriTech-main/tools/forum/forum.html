@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Join the AgriTech Community Forum to share advice, ask questions, and discuss farming topics with other farmers." />
+  <title>Community Forum - AgriTech</title>
+
+  <link rel="icon" type="image/png" href="../images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-main: #eef2f7;
+      --bg-accent: rgba(22, 163, 74, 0.12);
+      --surface: rgba(255, 255, 255, 0.78);
+      --surface-strong: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #5b6474;
+      --border: rgba(15, 23, 42, 0.08);
+      --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+      --primary: #16a34a;
+      --primary-strong: #15803d;
+      --primary-soft: rgba(22, 163, 74, 0.12);
+      --ring: rgba(22, 163, 74, 0.22);
+      --card-radius: 24px;
+    }
+
+    html[data-theme='dark'] {
+      --bg-main: #0b1120;
+      --bg-accent: rgba(56, 189, 248, 0.12);
+      --surface: rgba(17, 24, 39, 0.92);
+      --surface-strong: #111827;
+      --text-main: #e5e7eb;
+      --text-muted: #94a3b8;
+      --border: rgba(148, 163, 184, 0.16);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
+      --primary: #22c55e;
+      --primary-strong: #16a34a;
+      --primary-soft: rgba(34, 197, 94, 0.14);
+      --ring: rgba(34, 197, 94, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Outfit', sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at top left, var(--bg-accent), transparent 28%),
+        radial-gradient(circle at top right, rgba(245, 158, 11, 0.08), transparent 24%),
+        linear-gradient(180deg, var(--bg-main), var(--bg-main));
+      line-height: 1.6;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .forum-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .forum-topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .forum-branding {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      min-width: 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: var(--shadow);
+    }
+
+    .forum-title-block {
+      min-width: 0;
+    }
+
+    .forum-eyebrow,
+    .section-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+
+    .forum-title-block h1,
+    .section-heading h2 {
+      font-size: clamp(1.25rem, 2vw, 1.8rem);
+      line-height: 1.2;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      min-height: 44px;
+      padding: 0.75rem 1.05rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-main);
+      border-color: var(--border);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #ffffff;
+      box-shadow: 0 16px 30px rgba(22, 163, 74, 0.24);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 18px 34px rgba(22, 163, 74, 0.28);
+    }
+
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+    }
+
+    .forum-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    .forum-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .create-post-card,
+    .posts-card {
+      padding: 1.5rem;
+    }
+
+    .section-heading {
+      display: grid;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-heading p:last-child {
+      color: var(--text-muted);
+      max-width: 60ch;
+    }
+
+    .section-heading-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .composer-form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .form-group label {
+      display: inline-block;
+      margin-bottom: 0.45rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.9rem 1rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    textarea.form-control {
+      min-height: 180px;
+      resize: vertical;
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    .submit-btn {
+      width: 100%;
+    }
+
+    #forumPosts {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .forum-post,
+    .empty-state-card {
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.2rem 1.25rem;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .forum-post {
+      display: grid;
+      gap: 0.9rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .forum-post:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      color: var(--text-muted);
+      font-size: 0.93rem;
+      flex-wrap: wrap;
+    }
+
+    .author-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .post-title {
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    .post-content {
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.65;
+    }
+
+    .empty-state-card {
+      display: grid;
+      place-items: center;
+      gap: 0.5rem;
+      min-height: 180px;
+      color: var(--text-muted);
+      text-align: center;
+      border-style: dashed;
+    }
+
+    .empty-state-card i {
+      font-size: 1.3rem;
+      color: var(--primary);
+    }
+
+    .empty-state-card p {
+      margin: 0;
+    }
+
+    @media (max-width: 900px) {
+      .forum-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .forum-topbar-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .forum-branding {
+        justify-content: space-between;
+      }
+
+      .nav-actions {
+        justify-content: space-between;
+      }
+
+      .section-heading-row {
+        flex-direction: column;
+      }
+
+      .forum-shell {
+        padding-inline: 1rem;
+      }
+
+      .create-post-card,
+      .posts-card {
+        padding: 1.25rem;
+      }
+
+      .brand span,
+      .back-link span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="forum-topbar">
+    <div class="forum-topbar-inner">
+      <div class="forum-branding">
+        <a href="../index.html" class="brand" aria-label="AgriTech home">
+          <img src="../images/logo.png" alt="AgriTech logo" />
+          <span>AgriTech</span>
+        </a>
+
+        <div class="forum-title-block">
+          <p class="forum-eyebrow">Farmer Forum</p>
+          <h1>Community Forum</h1>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <a href="../index.html" class="btn btn-secondary back-link">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back to Main Page</span>
+        </a>
+
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="forum-shell">
+    <section class="forum-grid" aria-label="Forum content">
+      <article class="card create-post-card">
+        <div class="section-heading">
+          <p class="section-eyebrow">Create a Post</p>
+          <h2>Start a conversation</h2>
+          <p>Share advice, ask a question, or post an update for other farmers.</p>
+        </div>
+
+        <form id="forumForm" class="composer-form">
+          <div class="form-group">
+            <label for="title">Discussion Title</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="e.g., Best organic fertilizer for wheat?" required maxlength="200" />
+          </div>
+
+          <div class="form-group">
+            <label for="author">Your Name</label>
+            <input type="text" id="author" name="author" class="form-control" placeholder="Enter your name" required maxlength="100" />
+          </div>
+
+          <div class="form-group">
+            <label for="content">Message</label>
+            <textarea id="content" name="content" class="form-control" placeholder="Share your experience or ask a question..." required maxlength="5000"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary submit-btn">
+            <i class="fas fa-paper-plane"></i> Post Discussion
+          </button>
+        </form>
+      </article>
+
+      <article class="card posts-card">
+        <div class="section-heading section-heading-row">
+          <div>
+            <p class="section-eyebrow">Recent Posts</p>
+            <h2>Latest community discussions</h2>
+            <p>Browse the newest advice, questions, and shared experiences.</p>
+          </div>
+
+          <button class="btn btn-secondary" type="button" onclick="loadPosts()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+          </button>
+        </div>
+
+        <div id="forumPosts">
+          <div class="empty-state-card">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading discussions...</p>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="forum.js"></script>
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle.querySelector('i');
+
+    function syncThemeIcon() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      themeIcon.classList.toggle('fa-moon', !isDark);
+      themeIcon.classList.toggle('fa-sun', isDark);
+      themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+    }
+
+    syncThemeIcon();
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+      syncThemeIcon();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - AgriTech</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Prevent theme flash on page load -->
+  <script>
+    (function () {
+      const saved = localStorage.getItem('agritech-theme') || localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+    })();
+  </script>
+
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="/css/theme.css">
+</head>
+
+<body
+  style="background-image: url('/images/login.avif'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+  <div class="loginContainer">
+
+    <div class="form-container">
+        <!-- Animated Sun/Moon Toggle -->
+      <div style="position: absolute; top: 20px; right: 20px;">
+        <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+          aria-label="Switch to dark mode">
+          <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <mask id="moon-mask">
+              <rect x="0" y="0" width="100%" height="100%" fill="white" />
+              <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+            </mask>
+            <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+            <g class="sun-rays" stroke="currentColor">
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </g>
+          </svg>
+        </button>
+      </div>
+      <div class="lamp-container">
+        <button id="lampToggle" type="button">💡 ON</button>
+    </div>
+
+      <div id="darkOverlay" class="hidden"></div>
+      <!-- Brand section -->
+      <div class="brand-section">
+        <a href="/pages/index.html" class="brand-icon">
+          <i class="fas fa-seedling"></i>
+        </a>
+        <h2>Login AgriTech</h2>
+        <p class="form-subtitle">Login to get started</p>
+      </div>
+
+      <!-- Login form — unchanged -->
+      <form onsubmit="handleLogin(event)" novalidate>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Enter your password" required minlength="8" aria-describedby="loginPasswordError">
+          <button type="button" class="password-toggle" onclick="togglePassword()">
+            <i class="fas fa-eye" id="password-eye"></i>
+          </button>
+        </div>
+        <div class="field-error" id="loginPasswordError" aria-live="polite"></div>
+
+        <div class="forgot-password">
+          <a href="/pages/auth/forgot-password.html">Forgot Password?</a>
+        </div>
+
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="/pages/auth/register.html">Register</a></p>
+      </form>
+    </div>
+
+  </div>
+
+  <!--
+    CHANGED: auth.js is now type="module" (required for Firebase ESM imports).
+    login.js and theme.js remain normal scripts.
+  -->
+  <script type="module" src="/js/auth.js"></script>
+  <script src="/js/login.js"></script>
+  <script src="/js/theme.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      redirectIfLoggedIn();
+    });
+  </script>
+</body>
+
+</html>

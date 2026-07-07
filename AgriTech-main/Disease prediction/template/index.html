@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Disease Detector - AI-Powered Diagnosis</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+
+    <!-- Prevent theme flash on page load -->
+    <script>
+      (function () {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+      })();
+    </script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../static/index.css" />
+    <link rel="stylesheet" href="../../theme.css" />
+
+    <!-- Loading Overlay Styles -->
+    <style>
+      .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .loading-overlay.active {
+        display: flex;
+      }
+
+      .loader-box {
+        background: #ffffff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+
+      .loader-box p {
+        margin-top: 15px;
+        font-weight: 600;
+        color: #2e7d32;
+      }
+
+      .spinner {
+        width: 48px;
+        height: 48px;
+        border: 5px solid #c8e6c9;
+        border-top-color: #2e7d32;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+       /* Individual styles for Crop Recommendation page */
+   /* --- Cursor Trail Container --- */
+.circle-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999999;
+}
+
+/* --- Individual Trail Circles --- */
+.cursor-circle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #91ff00;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  mix-blend-mode: screen;
+  transition: transform 0.1s ease-out;
+}
+
+/* --- The Leading "Head" Circle --- */
+.cursor-circle:first-child {
+  width: 14px;
+  height: 14px;
+  background-color: #33ff00;
+  box-shadow:
+    0 0 20px #2bff00,
+    0 0 40px rgba(102, 255, 0, 0.5);
+}
+
+/* --- Interaction States --- */
+.cursor-clicking {
+  transform: translate(-50%, -50%) scale(2.5) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 30px #ffffff !important;
+}
+
+.cursor-hovering {
+  transform: translate(-50%, -50%) scale(1.8);
+  background-color: #22c55e; /* AgriTech green */
+  box-shadow: 0 0 20px #22c55e;
+}
+    </style>
+  </head>
+
+  <body>
+    <!-- Background animation -->
+    <div class="background-animation">
+      <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
+      <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
+      <div class="leaf"></div><div class="leaf"></div>
+    </div>
+    <header class="header">
+  <div class="nav-container">
+    <a href="/index.html" class="logo">
+      <img src="../../images/logo.png" alt="AgriTech logo">
+      <span class="logo-text">AgriTech</span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="/index.html">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/community_forum.html">Community Forum</a>
+      <a href="/faq.html">FAQ</a>
+      <a href="/news.html">News</a>
+    </nav>
+
+    <!-- Animated Sun/Moon Toggle -->
+    <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+      aria-label="Switch to dark mode">
+      <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <mask id="moon-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="white" />
+          <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+        </mask>
+        <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+        <g class="sun-rays" stroke="currentColor">
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </g>
+      </svg>
+    </button>
+    
+    <button class="hamburger" id="hamburger">
+  <i class="fas fa-bars"></i>
+</button>
+
+  </div>
+</header>
+
+
+    <!-- Main -->
+    <div class="main-container">
+      <div class="hero-section">
+        <h1 class="hero-title">Plant Disease Detector</h1>
+        <p class="hero-subtitle">
+          Upload a photo of your plant leaf and get instant AI-powered disease
+          diagnosis with treatment recommendations
+        </p>
+      </div>
+
+      <div class="upload-card">
+        <form
+          class="upload-form"
+          action="/predict"
+          method="POST"
+          enctype="multipart/form-data"
+          id="upload-form"
+        >
+          <div class="file-upload-area" id="upload-area">
+            <div class="upload-content">
+              <i class="fas fa-cloud-upload-alt upload-icon"></i>
+              <div class="upload-text">Drop your plant image here</div>
+              <div class="upload-subtext">
+                or click to browse • Supports JPG, PNG, WebP
+              </div>
+            </div>
+            <input
+              type="file"
+              name="file"
+              id="file-input"
+              accept="image/*"
+              required
+            />
+          </div>
+
+          <div class="file-preview" id="file-preview">
+            <img class="preview-image" id="preview-image" alt="Preview" />
+            <div class="file-info">
+              <span id="file-name"></span>
+              <button type="button" class="remove-file" id="remove-file">
+                <i class="fas fa-times"></i> Remove
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submit-btn" disabled>
+            <span class="btn-text">
+              <i class="fas fa-search"></i>
+              Analyze Plant Health
+            </span>
+          </button>
+
+          <p class="error-text" id="file-error">
+            ⚠️ Please upload a valid image file (JPG, PNG, WebP).
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+      <div class="loader-box">
+        <div class="spinner"></div>
+        <p>Analyzing plant image… Please wait</p>
+      </div>
+    </div>
+<!-- Cursor Trail -->
+<div class="circle-container" id="cursorTrail"></div>
+    <!-- Scripts -->
+    <script>
+      const uploadArea = document.getElementById("upload-area");
+      const fileInput = document.getElementById("file-input");
+      const filePreview = document.getElementById("file-preview");
+      const previewImage = document.getElementById("preview-image");
+      const fileName = document.getElementById("file-name");
+      const removeFile = document.getElementById("remove-file");
+      const submitBtn = document.getElementById("submit-btn");
+      const uploadForm = document.getElementById("upload-form");
+      const loadingOverlay = document.getElementById("loading-overlay");
+      const fileError = document.getElementById("file-error");
+
+      uploadArea.addEventListener("click", () => fileInput.click());
+
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          const file = e.target.files[0];
+          if (!file.type.startsWith("image/")) {
+            fileError.style.display = "block";
+            submitBtn.disabled = true;
+            return;
+          }
+
+          fileError.style.display = "none";
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            previewImage.src = evt.target.result;
+            fileName.textContent = file.name;
+            filePreview.classList.add("show");
+            uploadArea.style.display = "none";
+            submitBtn.disabled = false;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      removeFile.addEventListener("click", () => {
+        fileInput.value = "";
+        filePreview.classList.remove("show");
+        uploadArea.style.display = "block";
+        submitBtn.disabled = true;
+        fileError.style.display = "none";
+      });
+
+      uploadForm.addEventListener("submit", () => {
+        loadingOverlay.classList.add("active");
+        submitBtn.disabled = true;
+      });
+    </script>
+   <script>
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
+
+  if (hamburger && navLinks) {
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+  }
+   // --- Cursor Trailing Effect ---
+const container = document.getElementById('cursorTrail');
+const circleCount = 12;
+const circles = [];
+
+let mouseX = 0;
+let mouseY = 0;
+
+// Create circles
+for (let i = 0; i < circleCount; i++) {
+    const circle = document.createElement('div');
+    circle.classList.add('cursor-circle');
+    container.appendChild(circle);
+    circles.push({ el: circle, x: 0, y: 0 });
+}
+
+// Mouse move
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// Click effects
+document.addEventListener('mousedown', () => {
+    circles.forEach(c => c.el.classList.add('cursor-clicking'));
+});
+document.addEventListener('mouseup', () => {
+    circles.forEach(c => c.el.classList.remove('cursor-clicking'));
+});
+
+// Hover effects on interactive elements
+document.addEventListener('mouseover', (e) => {
+    if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.add('cursor-hovering'));
+    }
+});
+document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+        circles.forEach(c => c.el.classList.remove('cursor-hovering'));
+    }
+});
+
+// Animate trailing effect
+function animateCursor() {
+    let x = mouseX;
+    let y = mouseY;
+
+    circles.forEach((circle) => {
+        circle.x += (x - circle.x) * 0.25;
+        circle.y += (y - circle.y) * 0.25;
+
+        circle.el.style.left = circle.x + 'px';
+        circle.el.style.top = circle.y + 'px';
+
+        x = circle.x;
+        y = circle.y;
+    });
+
+    requestAnimationFrame(animateCursor);
+}
+animateCursor();
+</script>
+
+    <script src="../../theme.js"></script>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">
+          © 2026 AgriTech. Empowering farmers with intelligent agriculture solutions.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

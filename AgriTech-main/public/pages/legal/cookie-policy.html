@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AgriTech | Cookie Policy</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+  })();
+</script>
+
+<style>
+:root {
+  --bg: linear-gradient(135deg, #020617, #042f2e);
+  --card: rgba(15, 23, 42, 0.86);
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #22c55e;
+  --border: #334155;
+}
+
+[data-theme="light"] {
+  --bg: linear-gradient(135deg, #f8fafc, #ecfdf5);
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #16a34a;
+  --border: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+.hero {
+  text-align: center;
+  padding: 72px 20px 28px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--accent);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: clamp(2.3rem, 4vw, 3.3rem);
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: var(--muted);
+  max-width: 760px;
+  margin: auto;
+  font-size: 1.05rem;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--muted);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  font-size: 0.85rem;
+}
+
+[data-theme="dark"] .hero-meta span {
+  background: rgba(15, 23, 42, 0.48);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.container {
+  max-width: 950px;
+  margin: auto;
+  padding: 12px 20px 28px;
+}
+
+.policy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.policy-chip {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.policy-chip h3 {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.policy-chip p {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.policy-card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 24px;
+  border-left: 5px solid var(--accent);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.policy-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+}
+
+.policy-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.policy-card p {
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.policy-list {
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.policy-list li {
+  margin-bottom: 6px;
+}
+
+.policy-note {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: var(--muted);
+}
+
+[data-theme="dark"] .policy-note {
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.back-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.back-btn {
+  display: inline-block;
+  padding: 12px 22px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.back-btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  color: var(--text);
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.policy-footer-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.policy-footer-links a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.policy-footer-links a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+  font-size: 0.9rem;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.36);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.56);
+}
+
+@media (max-width: 860px) {
+  .policy-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+<section class="hero">
+  <div class="hero-badge"><i class="fas fa-cookie-bite"></i> Cookie transparency</div>
+  <h1><i class="fas fa-cookie-bite"></i> Cookie Policy</h1>
+  <p>
+    This Cookie Policy explains how AgriTech uses cookies and similar storage to keep the platform secure,
+    remember preferences, and improve your experience.
+  </p>
+  <div class="hero-meta">
+    <span><i class="fas fa-calendar-alt"></i> Effective May 2026</span>
+    <span><i class="fas fa-sliders-h"></i> Preference storage</span>
+    <span><i class="fas fa-shield-alt"></i> Essential functionality first</span>
+  </div>
+</section>
+
+<div class="container">
+  <div class="policy-grid">
+    <div class="policy-chip">
+      <h3>What we store</h3>
+      <p>Theme, language, session, and consent choices may be saved in your browser.</p>
+    </div>
+    <div class="policy-chip">
+      <h3>Why we use it</h3>
+      <p>Cookies and local storage help keep you signed in and make the site easier to use.</p>
+    </div>
+    <div class="policy-chip">
+      <h3>Your control</h3>
+      <p>You can manage or delete browser data through your settings at any time.</p>
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-database"></i> 1. What Cookies and Storage We Use</h2>
+    <p>
+      AgriTech uses essential cookies and browser storage to support core site features. Depending on your device and browser,
+      this may include:
+    </p>
+    <ul class="policy-list">
+      <li>Session cookies for authentication and secure navigation.</li>
+      <li>Preference storage for theme, language, and accessibility choices.</li>
+      <li>Consent storage to remember whether you accepted or limited the cookie banner.</li>
+      <li>Analytics or performance storage, if enabled, to help us understand page usage.</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-chart-line"></i> 2. How We Use Cookies</h2>
+    <ul class="policy-list">
+      <li>To keep you signed in and maintain secure sessions across pages.</li>
+      <li>To remember settings so the platform feels consistent on return visits.</li>
+      <li>To support product feedback, marketplace interactions, and feature improvements.</li>
+      <li>To measure technical performance and fix issues more efficiently.</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-share-alt"></i> 3. Third-Party Cookies</h2>
+    <p>
+      Some embedded tools or external services may place their own cookies or use similar technologies.
+      Those services operate under their own privacy and cookie policies.
+    </p>
+    <div class="policy-note">
+      When possible, AgriTech limits third-party tracking to what is necessary for platform functionality and reliability.
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-user-check"></i> 4. Your Choices</h2>
+    <p>
+      You can accept or limit cookies through the consent banner, and you can also manage them in your browser settings.
+      Disabling some cookies may affect login, preferences, or other features.
+    </p>
+    <ul class="policy-list">
+      <li>Accept all cookies for the full experience.</li>
+      <li>Use essential-only storage to limit non-essential tracking.</li>
+      <li>Clear cookies and local storage whenever you want through your browser controls.</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2><i class="fas fa-lock"></i> 5. Updates and Contact</h2>
+    <p>
+      We may update this Cookie Policy from time to time to reflect technical or legal changes.
+      The latest version will always appear on this page.
+    </p>
+    <p>
+      Questions about cookies or privacy can be sent to:
+      <br><strong>agritech.opensource@gmail.com</strong>
+    </p>
+    <div class="back-row">
+      <a href="/pages/legal/privacy-policy.html" class="back-btn">View Privacy Policy</a>
+      <a href="/pages/legal/terms-and-service.html" class="back-btn secondary">View Terms of Service</a>
+      <a href="/pages/index.html" class="back-btn secondary">Back to Homepage</a>
+    </div>
+    <div class="policy-footer-links">
+      <a href="/pages/legal/privacy-policy.html">Privacy Policy</a>
+      <a href="/pages/legal/terms-and-service.html">Terms of Service</a>
+      <a href="/pages/index.html">Home</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 AgriTech · Cookies • Consent • Clarity
+</footer>
+
+<script src="/js/theme.js"></script>
+
+</body>
+</html>

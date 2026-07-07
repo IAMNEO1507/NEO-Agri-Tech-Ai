@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Prevent theme flash on page load -->
+    <script>
+      (function () {
+        const saved = localStorage.getItem('agritech-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+      })();
+    </script>
+    <link rel="stylesheet" href="/css/weather.css" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <title>Weather Check System</title>
+    <script src="/js/voice-input.js" defer></script>
+
+    <!-- Visually hidden utility class (accessibility only) -->
+    <style>
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header from main branch -->
+    <header role="banner">
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-seedling" aria-hidden="true"></i>
+          <h1>AgriTech</h1>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <!-- Animated Sun/Moon Toggle -->
+          <button class="theme-toggle" type="button" id="themeToggle" title="Switch to dark mode"
+              aria-label="Switch to dark mode">
+              <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <mask id="moon-mask">
+                      <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                      <circle class="moon-bite" cx="14" cy="9" r="14" fill="black" />
+                  </mask>
+                  <circle class="sun-core" cx="12" cy="12" r="7" fill="currentColor" mask="url(#moon-mask)" />
+                  <g class="sun-rays" stroke="currentColor">
+                      <line x1="12" y1="1" x2="12" y2="3" />
+                      <line x1="12" y1="21" x2="12" y2="23" />
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                      <line x1="1" y1="12" x2="3" y2="12" />
+                      <line x1="21" y1="12" x2="23" y2="12" />
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </g>
+              </svg>
+          </button>
+          
+          <a href="/pages/index.html" class="nav-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Home
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Weather box with autocomplete -->
+    <main role="main">
+      <div class="box weather-box">
+        <div class="left general-data">
+          <div class="main">
+            <!-- Your autocomplete feature -->
+            <div class="search-container">
+              <label for="cityInput" class="sr-only">City search</label>
+              <input
+                type="text"
+                id="cityInput"
+                placeholder="Enter a city (by default, New Delhi)"
+                autocomplete="off"
+              />
+              <div
+                id="suggestions"
+                class="suggestions-dropdown"
+                role="listbox"
+                aria-live="polite"
+              ></div>
+            </div>
+            <br />
+            <button id="search">Search</button>
+          </div>
+
+          <div
+            class="general"
+            role="region"
+            aria-labelledby="city"
+            aria-live="polite"
+          >
+            <h3 id="city">City</h3>
+            <h4 id="region">Region</h4>
+            <h5 id="country">Country</h5>
+            <br /><br />
+            <h6 id="description">mostly ---</h6>
+            <p id="temperature">40</p>
+          </div>
+        </div>
+
+        <div class="right predictions-data">
+          <div class="hourly" role="region" aria-label="Hourly weather forecast">
+            <div>
+              <p>Hourly forecast</p>
+            </div>
+            <div class="hour" id="hour" aria-live="polite">
+              <!-- cards are entered dynamically -->
+            </div>
+          </div>
+
+          <div class="daywise" role="region" aria-label="10 day weather forecast">
+            <div>
+              <p>10 days forecast</p>
+            </div>
+            <div class="day" id="day" aria-live="polite">
+              <!-- cards are entered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="/images/logo.png" alt="AgriTech logo" class="footer-logo" />
+          <h3>AgriTech</h3>
+          <p>Empowering India's Farming Future</p>
+          <div class="social-media">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              aria-label="Follow us on Instagram"
+            >
+              <i class="fab fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a
+              href="https://github.com/omroy07"
+              target="_blank"
+              aria-label="View our GitHub repositories"
+            >
+              <i class="fab fa-github" aria-hidden="true"></i>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/om-roy-3b809628a/"
+              target="_blank"
+              aria-label="Connect with us on LinkedIn"
+            >
+              <i class="fab fa-linkedin" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/pages/index.html">Home</a></li>
+            <li><a href="/pages/main.html">Dashboard</a></li>
+            <li><a href="/pages/misc/feed-back.html">Feedback</a></li>
+            <li><a href="/pages/chat.html">AI Assistant</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Tools</h4>
+          <ul>
+            <li><a href="/crop">Crop Recommendation</a></li>
+            <li>
+              <a href="Crop Yield Prediction/crop_yield_app/templates/index.html"
+                >Yield Prediction</a
+              >
+            </li>
+            <li>
+              <a href="Disease prediction/template/index.html"
+                >Disease Detector</a
+              >
+            </li>
+            <li>
+              <a href="Crop_Planning/templates/cropplan.html">Crop Planner</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2025 AgriTech • Made for farmers</div>
+    </footer>
+
+    <!-- Floating Chatbot Button -->
+    <a
+      href="/pages/chat.html"
+      id="chatbotBtn"
+      title="Chat with us"
+      aria-label="AI Assistant"
+    >
+      <i class="fas fa-robot" aria-hidden="true"></i>
+    </a>
+
+    <!-- Cursor Trail -->
+    <div
+      class="circle-container"
+      id="cursorTrail"
+      aria-hidden="true"
+    ></div>
+
+    <script src="/js/weather.js"></script>
+    <script src="/js/theme.js"></script>
+    <script>
+      (function () {
+        function syncDarkClass() {
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          document.body.classList.toggle('dark-theme', isDark);
+        }
+        syncDarkClass();
+        window.addEventListener('themeChanged', syncDarkClass);
+      })();
+    </script>
+
+    <!-- Voice Button Fix Script -->
+    <script>
+      // Fix voice button positioning after page loads
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          const voiceBtn = document.querySelector('.voice-btn');
+          const cityInput = document.getElementById('cityInput');
+          const searchContainer =
+            document.querySelector('.search-container');
+
+          if (voiceBtn && cityInput) {
+            // Force button inside the search container
+            voiceBtn.style.cssText = `
+              position: absolute !important;
+              right: 8px !important;
+              top: 50% !important;
+              transform: translateY(-50%) !important;
+              width: 30px !important;
+              height: 30px !important;
+              min-width: 30px !important;
+              min-height: 30px !important;
+              background: linear-gradient(135deg, #4caf50, #66bb6a) !important;
+              border: none !important;
+              border-radius: 50% !important;
+              z-index: 10 !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              cursor: pointer !important;
+              padding: 0 !important;
+              color: white !important;
+              font-size: 13px !important;
+            `;
+
+            // Force input padding
+            cityInput.style.paddingRight = '45px';
+
+            console.log('✓ Voice button positioned correctly');
+          }
+        }, 300);
+      });
+
+    
+      // --- Cursor Trailing Effect ---
+      const container = document.getElementById('cursorTrail');
+      const circleCount = 12;
+      const circles = [];
+
+      let mouseX = 0;
+      let mouseY = 0;
+
+      // Create circles
+      for (let i = 0; i < circleCount; i++) {
+        const circle = document.createElement('div');
+        circle.classList.add('cursor-circle');
+        container.appendChild(circle);
+        circles.push({ el: circle, x: 0, y: 0 });
+      }
+
+      // Mouse move
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      // Click effects
+      document.addEventListener('mousedown', () => {
+        circles.forEach((c) => c.el.classList.add('cursor-clicking'));
+      });
+      document.addEventListener('mouseup', () => {
+        circles.forEach((c) => c.el.classList.remove('cursor-clicking'));
+      });
+
+      // Hover effects on interactive elements
+      document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+          circles.forEach((c) => c.el.classList.add('cursor-hovering'));
+        }
+      });
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, .cta-button, .service-card, .shipment-card')) {
+          circles.forEach((c) => c.el.classList.remove('cursor-hovering'));
+        }
+      });
+
+      // Animate trailing effect
+      function animateCursor() {
+        let x = mouseX;
+        let y = mouseY;
+
+        circles.forEach((circle) => {
+          circle.x += (x - circle.x) * 0.25;
+          circle.y += (y - circle.y) * 0.25;
+
+          circle.el.style.left = circle.x + 'px';
+          circle.el.style.top = circle.y + 'px';
+
+          x = circle.x;
+          y = circle.y;
+        });
+
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+    </script>
+    <!-- ===== Universal Back To Top Button (All Pages) ===== -->
+<style>
+  #globalBackToTop {
+    position: fixed;
+    bottom: 90px; /* prevents overlap with chatbot/floating icons */
+    right: 25px;
+    z-index: 9999;
+    display: none;
+    background: #2ecc71;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #globalBackToTop:hover {
+    transform: scale(1.12);
+    background: #27ae60;
+  }
+
+  @media (max-width: 768px) {
+    #globalBackToTop {
+      bottom: 100px; /* better spacing on mobile */
+      right: 18px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+</style>
+
+<button id="globalBackToTop" title="Back to Top">↑</button>
+
+<script>
+  (function () {
+    const btn = document.getElementById("globalBackToTop");
+
+    // Show button after scrolling down
+    window.addEventListener("scroll", function () {
+      if (window.scrollY > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
+
+    // Smooth scroll to top on click
+    btn.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  })();
+</script>
+<!-- ===== End Back To Top Button ===== -->
+
+  </body>
+</html>

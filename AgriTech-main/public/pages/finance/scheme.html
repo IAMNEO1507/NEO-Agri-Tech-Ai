@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Govt Schemes & Subsidy Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --secondary: #1b5e20;
+      --bg: #f1f5f3;
+      --card: rgba(255, 255, 255, 0.9);
+      --text: #333333;
+      --label: #1b5e20;
+      --input-bg: #ffffff;
+      --input-border: #cccccc;
+      --danger: #d32f2f;
+      --success: #2e7d32;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+    }
+
+    /* DARK THEME VARIABLES */
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f3;
+      --label: #4caf50;
+      --input-bg: #0f172a;
+      --input-border: #334155;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .serif {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -1px;
+
+      /* Background Image */
+      background-image: url("/assets/bg.png");
+      /* put your image path */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      /* Make text transparent & show bg inside */
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+
+      /* Smooth moving animation */
+      animation: moveBg 15s linear infinite;
+    }
+
+    @keyframes moveBg {
+      0% {
+        background-position: 0% center;
+      }
+
+      50% {
+        background-position: 100% center;
+      }
+
+      100% {
+        background-position: 0% center;
+      }
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 24px 30px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: 800
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* THEME TOGGLE STYLE */
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.2);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      flex: 1;
+      /* pushes right items safely */
+    }
+
+    header a {
+      background: #fff;
+      color: var(--primary);
+      padding: 10px 22px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: all 0.3s ease;
+    }
+
+    header a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+
+    /* ===============================
+   FORM SECTION FIXED
+================================ */
+
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 35px 20px 20px;
+      width: 100%;
+    }
+
+    .form-card {
+      background: var(--card);
+      max-width: 820px;
+      width: 100%;
+      padding: 45px;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    /* Heading */
+    .form-card h2 {
+      text-align: center;
+      font-size: 2.3rem;
+      font-weight: 800;
+      margin-bottom: 35px;
+      color: var(--primary);
+      line-height: 1.3;
+    }
+
+    [data-theme="dark"] .form-card h2 {
+      color: #4ade80;
+    }
+
+    /* Labels */
+    label {
+      display: block;
+      margin-top: 22px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--label);
+    }
+
+    /* Inputs + Select */
+    select,
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 2px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    /* Placeholder visible */
+    input::placeholder {
+      color: #94a3b8;
+      opacity: 1;
+    }
+
+    /* Focus effect */
+    select:focus,
+    input:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+    }
+
+    /* Dropdown options */
+    select option {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    [data-theme="dark"] select option {
+      background: #1e293b;
+      color: #f8fafc;
+    }
+
+    /* Button */
+    .form-card button {
+      width: 100%;
+      margin-top: 32px;
+      padding: 16px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.25);
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+
+      .hero {
+        padding: 20px 14px;
+      }
+
+      .form-card {
+        padding: 28px 22px;
+        border-radius: 20px;
+      }
+
+      .form-card h2 {
+        font-size: 1.7rem;
+        margin-bottom: 25px;
+      }
+
+      select,
+      input {
+        padding: 14px 16px;
+        font-size: 16px;
+      }
+
+      .form-card button {
+        padding: 15px;
+        font-size: 1rem;
+      }
+    }
+
+    select option {
+      background: var(--card);
+      color: var(--text);
+    }
+
+    /* better visibility in dark mode */
+    [data-theme="dark"] select option {
+      background: #1e293b;
+      color: #f1f5f3;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+    }
+
+    /* ===============================
+   SUBMIT BUTTON
+================================ */
+    .form-card button {
+      width: 100%;
+      margin-top: 2.5rem;
+      padding: 1.2rem;
+      font-size: 1.15rem;
+      font-weight: 900;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .form-card button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ===============================
+   SCHEME LIST
+================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .eligibility-status {
+      margin-top: 18px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-weight: 700;
+      display: none;
+    }
+
+    .eligibility-status.info {
+      display: block;
+      background: rgba(25, 118, 210, 0.12);
+      color: #1565c0;
+    }
+
+    .eligibility-status.success {
+      display: block;
+      background: rgba(46, 125, 50, 0.12);
+      color: #2e7d32;
+    }
+
+    .eligibility-status.warning {
+      display: block;
+      background: rgba(211, 47, 47, 0.12);
+      color: #c62828;
+    }
+
+    .results-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 18px 0 8px;
+    }
+
+    .results-toolbar h3 {
+      font-size: 1.15rem;
+      color: var(--primary);
+    }
+
+    .results-count {
+      font-weight: 700;
+      color: var(--text);
+      opacity: 0.8;
+    }
+
+    .results-toolbar.hidden {
+      display: none;
+    }
+
+    .scheme {
+      background: var(--card);
+      border-left: 8px solid var(--primary);
+      padding: 2rem;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .scheme:hover {
+      transform: translateY(-4px);
+    }
+
+    .scheme h3 {
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
+      color: var(--primary);
+    }
+
+    .scheme p {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    /* ===============================
+   RESPONSIVE
+================================ */
+    @media (max-width: 768px) {
+      .form-card {
+        padding: 2.2rem;
+      }
+
+      .form-card h2 {
+        font-size: 1.7rem;
+      }
+    }
+
+    /* SCHEMES */
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 50px 20px
+    }
+
+    .scheme {
+      background: var(--card);
+      border-left: 10px solid var(--primary);
+      padding: 32px;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+      transition: background 0.3s ease;
+    }
+
+    .scheme h3 {
+      font-size: 26px;
+      color: var(--label)
+    }
+
+    .scheme p {
+      font-size: 19px;
+      margin: 6px 0
+    }
+
+    .eligible {
+      color: var(--success);
+      font-weight: 900;
+      font-size: 20px
+    }
+
+    .not-eligible {
+      color: var(--danger);
+      font-weight: 900;
+      font-size: 20px
+    }
+
+    .deadline {
+      color: #b71c1c;
+      font-weight: 800
+    }
+
+    .results-empty {
+      display: none;
+      background: var(--card);
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .results-empty.show {
+      display: block;
+    }
+
+    .results-empty-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .results-empty-title {
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .results-empty-copy {
+      margin-bottom: 18px;
+    }
+
+    [data-theme="dark"] .deadline {
+      color: #ff5252;
+    }
+
+    .hero::before {
+      pointer-events: none;
+    }
+
+    .scheme h3 {
+      font-size: 26px;
+      color: #1b5e20
+    }
+
+    .scheme p {
+      font-size: 19px;
+      margin: 6px 0
+    }
+
+    .eligible {
+      color: var(--success);
+      font-weight: 900;
+      font-size: 20px
+    }
+
+    .not-eligible {
+      color: var(--danger);
+      font-weight: 900;
+      font-size: 20px
+    }
+
+    .deadline {
+      color: #b71c1c;
+      font-weight: 800
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* BUTTONS */
+    .apply {
+      padding: 12px 26px;
+      font-size: 17px;
+      border-radius: 30px;
+      font-weight: 800;
+      text-decoration: none;
+      background: #1976d2;
+      color: #fff;
+    }
+
+    .apply.disabled {
+      background: #bdbdbd;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .docs,
+    .reminder {
+      padding: 12px 26px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+    }
+
+    .docs {
+      background: #6a1b9a;
+      color: #fff
+    }
+
+    .reminder {
+      background: var(--primary);
+      color: #fff
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--card);
+      color: var(--text);
+      padding: 40px;
+      border-radius: 26px;
+      max-width: 520px;
+      width: 90%;
+    }
+
+    .modal-content h3 {
+      color: var(--primary);
+      margin-bottom: 20px
+    }
+
+    [data-theme="dark"] .modal-content h3 {
+      color: var(--label);
+    }
+
+    .modal-content ul {
+      padding-left: 20px
+    }
+
+    .modal-content li {
+      font-size: 17px;
+      margin-bottom: 8px
+    }
+
+    .close {
+      margin-top: 25px;
+      background: var(--primary);
+      color: #fff;
+      padding: 14px;
+      border-radius: 30px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    @media(max-width:768px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .form-card {
+        padding: 30px
+      }
+
+      .form-card h2 {
+        font-size: 26px
+      }
+    }
+
+    /* --- Cursor Trail Container --- */
+    .circle-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999999;
+    }
+
+    /* --- Individual Trail Circles --- */
+    .cursor-circle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #2bff00;
+      box-shadow: 0 0 15px rgba(0, 255, 13, 0.7);
+      transform: translate(-50%, -50%);
+      will-change: transform;
+      mix-blend-mode: screen;
+      transition: transform 0.1s ease-out;
+    }
+
+    /* --- The Leading "Head" Circle --- */
+    .cursor-circle:first-child {
+      width: 14px;
+      height: 14px;
+      background-color: #15ff00;
+      box-shadow:
+        0 0 20px #00ff0d,
+        0 0 40px rgba(9, 255, 0, 0.5);
+    }
+
+    /* --- Interaction States --- */
+    .cursor-clicking {
+      transform: translate(-50%, -50%) scale(2.5) !important;
+      background-color: #ffffff !important;
+      box-shadow: 0 0 30px #ffffff !important;
+    }
+
+    .cursor-hovering {
+      transform: translate(-50%, -50%) scale(1.8);
+      background-color: #22c55e;
+      /* AgriTech green */
+      box-shadow: 0 0 20px #22c55e;
+    }
+
+    /* ===== Floating Language Button ===== */
+    #langFloatBtn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      z-index: 9999;
+    }
+
+    #langPanel {
+      position: fixed;
+      bottom: 95px;
+      right: 25px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+      min-width: 160px;
+    }
+
+    #langPanel h4 {
+      margin-bottom: 8px;
+      font-size: 15px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    #langPanel button {
+      border: none;
+      border-radius: 20px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    [data-theme="dark"] #langPanel button {
+      background: #1e293b;
+      color: #4caf50;
+    }
+
+    /* ===== FINAL FIX FOR SCHEME FORM ===== */
+
+    /* Fix heading not visible */
+    .form-card h2 {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+
+      color: #2e7d32 !important;
+      font-size: 2.2rem !important;
+      font-weight: 800 !important;
+      text-align: center !important;
+
+      margin-bottom: 32px !important;
+    }
+
+    /* Dark mode heading */
+    [data-theme="dark"] .form-card h2 {
+      color: #4ade80 !important;
+    }
+
+    /* Fix labels */
+    .form-card label {
+      color: #166534 !important;
+      font-weight: 700;
+    }
+
+    /* Fix select + input text visibility */
+    .form-card select,
+    .form-card input {
+      background: #2d2d2d !important;
+      color: #ffffff !important;
+      border: 2px solid #4caf50 !important;
+    }
+
+    /* Placeholder visible */
+    .form-card input::placeholder {
+      color: #d1d5db !important;
+      opacity: 1 !important;
+    }
+
+    /* Dropdown text visible */
+    .form-card select option {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    /* Dark mode dropdown */
+    [data-theme="dark"] .form-card select option {
+      background: #1e293b;
+      color: #ffffff;
+    }
+
+    /* Fix top spacing */
+    .hero {
+      padding-top: 30px !important;
+      align-items: flex-start !important;
+    }
+
+    /* Mobile fix */
+    @media (max-width: 768px) {
+
+      .form-card {
+        padding: 24px !important;
+      }
+
+      .form-card h2 {
+        font-size: 1.7rem !important;
+      }
+    }
+
+    /* ===== FORCE SHOW HEADING ===== */
+
+    .eligibility-heading {
+      display: block !important;
+      position: relative !important;
+      z-index: 100 !important;
+
+      width: 100%;
+      text-align: center;
+
+      font-size: 2.3rem !important;
+      font-weight: 800 !important;
+      line-height: 1.3;
+
+      color: #2e7d32 !important;
+
+      margin-bottom: 35px !important;
+      margin-top: 0 !important;
+
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    [data-theme="dark"] .eligibility-heading {
+      color: #4ade80 !important;
+    }
+
+    /* ===== FIX HEADING UNDER NAVBAR ===== */
+
+.hero {
+  padding-top: 120px !important;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 140px !important;
+  }
+}
+    .hero {
+      padding-top: 120px !important;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding-top: 140px !important;
+      }
+    }
+
+    /* ===== Back Home Button ===== */
+
+    .top-nav-btn {
+      max-width: 1200px;
+      margin: 20px auto 10px;
+      padding: 0 20px;
+
+      position: relative;
+      z-index: 20;
+    }
+
+    .top-nav-btn a {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: white;
+
+      text-decoration: none;
+      font-weight: 700;
+
+      padding: 12px 22px;
+      border-radius: 40px;
+
+      transition: all 0.3s ease;
+    }
+
+    .top-nav-btn a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+
+      .top-nav-btn {
+        margin-top: 130px;
+      }
+
+      .top-nav-btn a {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* ================================
+   Sparkle Cursor Effect (Green Theme)
+
+    .sparkle-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999999;
+    }
+
+    /* main trailing sparkles */
+    .sparkle {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #22c55e, #16a34a, transparent);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+      transform: translate(-50%, -50%);
+      will-change: transform;
+      opacity: 0.9;
+      filter: blur(0.2px);
+    }
+
+    /* burst particles */
+    .sparkle-burst {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #bbf7d0, #22c55e, transparent);
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.9);
+      pointer-events: none;
+      animation: burstAnim 0.6s ease-out forwards;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes burstAnim {
+      0% {
+        transform: scale(1) translate(-50%, -50%);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(3) translate(-50%, -50%);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Include Navbar -->
+  <div w3-include-html="/pages/misc/navbar.html"></div>
+
+  <section class="hero">
+    <div class="form-card">
+
+      <h2 class="eligibility-heading" data-i18n data-i18n-en="Check Your Scheme Eligibility"
+        data-i18n-hi="अपनी योजना पात्रता जांचें">
+        Check Your Scheme Eligibility
+      </h2>
+
+      <label data-i18n data-i18n-en="State" data-i18n-hi="राज्य">
+        State
+      </label>
+
+      <select id="state" aria-label="State">
+        <option data-i18n data-i18n-en="India" data-i18n-hi="भारत">India</option>
+        <option>Karnataka</option>
+        <option>Maharashtra</option>
+        <option>Tamil Nadu</option>
+        <option>Uttar Pradesh</option>
+        <option>Bihar</option>
+        <option>Punjab</option>
+        <option>Haryana</option>
+        <option>Rajasthan</option>
+        <option>Madhya Pradesh</option>
+        <option>Telangana</option>
+        <option>Andhra Pradesh</option>
+      </select>
+
+      <label data-i18n data-i18n-en="Land Holding (acres)" data-i18n-hi="भूमि धारणा (एकड़)">
+        Land Holding (acres)
+      </label>
+
+      <input type="number" id="land" placeholder="Example: 2.5" data-i18n-placeholder
+        data-i18n-placeholder-en="Example: 2.5" data-i18n-placeholder-hi="उदाहरण: 2.5">
+
+      <button type="button" onclick="checkEligibility()" data-i18n data-i18n-en="Find Eligible Schemes"
+        data-i18n-hi="पात्र योजनाएं खोजें">
+        Find Eligible Schemes
+      </button>
+
+      <div id="eligibilityStatus" class="eligibility-status" aria-live="polite"></div>
+
+    </div>
+  </section>
+
+  <div class="container" id="schemeList"></div>
+
+  <div class="container">
+    <div class="results-toolbar hidden" id="resultsToolbar">
+      <h3 id="resultsHeading">Eligible Schemes</h3>
+      <div class="results-count" id="resultsCount"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="noResultsState" class="results-empty">
+      <div class="results-empty-icon">🔍</div>
+      <h3 class="results-empty-title">No eligible schemes found</h3>
+      <p class="results-empty-copy">Try changing the state or land holding to see matching schemes.</p>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3 id="modalTitle"></h3>
+      <div id="modalBody"></div>
+      <div class="close" onclick="closeModal()">Close</div>
+    </div>
+  </div>
+  <!-- Floating Language Button -->
+  <div id="langFloatBtn">🌐</div>
+
+  <!-- Floating Language Panel -->
+  <div id="langPanel">
+    <h4>Select Language</h4>
+    <button onclick="setLanguage('en')">English</button>
+    <button onclick="setLanguage('hi')">हिंदी</button>
+  </div>
+
+  <!-- Cursor Trail -->
+  <div class="circle-container" id="cursorTrail"></div>
+
+  </div>
+  <!-- Floating Language Button -->
+  <div id="langFloatBtn">🌐</div>
+
+  <!-- Floating Language Panel -->
+  <div id="langPanel">
+    <h4>Select Language</h4>
+    <button onclick="setLanguage('en')">English</button>
+    <button onclick="setLanguage('hi')">हिंदी</button>
+  </div>
+
+  <!-- Cursor Trail -->
+  <div class="circle-container" id="cursorTrail"></div>
+  <div class="top-nav-btn">
+    <a href="/pages/index.html">
+      <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </a>
+  </div>
+
+  <script>
+    let currentLang = localStorage.getItem("site-lang") || "en";
+
+    // --- SCHEMES DATA ---
+    const schemes = [
+      {
+        key: "pmkisan",
+        name: { en: "PM-KISAN", hi: "पीएम-किसान" },
+        max: 5, states: ["India"], deadline: "2026-03-31",
+        desc: { en: "₹6000 annual income support to farmers.", hi: "किसानों को ₹6000 वार्षिक आय सहायता।" },
+        link: "https://pmkisan.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Land Ownership Proof", "Bank Passbook"],
+          hi: ["आधार कार्ड", "भूमि स्वामित्व प्रमाण", "बैंक पासबुक"]
+        }
+      },
+      {
+        key: "pmfby",
+        name: { en: "PMFBY Crop Insurance", hi: "प्रधानमंत्री फसल बीमा योजना" },
+        max: 999, states: ["India"], deadline: "2026-01-31",
+        desc: { en: "Crop insurance at low premium rates.", hi: "कम प्रीमियम पर फसल बीमा।" },
+        link: "https://pmfby.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Land Records", "Crop Sowing Proof"],
+          hi: ["आधार कार्ड", "भूमि रिकॉर्ड", "फसल बुवाई प्रमाण"]
+        }
+      },
+      {
+        key: "kcc",
+        name: { en: "Kisan Credit Card", hi: "किसान क्रेडिट कार्ड" },
+        max: 999, states: ["India"], deadline: "2026-06-30",
+        desc: { en: "Short-term credit for agriculture needs.", hi: "कृषि जरूरतों के लिए अल्पकालिक ऋण।" },
+        link: "https://www.nabard.org",
+        docs: {
+          en: ["Aadhaar Card", "Bank Account", "Land Documents"],
+          hi: ["आधार कार्ड", "बैंक खाता", "भूमि दस्तावेज"]
+        }
+      },
+      {
+        key: "soil",
+        name: { en: "Soil Health Card", hi: "मृदा स्वास्थ्य कार्ड" },
+        max: 999, states: ["India"], deadline: "2026-12-31",
+        desc: { en: "Free soil testing & recommendations.", hi: "मुफ्त मिट्टी परीक्षण और सिफारिशें।" },
+        link: "https://soilhealth.dac.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Land Details"],
+          hi: ["आधार कार्ड", "भूमि विवरण"]
+        }
+      },
+      {
+        key: "kusum",
+        name: { en: "PM Kusum – Solar Pump", hi: "पीएम कुसुम – सोलर पंप" },
+        max: 8, states: ["Rajasthan", "MP", "Maharashtra"],
+        deadline: "2026-05-31",
+        desc: { en: "Subsidy for solar irrigation pumps.", hi: "सोलर सिंचाई पंप पर सब्सिडी।" },
+        link: "https://pmkusum.mnre.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Electricity Bill", "Land Proof"],
+          hi: ["आधार कार्ड", "बिजली बिल", "भूमि प्रमाण"]
+        }
+      },
+      {
+        key: "drip",
+        name: { en: "Drip Irrigation Subsidy", hi: "ड्रिप सिंचाई सब्सिडी" },
+        max: 10, states: ["Karnataka", "TN", "Maharashtra"],
+        deadline: "2026-02-28",
+        desc: { en: "Water-efficient irrigation systems.", hi: "जल-कुशल सिंचाई प्रणाली।" },
+        link: "https://pmksy.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Land Records", "Quotation"],
+          hi: ["आधार कार्ड", "भूमि रिकॉर्ड", "कोटेशन"]
+        }
+      },
+      {
+        key: "organic",
+        name: { en: "Organic Farming Scheme", hi: "जैविक खेती योजना" },
+        max: 7, states: ["MP", "Bihar", "Rajasthan"],
+        deadline: "2026-04-30",
+        desc: { en: "Support for organic inputs & certification.", hi: "जैविक इनपुट और प्रमाणन के लिए सहायता।" },
+        link: "https://pgsindia-ncof.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Land Proof", "Farmer Photo"],
+          hi: ["आधार कार्ड", "भूमि प्रमाण", "किसान फोटो"]
+        }
+      },
+      {
+        key: "mechanization",
+        name: { en: "Farm Mechanization", hi: "कृषि यंत्रीकरण" },
+        max: 10, states: ["Punjab", "Haryana", "UP"],
+        deadline: "2026-02-15",
+        desc: { en: "Subsidy on farm machinery.", hi: "कृषि मशीनरी पर सब्सिडी।" },
+        link: "https://agrimachinery.nic.in",
+        docs: {
+          en: ["Aadhaar Card", "Land Records", "Equipment Quotation"],
+          hi: ["आधार कार्ड", "भूमि रिकॉर्ड", "उपकरण कोटेशन"]
+        }
+      },
+      {
+        key: "seed",
+        name: { en: "Seed Subsidy Scheme", hi: "बीज सब्सिडी योजना" },
+        max: 6, states: ["Telangana", "TN", "AP"],
+        deadline: "2026-01-20",
+        desc: { en: "Certified seed subsidy for farmers.", hi: "प्रमाणित बीज पर सब्सिडी।" },
+        link: "https://seednet.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Farmer ID", "Land Proof"],
+          hi: ["आधार कार्ड", "किसान आईडी", "भूमि प्रमाण"]
+        }
+      },
+      {
+        key: "matsya",
+        name: { en: "Matsya Sampada Yojana", hi: "मत्स्य संपदा योजना" },
+        max: 999, states: ["India"],
+        deadline: "2026-08-31",
+        desc: { en: "Financial assistance for fisheries.", hi: "मत्स्य पालन के लिए वित्तीय सहायता।" },
+        link: "https://pmmsy.dof.gov.in",
+        docs: {
+          en: ["Aadhaar Card", "Bank Passbook", "Fisheries Registration"],
+          hi: ["आधार कार्ड", "बैंक पासबुक", "मत्स्य पंजीकरण"]
+        }
+      }
+    ];
+
+    // --- INCLUDE HTML (NAVBAR/FOOTER) ---
+    function includeHTML(callback) {
+      var z, i, elmnt, file, xhttp;
+      z = document.getElementsByTagName("*");
+      for (i = 0; i < z.length; i++) {
+        elmnt = z[i];
+        file = elmnt.getAttribute("w3-include-html");
+        if (file) {
+          xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function () {
+            if (this.readyState == 4) {
+              if (this.status == 200) { elmnt.innerHTML = this.responseText; }
+              if (this.status == 404) { elmnt.innerHTML = "Page not found."; }
+              elmnt.removeAttribute("w3-include-html");
+              includeHTML(callback);
+              if (callback) callback();
+            }
+          }
+          xhttp.open("GET", file, true);
+          xhttp.send();
+          return;
+        }
+      }
+      if (callback) callback(); // no includes left
+    }
+
+    // --- INIT FUNCTIONS ---
+    function initHamburgerMenu() {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const overlay = document.getElementById('mobileMenuOverlay');
+
+      if (!hamburgerBtn || !mobileMenu || !overlay) return;
+
+      hamburgerBtn.addEventListener('click', () => {
+        mobileMenu.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+
+      overlay.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    }
+
+    function initThemeToggle() {
+      const toggleBtn = document.getElementById('themeToggle');
+      const label = toggleBtn?.querySelector('.theme-label');
+      const icon = toggleBtn?.querySelector('i');
+      if (!toggleBtn) return;
+
+      function updateUI(theme) {
+        if (theme === 'dark') { label.textContent = 'Dark'; icon.classList.replace('fa-moon', 'fa-sun'); }
+        else { label.textContent = 'Light'; icon.classList.replace('fa-sun', 'fa-moon'); }
+      }
+
+      const savedTheme = localStorage.getItem('agritech-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateUI(savedTheme);
+
+      toggleBtn.addEventListener('click', () => {
+        const html = document.documentElement;
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('agritech-theme', next);
+        updateUI(next);
+      });
+    }
+
+    function initLanguageSystem() {
+      const langBtn = document.getElementById("langFloatBtn");
+      const langPanel = document.getElementById("langPanel");
+      if (!langBtn || !langPanel) return;
+
+      langBtn.onclick = () => {
+        langPanel.style.display = langPanel.style.display === "flex" ? "none" : "flex";
+      };
+
+      function applyLanguage(lang) {
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          if (lang === "hi" && el.dataset.i18nHi) el.textContent = el.dataset.i18nHi;
+          else if (el.dataset.i18nEn) el.textContent = el.dataset.i18nEn;
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+          if (lang === "hi" && el.dataset.i18nPlaceholderHi) el.placeholder = el.dataset.i18nPlaceholderHi;
+          else if (el.dataset.i18nPlaceholderEn) el.placeholder = el.dataset.i18nPlaceholderEn;
+        });
+      }
+
+      window.setLanguage = function (lang) {
+        localStorage.setItem("site-lang", lang);
+        currentLang = lang;
+        applyLanguage(lang);
+        checkEligibility(); // re-render schemes
+        langPanel.style.display = "none";
+      };
+
+      const saved = localStorage.getItem("site-lang") || "en";
+      applyLanguage(saved);
+    }
+
+    // --- SCHEME RENDER & ELIGIBILITY ---
+    function checkEligibility() {
+      const state = document.getElementById("state")?.value?.trim() || "";
+      const landInput = document.getElementById("land")?.value;
+      const land = parseFloat(landInput);
+      const list = document.getElementById("schemeList");
+      const status = document.getElementById('eligibilityStatus');
+      const toolbar = document.getElementById('resultsToolbar');
+      const resultsCount = document.getElementById('resultsCount');
+      const noResultsState = document.getElementById('noResultsState');
+      if (!list) return;
+      if (status) {
+        status.className = 'eligibility-status';
+      }
+
+      if (!state) {
+        list.innerHTML = '';
+        if (toolbar) toolbar.style.display = 'none';
+        if (noResultsState) noResultsState.classList.remove('show');
+        if (status) {
+          status.textContent = currentLang === 'hi' ? 'कृपया एक राज्य चुनें.' : 'Please select a state.';
+          status.classList.add('warning');
+        }
+        return;
+      }
+
+      if (!Number.isFinite(land) || land <= 0) {
+        list.innerHTML = '';
+        if (toolbar) toolbar.style.display = 'none';
+        if (noResultsState) noResultsState.classList.remove('show');
+        if (status) {
+          status.textContent = currentLang === 'hi' ? 'कृपया मान्य भूमि धारणा दर्ज करें.' : 'Please enter a valid land holding value.';
+          status.classList.add('warning');
+        }
+        return;
+      }
+
+      const eligibleSchemes = schemes.filter(s => {
+        const stateMatches = s.states.includes('India') || s.states.includes(state);
+        return land <= s.max && stateMatches;
+      });
+
+      list.innerHTML = '';
+
+      if (toolbar) toolbar.style.display = 'flex';
+      if (resultsCount) {
+        resultsCount.textContent = `${eligibleSchemes.length} ${currentLang === 'hi' ? 'योजनाएं मिलीं' : 'schemes found'}`;
+      }
+
+      if (eligibleSchemes.length === 0) {
+        if (noResultsState) noResultsState.classList.add('show');
+        if (status) {
+          status.textContent = currentLang === 'hi' ? 'कोई पात्र योजना नहीं मिली।' : 'No eligible schemes matched your inputs.';
+          status.classList.add('info');
+        }
+      } else {
+        if (noResultsState) noResultsState.classList.remove('show');
+        if (status) {
+          status.textContent = currentLang === 'hi' ? 'पात्र योजनाएं नीचे दिखाई गई हैं।' : 'Eligible schemes are shown below.';
+          status.classList.add('success');
+        }
+      }
+
+      eligibleSchemes.forEach(s => {
+        const name = s.name[currentLang] || s.name.en;
+        const desc = s.desc[currentLang] || s.desc.en;
+        const deadlineText = currentLang === "hi" ? "अंतिम तिथि" : "Deadline";
+        const applyText = currentLang === "hi" ? "📝 आवेदन करें" : "📝 Apply Now";
+        const docsText = currentLang === "hi" ? "📄 दस्तावेज़" : "📄 Documents";
+        const reminderText = currentLang === "hi" ? "⏰ रिमाइंडर" : "⏰ Reminder";
+
+        list.innerHTML += `
+      <div class="scheme">
+        <h3>${name}</h3>
+        <p>${desc}</p>
+        <p class="eligible">${currentLang === "hi" ? "✔ पात्र" : "✔ Eligible"}</p>
+        <p class="deadline">${deadlineText}: ${s.deadline}</p>
+        <div class="actions">
+          <a href="${s.link}" target="_blank" rel="noopener noreferrer" class="apply">${applyText}</a>
+          <button class="docs" onclick="showDocs('${s.key}')">${docsText}</button>
+          <button class="reminder" onclick="showMsg('${name}')">${reminderText}</button>
+        </div>
+      </div>
+    `;
+      });
+
+      if (eligibleSchemes.length > 0) {
+        setTimeout(() => {
+          list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+
+    function showDocs(key) {
+      const scheme = schemes.find(s => s.key === key);
+      if (!scheme) return;
+      const docs = scheme.docs[currentLang] || scheme.docs.en;
+
+      document.getElementById("modalTitle").innerText = (scheme.name[currentLang] || scheme.name.en) + (currentLang === "hi" ? " – आवश्यक दस्तावेज़" : " – Required Documents");
+      document.getElementById("modalBody").innerHTML = "<ul>" + docs.map(d => `<li>${d}</li>`).join("") + "</ul>";
+      document.getElementById("modal").style.display = "flex";
+    }
+    function closeModal() { document.getElementById("modal").style.display = "none"; }
+
+    function showMsg(name) {
+      alert(currentLang === 'hi'
+        ? `${name} के लिए रिमाइंडर सेट किया गया।`
+        : `Reminder set for ${name}.`);
+    }
+
+    // --- SEARCH FUNCTION ---
+    function initSearch() {
+      const searchInput = document.getElementById('navbarSearch');
+      if (!searchInput) return;
+      searchInput.addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        const schemeCards = document.querySelectorAll('#schemeList .scheme');
+        schemeCards.forEach(card => {
+          const name = card.querySelector('h3')?.innerText.toLowerCase() || "";
+          const desc = card.querySelector('p')?.innerText.toLowerCase() || "";
+          card.style.display = (name.includes(query) || desc.includes(query)) ? 'block' : 'none';
+        });
+      });
+    }
+
+    // --- RUN AFTER DOM LOAD ---
+    document.addEventListener("DOMContentLoaded", () => {
+      includeHTML(() => {
+        initHamburgerMenu();
+        initThemeToggle();
+        initSearch(); // 🔥 SEARCH ATTACHED AFTER NAVBAR LOAD
+      });
+      initLanguageSystem();
+    });
+  </script>
+
+
+  <!-- ===== Universal Back To Top Button (All Pages) ===== -->
+  <style>
+    #globalBackToTop {
+      position: fixed;
+      bottom: 90px;
+      /* prevents overlap with chatbot/floating icons */
+      right: 25px;
+      z-index: 9999;
+      display: none;
+      background: #2ecc71;
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      transition: opacity 0.3s ease, transform 0.2s ease;
+    }
+
+    #globalBackToTop:hover {
+      transform: scale(1.12);
+      background: #27ae60;
+    }
+
+    @media (max-width: 768px) {
+      #globalBackToTop {
+        bottom: 100px;
+        /* better spacing on mobile */
+        right: 18px;
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+      }
+    }
+  </style>
+
+  <button id="globalBackToTop" title="Back to Top">↑</button>
+
+  <script>
+    (function () {
+      const btn = document.getElementById("globalBackToTop");
+
+
+  <script>
+    (function () {
+      const btn = document.getElementById("globalBackToTop");
+
+      // Show button after scrolling down
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 300) {
+          btn.style.display = "block";
+        } else {
+          btn.style.display = "none";
+        }
+      });
+
+      // Smooth scroll to top on click
+      btn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      });
+    })();
+  </script>
+  <!-- ===== End Back To Top Button ===== -->
+      });
+
+      // Smooth scroll to top on click
+      btn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      });
+    })();
+  </script>
+  <!-- ===== End Back To Top Button ===== -->
+
+  <!-- Sparkle Cursor Effect -->
+  <div class="sparkle-container" id="sparkleContainer"></div>
+
+  <script>
+    const container = document.getElementById("sparkleContainer");
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    const sparkles = [];
+    const maxSparkles = 18;
+
+    // create sparkle elements
+    for (let i = 0; i < maxSparkles; i++) {
+      const s = document.createElement("div");
+      s.className = "sparkle";
+      container.appendChild(s);
+
+      sparkles.push({
+        el: s,
+        x: 0,
+        y: 0,
+        delay: i * 0.08
+      });
+    }
+
+    // track mouse
+    document.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      // spawn tiny burst on move
+      createBurst(e.clientX, e.clientY);
+    });
+
+    // sparkle burst effect
+    function createBurst(x, y) {
+      const burst = document.createElement("div");
+      burst.className = "sparkle-burst";
+      burst.style.left = x + "px";
+      burst.style.top = y + "px";
+
+      container.appendChild(burst);
+
+      setTimeout(() => burst.remove(), 600);
+    }
+
+    // animate trailing sparkles
+    function animate() {
+      let x = mouseX;
+      let y = mouseY;
+
+      sparkles.forEach((s) => {
+        s.x += (x - s.x) * 0.22;
+        s.y += (y - s.y) * 0.22;
+
+        s.el.style.left = s.x + "px";
+        s.el.style.top = s.y + "px";
+
+        x = s.x;
+        y = s.y;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+
+</body>
+
+</html>

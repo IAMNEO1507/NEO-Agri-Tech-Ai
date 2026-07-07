@@ -1,0 +1,253 @@
+<style>
+  :root {
+    --navbar-bg: rgba(15, 23, 42, 0.92);
+    --navbar-text: #ffffff;
+    --navbar-muted: #cbd5e1;
+    --navbar-border: rgba(148, 163, 184, 0.22);
+    --navbar-accent: #22c55e;
+    --navbar-surface: rgba(255, 255, 255, 0.08);
+    --navbar-shadow: rgba(2, 6, 23, 0.28);
+  }
+
+  [data-theme="light"] {
+    --navbar-bg: rgba(255, 255, 255, 0.94);
+    --navbar-text: #0f172a;
+    --navbar-muted: #475569;
+    --navbar-border: rgba(148, 163, 184, 0.35);
+    --navbar-accent: #16a34a;
+    --navbar-surface: rgba(15, 23, 42, 0.04);
+    --navbar-shadow: rgba(15, 23, 42, 0.12);
+  }
+
+  .agritech-navbar {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: var(--navbar-bg);
+    color: var(--navbar-text);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: 0 10px 28px var(--navbar-shadow);
+  }
+
+  .agritech-navbar-spacer {
+    height: 76px;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .agritech-navbar .navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0.9rem 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .agritech-navbar .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    flex-shrink: 0;
+  }
+
+  .agritech-navbar .brand img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 4px;
+    object-fit: cover;
+  }
+
+  .agritech-navbar .brand-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .agritech-navbar .nav-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex: 1 1 460px;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .agritech-navbar .nav-link {
+    position: relative;
+    color: var(--navbar-text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 0.35rem 0;
+    transition: color 0.2s ease;
+  }
+
+  .agritech-navbar .nav-link:hover,
+  .agritech-navbar .nav-link:focus-visible {
+    color: var(--navbar-accent);
+  }
+
+  .agritech-navbar .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background: var(--navbar-accent);
+    transition: width 0.2s ease;
+  }
+
+  .agritech-navbar .nav-link:hover::after,
+  .agritech-navbar .nav-link:focus-visible::after {
+    width: 100%;
+  }
+
+  .agritech-navbar .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
+  .agritech-navbar .nav-user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--navbar-muted);
+    display: none;
+    margin-right: 0.15rem;
+    white-space: nowrap;
+  }
+
+  .agritech-navbar .nav-logout-btn,
+  .agritech-navbar .nav-auth-link,
+  .agritech-navbar .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.55rem 0.85rem;
+    white-space: nowrap;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .agritech-navbar .nav-logout-btn,
+  .agritech-navbar .theme-toggle {
+    background: transparent;
+    color: var(--navbar-text);
+    border: 1px solid var(--navbar-border);
+  }
+
+  .agritech-navbar .nav-auth-link {
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+
+  .agritech-navbar .nav-auth-link.btn-secondary {
+    color: var(--navbar-text);
+    background: var(--navbar-surface);
+    border-color: var(--navbar-border);
+  }
+
+  .agritech-navbar .nav-auth-link.btn-primary {
+    color: #ffffff;
+    background: var(--navbar-accent);
+  }
+
+  .agritech-navbar .nav-logout-btn:hover,
+  .agritech-navbar .theme-toggle:hover,
+  .agritech-navbar .nav-auth-link:hover {
+    transform: translateY(-1px);
+  }
+
+  .agritech-navbar .nav-logout-btn:hover,
+  .agritech-navbar .theme-toggle:hover {
+    border-color: var(--navbar-accent);
+    background: rgba(34, 197, 94, 0.08);
+  }
+
+  .agritech-navbar .nav-logout-btn[hidden],
+  .agritech-navbar .nav-user-name[hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 900px) {
+    .agritech-navbar .navbar-content {
+      justify-content: center;
+    }
+
+    .agritech-navbar .nav-menu,
+    .agritech-navbar .nav-actions {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+
+    .agritech-navbar .nav-actions {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .agritech-navbar .navbar-content {
+      padding: 0.85rem 0.9rem;
+    }
+
+    .agritech-navbar .nav-menu {
+      gap: 0.7rem 0.95rem;
+    }
+
+    .agritech-navbar .nav-actions {
+      gap: 0.55rem;
+    }
+  }
+</style>
+
+<nav class="agritech-navbar" aria-label="Primary navigation">
+  <div class="navbar-content">
+    <a class="brand" href="/pages/index.html" aria-label="AgriTech Home">
+      <img src="/images/logo.png" alt="AgriTech logo" />
+      <span class="brand-name">AgriTech</span>
+    </a>
+
+    <div class="nav-menu">
+      <a href="/pages/index.html" class="nav-link">Home</a>
+      <a href="/pages/about.html" class="nav-link">About</a>
+      <a href="/pages/blog.html" class="nav-link">Blog</a>
+      <a href="/pages/finance/scheme.html" class="nav-link">Schemes</a>
+      <a href="/pages/community/community_forum.html" class="nav-link">Community Forum</a>
+    </div>
+
+    <div class="nav-actions">
+      <span id="nav-user-name" class="nav-user-name"></span>
+      <button id="nav-logout-btn" class="nav-logout-btn" type="button" hidden>
+        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+        <span>Logout</span>
+      </button>
+      <a href="/pages/auth/login.html" class="nav-auth-link btn-secondary">Login</a>
+      <a href="/pages/auth/register.html" class="nav-auth-link btn-primary">Register</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark theme">
+        <i class="fas fa-sun sun-icon" aria-hidden="true"></i>
+        <i class="fas fa-moon moon-icon" aria-hidden="true"></i>
+        <span class="theme-text">Theme</span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="agritech-navbar-spacer" aria-hidden="true"></div>
