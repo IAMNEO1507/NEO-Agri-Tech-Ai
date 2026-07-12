@@ -1,5 +1,8 @@
 import os
+import logging
 from celery import Celery
+
+_logger = logging.getLogger(__name__)
 
 # Redis URL from environment or default
 REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
@@ -21,34 +24,41 @@ def make_celery(app):
     return celery
 
 # Simple instance for module-level imports
-celery_app = Celery(
-    'agritech',
-    broker=REDIS_URL,
-    backend=REDIS_URL,
-    include=['backend.tasks']
-)
+try:
+    celery_app = Celery(
+        'agritech',
+        broker=REDIS_URL,
+        backend=REDIS_URL,
+        include=['backend.tasks']
+    )
 
-celery_app.conf.update(
-    task_serializer='json',
-    accept_content=['json'],
-    result_serializer='json',
-    timezone='Asia/Kolkata',
-    enable_utc=True,
-    task_track_started=True,
-    task_time_limit=300,
-    worker_prefetch_multiplier=1,
-    beat_schedule={
-        'update-market-prices-every-hour': {
-            'task': 'tasks.update_market_prices',
-            'schedule': 3600.0,  # 1 hour
-        },
-        'hourly-freshness-pricing': {
-            'task': 'tasks.hourly_freshness_pricing_update',
-            'schedule': 3600.0,
-        },
-        'pathogen-propagation-simulation': {
-            'task': 'tasks.pathogen_propagation_run',
-            'schedule': 1800.0, # Every 30 mins
+    celery_app.conf.update(
+        task_serializer='json',
+        accept_content=['json'],
+        result_serializer='json',
+        timezone='Asia/Kolkata',
+        enable_utc=True,
+        task_track_started=True,
+        task_time_limit=300,
+        worker_prefetch_multiplier=1,
+        beat_schedule={
+            'update-market-prices-every-hour': {
+                'task': 'tasks.update_market_prices',
+                'schedule': 3600.0,  # 1 hour
+            },
+            'hourly-freshness-pricing': {
+                'task': 'tasks.hourly_freshness_pricing_update',
+                'schedule': 3600.0,
+            },
+            'pathogen-propagation-simulation': {
+                'task': 'tasks.pathogen_propagation_run',
+                'schedule': 1800.0, # Every 30 mins
+            }
         }
-    }
-)
+    )
+except Exception as e:
+    _logger.warning('Celery initialization failed (Redis not available?): %s. '
+                     'Async tasks will not work.', e)
+    # Provide a dummy celery_app so imports don't break
+    celery_app = Celery('agritech')
+

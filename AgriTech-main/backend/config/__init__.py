@@ -1,4 +1,5 @@
 import os
+import logging
 
 from dotenv import load_dotenv
 
@@ -13,9 +14,23 @@ load_dotenv(
 def _env_bool(name, default=False):
     return os.environ.get(name, str(default)).strip().lower() in {'1', 'true', 'yes', 'on'}
 
+_logger = logging.getLogger(__name__)
+
+
+def _redis_available(url):
+    """Check if Redis is reachable at *url*."""
+    try:
+        import redis as _redis
+        r = _redis.Redis.from_url(url, socket_connect_timeout=1)
+        r.ping()
+        return True
+    except Exception:
+        return False
+
+
 class Config:
     """Base Configuration"""
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
     DEBUG = _env_bool('DEBUG', False)
     TESTING = False
     
@@ -65,9 +80,20 @@ class Config:
 
     # Redis & Caching
     REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-    CACHE_TYPE = 'RedisCache'
-    CACHE_REDIS_URL = REDIS_URL
     CACHE_DEFAULT_TIMEOUT = 3600  # 1 hour default
+
+    @classmethod
+    def _resolve_cache(cls):
+        """Use RedisCache when Redis is reachable, else SimpleCache."""
+        if _redis_available(cls.REDIS_URL):
+            _logger.info('Redis is reachable – using RedisCache')
+            return 'RedisCache', cls.REDIS_URL
+        _logger.warning('Redis is NOT reachable – falling back to SimpleCache')
+        return 'SimpleCache', None
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.CACHE_TYPE, cls.CACHE_REDIS_URL = cls._resolve_cache()
 
 class DevelopmentConfig(Config):
     """Development Configuration"""

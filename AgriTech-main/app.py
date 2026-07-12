@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify, send_from_directory, g, render_template
+from flask import Flask, request, jsonify, send_from_directory, render_template
 import google.generativeai as genai
 import traceback
 import os
-import re
 import hashlib
-import json
 from flask_cors import CORS
 from dotenv import load_dotenv
 import logging
@@ -15,7 +13,7 @@ from backend.api.v1.files import files_bp
 from backend.api.ingestion import ingestion_bp
 from backend.middleware.audit import AuditMiddleware
 from crop_recommendation.routes import crop_bp
-# from disease_prediction.routes import disease_bp
+
 from spatial_analytics.routes import spatial_bp
 from backend.extensions.cache import cache
 from backend.monitoring.routes import health_bp
@@ -25,6 +23,8 @@ from backend.config import config
 from backend.schemas.loan_schema import LoanRequestSchema
 from backend.celery_app import celery_app, make_celery
 from backend.tasks import predict_crop_task, process_loan_task
+from backend.tasks.report_tasks import generate_and_send_report
+from backend.services.pdf_service import PDFService
 import backend.sockets.task_events  # Register socket event handlers
 import backend.sockets.supply_events # Register supply chain events
 from auth_utils import token_required, roles_required
@@ -79,7 +79,7 @@ from backend.models import User
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.register_blueprint(crop_bp, url_prefix='/crop')
-# app.register_blueprint(disease_bp)
+
 app.register_blueprint(health_bp)
 app.register_blueprint(files_bp)
 app.register_blueprint(spatial_bp)
@@ -115,8 +115,12 @@ with app.app_context():
 
 # Initialize Gemini API
 # Configure Gemini Client
-genai.configure(api_key=app.config['GEMINI_API_KEY'])
-model = genai.GenerativeModel(app.config['GEMINI_MODEL_ID'])
+if app.config.get('GEMINI_API_KEY'):
+    genai.configure(api_key=app.config['GEMINI_API_KEY'])
+    model = genai.GenerativeModel(app.config['GEMINI_MODEL_ID'])
+else:
+    logger.warning("GEMINI_API_KEY not configured, AI features may fail")
+    model = None
 
 
 
@@ -280,7 +284,7 @@ def process_loan():
         
         # Validate and sanitize input using Marshmallow
         try:
-            validated_data = loan_schema.load(json_data)
+            loan_schema.load(json_data)
         except ValidationError as err:
             return jsonify({
                 "status": "error",
@@ -344,15 +348,19 @@ Do not add assumptions that are not supported by the data provided.
                 "result": cached_response
             }), 200
 
-        response = model.generate_content(prompt)
-        reply = response.text
+        if model is None:
+            return jsonify({
+                "status": "error",
+                "message": "AI model not configured. Set GEMINI_API_KEY in .env"
+            }), 503
 
-        
+        response = model.generate_content(prompt)
+
         if not response.candidates:
             return jsonify({
                 "status": "error",
                 "message": "No response generated from Gemini API"
-          }), 500
+            }), 500
 
         reply = response.candidates[0].content.parts[0].text
         
@@ -429,12 +437,17 @@ def generate_loan_report_endpoint():
         else:
             # Generate PDF only (sync)
             try:
-                pdf_path = generate_loan_report(farmer_data, assessment_result, farmer_email)
+                reports_dir = os.path.join(os.getcwd(), 'reports')
+                os.makedirs(reports_dir, exist_ok=True)
+                output_path = os.path.join(reports_dir, f"loan_report_{farmer_email}.pdf")
+                success = PDFService.generate_loan_report(farmer_data, assessment_result, output_path)
+                if not success:
+                    raise RuntimeError("PDF generation failed")
                 return jsonify({
                     "status": "success",
                     "message": "Report generated successfully",
-                    "pdf_path": pdf_path,
-                    "download_url": f"/download-report/{os.path.basename(pdf_path)}"
+                    "pdf_path": output_path,
+                    "download_url": f"/download-report/{os.path.basename(output_path)}"
                 }), 200
             except Exception as e:
                 return jsonify({
@@ -548,10 +561,6 @@ def serve_static(filename):
     return send_from_directory('public', filename)
 
 
-if __name__ == '__main__':
-    # Use socketio.run instead of app.run for WebSocket support
-    socketio.run(app, port=5000, debug=True, allow_unsafe_werkzeug=True)
-
 #Global Error Handling 
 @app.errorhandler(404)
 def not_found(error):
@@ -583,4 +592,6 @@ def rotation_page():
     return render_template('crop_rotation.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Use socketio.run instead of app.run for WebSocket support
+    socketio.run(app, port=5000, debug=True, allow_unsafe_werkzeug=True)
+
