@@ -89,4 +89,6 @@ app.listen(PORT, () => {
   console.log(`🤖 AI Features: ${API_KEY ? 'ENABLED' : 'DISABLED (using fallback mode)'}`);
 });
 
+module.exports = app;
+
 
